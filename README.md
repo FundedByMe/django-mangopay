@@ -2,6 +2,7 @@ django-mangopay
 ===============
 
 [![Downloads](https://pypip.in/v/django-mangopay/badge.png)](https://pypi.python.org/pypi/django-mangopay)
+[![Build Status](https://travis-ci.org/FundedByMe/django-mangopay.svg?branch=master)](https://travis-ci.org/FundedByMe/django-mangopay)
 
 Django Wrapper for Mangopay
 
