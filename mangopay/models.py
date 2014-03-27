@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from mangopaysdk.entities import UserNatural
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES)
+from .client import get_mangopay_api_client
 
 
 class MangoPayUser(models.Model):
@@ -26,6 +28,23 @@ class MangoPayNaturalUser(MangoPayUser):
     occupation = models.CharField(blank=True, max_length=254)
     income_range = models.SmallIntegerField(
         blank=True, null=True, choices=INCOME_RANGE_CHOICES)
+
+    def create(self):
+        client = get_mangopay_api_client()
+        mangopay_user = UserNatural()
+        mangopay_user.FirstName = self.user.first_name
+        mangopay_user.LastName = self.user.last_name
+        mangopay_user.Email = self.user.email
+        mangopay_user.Birthday = int(self.birthday.strftime("%s"))
+        mangopay_user.CountryOfResidence = self.country
+        mangopay_user.Nationality = self.nationality
+        if self.occupation:
+            mangopay_user.Occupation = self.occupation
+        if self.income_range:
+            mangopay_user.IncomeRange = self.income_range
+        created_mangopay_user = client.users.Create(mangopay_user)
+        self.mangopay_id = created_mangopay_user.Id
+        self.save()
 
 
 class MangoPayLegalUser(MangoPayUser):
