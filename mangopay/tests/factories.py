@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password
 
 import factory
 
-from ..models import MangoPayNaturalUser
+from ..models import MangoPayNaturalUser, MangoPayBankAccount
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -45,3 +45,13 @@ class RegularAuthenticationMangoPayNaturalUserFactory(
     address = "Somewhere over the rainbow"
     occupation = "Cobbler"
     income_range = 1
+
+
+class MangoPayBankAccountFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayBankAccount
+
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    mangopay_id = None
+    iban = "SE3550000000054910000003"
+    bic = "DABAIE2D"
+    address = "Hundred Acre Wood"

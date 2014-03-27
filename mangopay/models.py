@@ -100,7 +100,8 @@ class MangoPayBankAccount(models.Model):
         client = get_mangopay_api_client()
         mangopay_bank_account = BankAccount()
         mangopay_bank_account.UserId = self.mangopay_user.mangopay_id
-        mangopay_bank_account.OwnerName = self.user.get_full_name()
+        mangopay_bank_account.OwnerName = \
+            self.mangopay_user.user.get_full_name()
         mangopay_bank_account.OwnerAddress = self.address
         mangopay_bank_account.IBAN = self.iban
         mangopay_bank_account.BIC = self.bic
