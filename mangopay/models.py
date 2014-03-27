@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from mangopaysdk.entities import UserNatural
+from mangopaysdk.entities.usernatural import UserNatural
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 
