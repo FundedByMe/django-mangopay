@@ -10,6 +10,7 @@ from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
 
 class MangoPayUser(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    user = models.ForeignKey(User)
 
     # Light Authenication Field:
     birthday = models.DateField(blank=True, null=True)
@@ -21,8 +22,6 @@ class MangoPayUser(models.Model):
 
 
 class MangoPayNaturalUser(MangoPayUser):
-    # Light Authenication Fields:
-    user = models.ForeignKey(User)
     # Regular Authenication Fields:
     occupation = models.CharField(blank=True, max_length=254)
     income_range = models.SmallIntegerField(
@@ -36,6 +35,8 @@ class MangoPayLegalUser(MangoPayUser):
         choices=LEGAL_PERSON_TYPE_CHOICES)
     business_name = models.CharField(max_length=254)
     generic_business_email = models.EmailField(max_length=254)
+    # first_name, last_name, and email belong to the Legal Representative
+    # who is not always the same person as the linked user
     first_name = models.CharField(max_length=99)
     last_name = models.CharField(max_length=99)
     # Regular Authenication Fields:
