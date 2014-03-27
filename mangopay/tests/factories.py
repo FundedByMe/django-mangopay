@@ -29,6 +29,6 @@ class MangoPayNaturalUserFactory(factory.DjangoModelFactory):
     birthday = datetime.date(1989, 10, 20)
     country_of_residence = "SE"
     nationality = "US"
-    address = None
+    address = ""  # Should be None but need a migration first
     occupation = None
     income_range = None
