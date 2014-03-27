@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from mangopaysdk.entities.usernatural import UserNatural
+from mangopaysdk.entities.bankaccount import BankAccount
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 
@@ -31,6 +32,16 @@ class MangoPayNaturalUser(MangoPayUser):
 
     def create(self):
         client = get_mangopay_api_client()
+        mangopay_user = self._build()
+        created_mangopay_user = client.users.Create(mangopay_user)
+        self.mangopay_id = created_mangopay_user.Id
+        self.save()
+
+    def update(self):
+        client = get_mangopay_api_client()
+        return client.users.Update(self._build())
+
+    def _build(self):
         mangopay_user = UserNatural()
         mangopay_user.FirstName = self.user.first_name
         mangopay_user.LastName = self.user.last_name
@@ -42,9 +53,11 @@ class MangoPayNaturalUser(MangoPayUser):
             mangopay_user.Occupation = self.occupation
         if self.income_range:
             mangopay_user.IncomeRange = self.income_range
-        created_mangopay_user = client.users.Create(mangopay_user)
-        self.mangopay_id = created_mangopay_user.Id
-        self.save()
+        if self.address:
+            mangopay_user.Address = self.address
+        if self.mangopay_id:
+            mangopay_user.Id = self.mangopay_id
+        return mangopay_user
 
 
 class MangoPayLegalUser(MangoPayUser):
@@ -81,3 +94,16 @@ class MangoPayBankAccount(models.Model):
     iban = IBANField()
     bic = SWIFTBICField()
     address = models.CharField(max_length=254)
+
+    def create(self):
+        client = get_mangopay_api_client()
+        mangopay_bank_account = BankAccount()
+        mangopay_bank_account.UserId = self.mangopay_user.mangopay_id
+        mangopay_bank_account.OwnerName = self.user.get_full_name()
+        mangopay_bank_account.OwnerAddress = self.address
+        mangopay_bank_account.IBAN = self.iban
+        mangopay_bank_account.BIC = self.bic
+        created_bank_account = client.users.CreateBankAccount(
+            str(self.mangopay_user.mangopay_id), mangopay_bank_account)
+        self.mangopay_id = created_bank_account.Id
+        self.save()
