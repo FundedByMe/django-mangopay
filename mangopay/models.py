@@ -71,6 +71,7 @@ class MangoPayLegalUser(MangoPayUser):
     # who is not always the same person as the linked user
     first_name = models.CharField(max_length=99)
     last_name = models.CharField(max_length=99)
+
     # Regular Authenication Fields:
     headquaters_address = models.CharField(blank=True, max_length=254)
     email = models.EmailField(max_length=254, blank=True)
