@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
+from django_countries.fields import Country
 import factory
 
 from ..models import MangoPayNaturalUser, MangoPayBankAccount
@@ -27,8 +28,8 @@ class MangoPayNaturalUserFactory(factory.DjangoModelFactory):
     mangopay_id = None
     user = factory.SubFactory(UserFactory)
     birthday = datetime.date(1989, 10, 20)
-    country_of_residence = "SE"
-    nationality = "US"
+    country_of_residence = Country("SE")
+    nationality = Country("US")
     address = ""  # Should be None but needs a migration first
     occupation = ""  # Should be None but needs a migration first
     income_range = None
