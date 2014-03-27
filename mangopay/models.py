@@ -47,7 +47,7 @@ class MangoPayNaturalUser(MangoPayUser):
         mangopay_user.LastName = self.user.last_name
         mangopay_user.Email = self.user.email
         mangopay_user.Birthday = int(self.birthday.strftime("%s"))
-        mangopay_user.CountryOfResidence = self.country
+        mangopay_user.CountryOfResidence = self.country_of_residence
         mangopay_user.Nationality = self.nationality
         if self.occupation:
             mangopay_user.Occupation = self.occupation

@@ -32,3 +32,16 @@ class MangoPayNaturalUserFactory(factory.DjangoModelFactory):
     address = ""  # Should be None but needs a migration first
     occupation = ""  # Should be None but needs a migration first
     income_range = None
+
+
+class LightAuthenticationMangoPayNaturalUserFactory(
+        MangoPayNaturalUserFactory):
+    pass
+
+
+class RegularAuthenticationMangoPayNaturalUserFactory(
+        MangoPayNaturalUserFactory):
+
+    address = "Somewhere over the rainbow"
+    occupation = "Cobbler"
+    income_range = 1
