@@ -5,7 +5,8 @@ from django.contrib.auth.hashers import make_password
 
 import factory
 
-from ..models import MangoPayNaturalUser, MangoPayBankAccount
+from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
+                      MangoPayCardRegistration)
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -55,3 +56,11 @@ class MangoPayBankAccountFactory(factory.DjangoModelFactory):
     iban = "SE3550000000054910000003"
     bic = "DABAIE2D"
     address = "Hundred Acre Wood"
+
+
+class MangoPayCardRegistrationFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayCardRegistration
+
+    mangopay_id = None
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    mangopay_card_id = None

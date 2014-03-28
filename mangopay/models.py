@@ -6,6 +6,8 @@ from mangopaysdk.entities.bankaccount import BankAccount
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 
+from mangopaysdk.entities.cardregistration import CardRegistration
+
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES)
 from .client import get_mangopay_api_client
@@ -109,3 +111,27 @@ class MangoPayBankAccount(models.Model):
             str(self.mangopay_user.mangopay_id), mangopay_bank_account)
         self.mangopay_id = created_bank_account.Id
         self.save()
+
+
+class MangoPayCardRegistration(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_user = models.ForeignKey(MangoPayUser)
+    mangopay_card_id = models.PositiveIntegerField(null=True, blank=True)
+
+    def create(self, currency):
+        client = get_mangopay_api_client()
+        card_registration = CardRegistration()
+        card_registration.UserId = str(self.mangopay_user.id)
+        card_registration.Currency = currency
+        card_registration = client.cardRegistrations.Create(card_registration)
+        self.mangopay_id = card_registration.Id
+        self.save()
+
+    def get_preregistration_data(self):
+        client = get_mangopay_api_client()
+        card_registration = client.cardRegistrations.Get(self.mangopay_id)
+        preregistration_data = {
+            "preregistrationData": card_registration.PreregistrationData,
+            "accessKey": card_registration.AccessKey,
+            "cardRegistrationURL": card_registration.CardRegistrationURL}
+        return preregistration_data
