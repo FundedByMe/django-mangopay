@@ -1,11 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from mangopaysdk.entities.usernatural import UserNatural
+from mangopaysdk.entities.bankaccount import BankAccount
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES)
+from .client import get_mangopay_api_client
 
 
 class MangoPayUser(models.Model):
@@ -27,6 +30,35 @@ class MangoPayNaturalUser(MangoPayUser):
     income_range = models.SmallIntegerField(
         blank=True, null=True, choices=INCOME_RANGE_CHOICES)
 
+    def create(self):
+        client = get_mangopay_api_client()
+        mangopay_user = self._build()
+        created_mangopay_user = client.users.Create(mangopay_user)
+        self.mangopay_id = created_mangopay_user.Id
+        self.save()
+
+    def update(self):
+        client = get_mangopay_api_client()
+        return client.users.Update(self._build())
+
+    def _build(self):
+        mangopay_user = UserNatural()
+        mangopay_user.FirstName = self.user.first_name
+        mangopay_user.LastName = self.user.last_name
+        mangopay_user.Email = self.user.email
+        mangopay_user.Birthday = int(self.birthday.strftime("%s"))
+        mangopay_user.CountryOfResidence = self.country_of_residence.code
+        mangopay_user.Nationality = self.nationality.code
+        if self.occupation:
+            mangopay_user.Occupation = self.occupation
+        if self.income_range:
+            mangopay_user.IncomeRange = self.income_range
+        if self.address:
+            mangopay_user.Address = self.address
+        if self.mangopay_id:
+            mangopay_user.Id = self.mangopay_id
+        return mangopay_user
+
 
 class MangoPayLegalUser(MangoPayUser):
     # Light Authenication Fields:
@@ -39,6 +71,7 @@ class MangoPayLegalUser(MangoPayUser):
     # who is not always the same person as the linked user
     first_name = models.CharField(max_length=99)
     last_name = models.CharField(max_length=99)
+
     # Regular Authenication Fields:
     headquaters_address = models.CharField(blank=True, max_length=254)
     email = models.EmailField(max_length=254, blank=True)
@@ -62,3 +95,17 @@ class MangoPayBankAccount(models.Model):
     iban = IBANField()
     bic = SWIFTBICField()
     address = models.CharField(max_length=254)
+
+    def create(self):
+        client = get_mangopay_api_client()
+        mangopay_bank_account = BankAccount()
+        mangopay_bank_account.UserId = self.mangopay_user.mangopay_id
+        mangopay_bank_account.OwnerName = \
+            self.mangopay_user.user.get_full_name()
+        mangopay_bank_account.OwnerAddress = self.address
+        mangopay_bank_account.IBAN = self.iban
+        mangopay_bank_account.BIC = self.bic
+        created_bank_account = client.users.CreateBankAccount(
+            str(self.mangopay_user.mangopay_id), mangopay_bank_account)
+        self.mangopay_id = created_bank_account.Id
+        self.save()
