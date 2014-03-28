@@ -22,20 +22,20 @@ class MockUserApi():
             user.Id = self.user_id
             return user
         else:
-            raise("User must be a User Entity")
+            raise BaseException("User must be a User Entity")
 
     def CreateBankAccount(self, user_id, bank_account):
         if isinstance(bank_account, BankAccount) and isinstance(user_id, str):
             bank_account.Id = self.bank_account_id
             return bank_account
         else:
-            raise("Arguements are the wrong types")
+            raise BaseException("Arguements are the wrong types")
 
     def Update(self, user):
         if isinstance(user, User) and user.Id:
             return user
         else:
-            raise("User must be a User Entity with an Id")
+            raise BaseException("User must be a User Entity with an Id")
 
 
 class MockCardRegistrationApi():
