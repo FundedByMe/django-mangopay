@@ -118,7 +118,7 @@ class MangoPayCardRegistration(models.Model):
     mangopay_user = models.ForeignKey(MangoPayUser)
     mangopay_card_id = models.PositiveIntegerField(null=True, blank=True)
 
-    def create(self, currency='EUR'):
+    def create(self, currency):
         client = get_mangopay_api_client()
         card_registration = CardRegistration()
         card_registration.UserId = str(self.mangopay_user.id)
