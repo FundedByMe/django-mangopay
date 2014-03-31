@@ -67,6 +67,9 @@ class MangoPayNaturalUser(MangoPayUser):
             mangopay_user.Id = self.mangopay_id
         return mangopay_user
 
+    def __unicode__(self):
+        return self.user.get_full_name()
+
 
 class MangoPayLegalUser(MangoPayUser):
     # Light Authenication Fields:
@@ -83,6 +86,9 @@ class MangoPayLegalUser(MangoPayUser):
     # Regular Authenication Fields:
     headquaters_address = models.CharField(blank=True, max_length=254)
     email = models.EmailField(max_length=254, blank=True)
+
+    def __unicode__(self):
+        return self.first_name + " " + self.last_name
 
 
 class MangoPayDocument(models.Model):
@@ -136,6 +142,9 @@ class MangoPayDocument(models.Model):
         else:
             raise BaseException('Cannot ask for validation of a document'
                                 'not in the created state')
+
+    def __unicode__(self):
+        return self.mangopay_id + " " + self.Status
 
 
 class MangoPayBankAccount(models.Model):
