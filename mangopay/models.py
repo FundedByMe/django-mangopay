@@ -104,6 +104,7 @@ class MangoPayDocument(models.Model):
         created_document = client.users.CreateUserKycDocument(
             document, self.mangopay_user.mangopay_id)
         self.mangopay_id = created_document.Id
+        self.status = STATUS_CHOICES_DICT[document.Status]
         self.save()
 
     def create_page(self):
