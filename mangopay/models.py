@@ -125,7 +125,8 @@ class MangoPayDocument(models.Model):
 
     def ask_for_validation(self):
         if self.status == CREATED:
-            document = KycDocument(Status="VALIDATION_ASKED")
+            document = KycDocument()
+            document.Status = "VALIDATION_ASKED"
             client = get_mangopay_api_client()
             updated_document = client.users.UpdateUserKycDocument(
                 document, self.mangopay_user.mangopay_id, self.mangopay_id)
