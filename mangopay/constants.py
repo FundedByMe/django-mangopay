@@ -43,3 +43,5 @@ STATUS_CHOICES = (
     (VALIDATED, "VALIDATED"),
     (REFUSED, "REFUSED"),
 )
+
+STATUS_CHOICES_DICT = {v: k for k, v in dict(STATUS_CHOICES).iteritems()}
