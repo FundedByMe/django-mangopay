@@ -14,7 +14,8 @@ from mangopaysdk.entities.cardregistration import CardRegistration
 
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES,
-                        CREATED, STATUS_CHOICES_DICT)
+                        CREATED, STATUS_CHOICES_DICT,
+                        DOCUMENT_TYPE_CHOICES_DICT)
 from .client import get_mangopay_api_client
 
 
@@ -98,34 +99,36 @@ class MangoPayDocument(models.Model):
     def create(self, tag=""):
         document = KycDocument()
         document.Tag = tag
-        document.Type = self.type
+        document.Type = DOCUMENT_TYPE_CHOICES_DICT[self.type]
         client = get_mangopay_api_client()
         created_document = client.users.CreateUserKycDocument(
-            self.mangopay_user.mangopay_id, document)
+            document, self.mangopay_user.mangopay_id)
         self.mangopay_id = created_document.Id
         self.save()
 
-    def create_page(self, user_id):
+    def create_page(self):
         page = KycPage()
         file = self.file.open(mode='rb')
         bytes = base64.b64encode(file.read())
         page.File = bytes.decode("utf-8")
         client = get_mangopay_api_client()
-        client.users.CreateUserKycPage(page, user_id, self.mangopay_id)
+        client.users.CreateUserKycPage(page, self.mangopay_user.mangopay_id,
+                                       self.mangopay_id)
 
-    def update_status(self, user_id):
+    def update_status(self):
         client = get_mangopay_api_client()
-        document = client.users.GetUserKycDocument(self.mangopay_id, user_id)
+        document = client.users.GetUserKycDocument(
+            self.mangopay_id, self.mangopay_user.mangopay_id)
         self.refused_reason_message = document.RefusedReasonMessage
         self.status = STATUS_CHOICES_DICT[document.Status]
         self.save()
 
-    def ask_for_validation(self, user_id):
+    def ask_for_validation(self):
         if self.status == CREATED:
             document = KycDocument(Status="VALIDATION_ASKED")
             client = get_mangopay_api_client()
             updated_document = client.users.UpdateUserKycDocument(
-                document, user_id, self.mangopay_id)
+                document, self.mangopay_user.mangopay_id, self.mangopay_id)
             self.status = STATUS_CHOICES_DICT[updated_document.Status]
             self.save()
         else:
