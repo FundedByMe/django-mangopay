@@ -1,8 +1,11 @@
+import os
+
 from django.test import TestCase
 
 from mock import patch
 
 from ..models import MangoPayDocument
+from ..constants import VALIDATED, VALIDATION_ASKED, CREATED
 
 from .factories import MangoPayDocumentFactory
 from .client import MockMangoPayApi
@@ -14,10 +17,31 @@ class MangoPayDocumentTests(TestCase):
         self.document = MangoPayDocumentFactory()
 
     @patch("mangopay.models.get_mangopay_api_client")
-    def test_create_bank_account(self, mock_client):
+    def test_create_document(self, mock_client):
         id = 3321
         mock_client.return_value = MockMangoPayApi(document_id=id)
         self.assertIsNone(self.document.mangopay_id)
         self.document.create()
         MangoPayDocument.objects.get(id=self.document.id,
                                      mangopay_id=id)
+
+    @patch("mangopay.models.get_mangopay_api_client")
+    def test_update_document(self, mock_client):
+        mock_client.return_value = MockMangoPayApi()
+        self.document.update_status()
+        MangoPayDocument.objects.get(id=self.document.id,
+                                     status=VALIDATED)
+
+    @patch("mangopay.models.get_mangopay_api_client")
+    def test_ask_for_validation_document(self, mock_client):
+        mock_client.return_value = MockMangoPayApi()
+        self.document.status = CREATED
+        self.document.ask_for_validation()
+        MangoPayDocument.objects.get(id=self.document.id,
+                                     status=VALIDATION_ASKED)
+
+    @patch("mangopay.models.get_mangopay_api_client")
+    def test_create_page(self, mock_client):
+        mock_client.return_value = MockMangoPayApi()
+        self.document.file = os.getcwd() + "/mangopay/tests/test.png"
+        self.document.create_page()

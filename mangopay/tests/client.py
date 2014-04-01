@@ -48,9 +48,16 @@ class MockUserApi():
         else:
             raise BaseException("Document must be a KycDocument entity")
 
+    def GetUserKycDocument(self, document_id, user_id):
+        document = KycDocument()
+        document.Id = document_id
+        document.Status = "VALIDATED"
+        return document
+
     def UpdateUserKycDocument(self, document, user_id, document_id):
-        if isinstance(document, KycDocument) and document.Id == document_id:
-            document.Status = "VALIDATED"
+        if (isinstance(document, KycDocument)
+                and document.Id == document_id
+                and document.Status == "VALIDATION_ASKED"):
             return document
         else:
             raise BaseException("Arguements are of the wrong types")
