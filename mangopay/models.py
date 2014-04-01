@@ -102,7 +102,7 @@ class MangoPayDocument(models.Model):
     refused_reason_message = models.CharField(null=True, blank=True,
                                               max_length=255)
 
-    def create(self, tag=""):
+    def create(self, tag=None):
         document = KycDocument()
         document.Tag = tag
         document.Type = DOCUMENT_TYPE_CHOICES_DICT[self.type]
