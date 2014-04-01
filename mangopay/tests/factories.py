@@ -95,7 +95,7 @@ class MangoPayCardRegistrationFactory(factory.DjangoModelFactory):
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
-    mangopay_card_id = None
+    mangopay_card = None
 
 
 class MangoPayDocumentFactory(factory.DjangoModelFactory):

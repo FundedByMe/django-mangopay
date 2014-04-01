@@ -13,11 +13,10 @@ from mangopaysdk.entities.payout import PayOut
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
+from mangopaysdk.entities.cardregistration import CardRegistration
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 from money import Money as PythonMoney
-
-from mangopaysdk.entities.cardregistration import CardRegistration
 
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES, LEGAL_USER,
@@ -307,11 +306,32 @@ class MangoPayPayOut(models.Model):
         self.save()
 
 
+class MangoPayCard(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    expiration_date = models.CharField(blank=True, null=True, max_length=4)
+    alias = models.CharField(blank=True, null=True, max_length=16)
+    active = models.BooleanField(default=False)
+    valid = models.NullBooleanField()
+
+    def request_card_info(self):
+        if self.mangopay_id:
+            client = get_mangopay_api_client()
+            card = client.cards.Get(self.mangopay_id)
+            self.expiration_date = card.ExpirationDate
+            self.alias = card.Alias
+            self.active = card.Active()
+            if card.Validity == "UNKNOWN":
+                self.valid = None
+            else:
+                self.valid = card.Validity == "VALID"
+
+
 class MangoPayCardRegistration(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     mangopay_user = models.ForeignKey(
         MangoPayUser, related_name="mangopay_card_registrations")
-    mangopay_card_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_card = models.ForeignKey(MangoPayCard)
+
 
     def create(self, currency):
         client = get_mangopay_api_client()
