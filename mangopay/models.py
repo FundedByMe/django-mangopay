@@ -133,6 +133,7 @@ class MangoPayDocument(models.Model):
     def ask_for_validation(self):
         if self.status == CREATED:
             document = KycDocument()
+            document.Id = self.mangopay_id
             document.Status = "VALIDATION_ASKED"
             client = get_mangopay_api_client()
             updated_document = client.users.UpdateUserKycDocument(
@@ -144,7 +145,7 @@ class MangoPayDocument(models.Model):
                                 'not in the created state')
 
     def __unicode__(self):
-        return self.mangopay_id + " " + self.Status
+        return str(self.mangopay_id) + " " + self.Status
 
 
 class MangoPayBankAccount(models.Model):
