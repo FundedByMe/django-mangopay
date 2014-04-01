@@ -1,15 +1,21 @@
+import base64
+
 from django.db import models
 from django.contrib.auth.models import User
 
 from mangopaysdk.entities.usernatural import UserNatural
 from mangopaysdk.entities.bankaccount import BankAccount
+from mangopaysdk.entities.kycdocument import KycDocument
+from mangopaysdk.entities.kycpage import KycPage
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 
 from mangopaysdk.entities.cardregistration import CardRegistration
 
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
-                        STATUS_CHOICES, DOCUMENT_TYPE_CHOICES)
+                        STATUS_CHOICES, DOCUMENT_TYPE_CHOICES,
+                        CREATED, STATUS_CHOICES_DICT,
+                        DOCUMENT_TYPE_CHOICES_DICT)
 from .client import get_mangopay_api_client
 
 
@@ -61,6 +67,9 @@ class MangoPayNaturalUser(MangoPayUser):
             mangopay_user.Id = self.mangopay_id
         return mangopay_user
 
+    def __unicode__(self):
+        return self.user.get_full_name()
+
 
 class MangoPayLegalUser(MangoPayUser):
     # Light Authenication Fields:
@@ -78,6 +87,9 @@ class MangoPayLegalUser(MangoPayUser):
     headquaters_address = models.CharField(blank=True, max_length=254)
     email = models.EmailField(max_length=254, blank=True)
 
+    def __unicode__(self):
+        return self.first_name + " " + self.last_name
+
 
 class MangoPayDocument(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
@@ -89,6 +101,52 @@ class MangoPayDocument(models.Model):
     file = models.FileField(upload_to='mangopay_documents')
     refused_reason_message = models.CharField(null=True, blank=True,
                                               max_length=255)
+
+    def create(self, tag=''):
+        document = KycDocument()
+        document.Tag = tag
+        document.Type = DOCUMENT_TYPE_CHOICES_DICT[self.type]
+        client = get_mangopay_api_client()
+        created_document = client.users.CreateUserKycDocument(
+            document, self.mangopay_user.mangopay_id)
+        self.mangopay_id = created_document.Id
+        self.status = STATUS_CHOICES_DICT[created_document.Status]
+        self.save()
+
+    def create_page(self):
+        page = KycPage()
+        self.file.open(mode='rb')
+        bytes = base64.b64encode(self.file.read())
+        self.file.close()
+        page.File = bytes.decode("utf-8")
+        client = get_mangopay_api_client()
+        client.users.CreateUserKycPage(page, self.mangopay_user.mangopay_id,
+                                       self.mangopay_id)
+
+    def update_status(self):
+        client = get_mangopay_api_client()
+        document = client.users.GetUserKycDocument(
+            self.mangopay_id, self.mangopay_user.mangopay_id)
+        self.refused_reason_message = document.RefusedReasonMessage
+        self.status = STATUS_CHOICES_DICT[document.Status]
+        self.save()
+
+    def ask_for_validation(self):
+        if self.status == CREATED:
+            document = KycDocument()
+            document.Id = self.mangopay_id
+            document.Status = "VALIDATION_ASKED"
+            client = get_mangopay_api_client()
+            updated_document = client.users.UpdateUserKycDocument(
+                document, self.mangopay_user.mangopay_id, self.mangopay_id)
+            self.status = STATUS_CHOICES_DICT[updated_document.Status]
+            self.save()
+        else:
+            raise BaseException('Cannot ask for validation of a document'
+                                'not in the created state')
+
+    def __unicode__(self):
+        return str(self.mangopay_id) + " " + self.get_status_display()
 
 
 class MangoPayBankAccount(models.Model):
