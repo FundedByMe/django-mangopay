@@ -330,8 +330,9 @@ class MangoPayCardRegistration(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     mangopay_user = models.ForeignKey(
         MangoPayUser, related_name="mangopay_card_registrations")
-    mangopay_card = models.ForeignKey(MangoPayCard)
-
+    mangopay_card = models.OneToOneField(
+        MangoPayCard, null=True, blank=True,
+        related_name="mangopay_card_registration")
 
     def create(self, currency):
         client = get_mangopay_api_client()
