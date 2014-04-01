@@ -117,6 +117,7 @@ class MangoPayDocument(models.Model):
         page = KycPage()
         self.file.open(mode='rb')
         bytes = base64.b64encode(self.file.read())
+        self.file.close()
         page.File = bytes.decode("utf-8")
         client = get_mangopay_api_client()
         client.users.CreateUserKycPage(page, self.mangopay_user.mangopay_id,
