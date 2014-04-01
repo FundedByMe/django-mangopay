@@ -6,7 +6,8 @@ from django.contrib.auth.hashers import make_password
 import factory
 
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
-                      MangoPayCardRegistration)
+                      MangoPayCardRegistration, MangoPayDocument)
+from ..constants import IDENTITY_PROOF
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -64,3 +65,14 @@ class MangoPayCardRegistrationFactory(factory.DjangoModelFactory):
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
     mangopay_card_id = None
+
+
+class MangoPayDocumentFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayDocument
+
+    mangopay_id = None
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    type = IDENTITY_PROOF
+    status = None
+    file = None
+    refused_reason_message = None
