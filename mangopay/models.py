@@ -105,15 +105,16 @@ class MangoPayLegalUser(MangoPayUser):
     last_name = models.CharField(max_length=99)
 
     # Regular Authenication Fields:
-    headquaters_address = models.CharField(blank=True, max_length=254)
-    email = models.EmailField(max_length=254, blank=True)
+    headquaters_address = models.CharField(blank=True, max_length=254,
+                                           null=True)
+    email = models.EmailField(max_length=254, blank=True, null=True)
 
     def __unicode__(self):
         return self.first_name + " " + self.last_name
 
     def save(self, *args, **kwargs):
         self.type = LEGAL_USER
-        return super(MangoPayNaturalUser, self).save(*args, **kwargs)
+        return super(MangoPayLegalUser, self).save(*args, **kwargs)
 
     def has_light_authenication(self):
         return (self.legal_person_type

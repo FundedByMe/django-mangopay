@@ -6,8 +6,9 @@ from django.contrib.auth.hashers import make_password
 import factory
 
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
+                      MangoPayLegalUser,
                       MangoPayCardRegistration, MangoPayDocument)
-from ..constants import IDENTITY_PROOF
+from ..constants import IDENTITY_PROOF, BUSINESS
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -47,6 +48,36 @@ class RegularAuthenticationMangoPayNaturalUserFactory(
     address = "Somewhere over the rainbow"
     occupation = "Cobbler"
     income_range = 1
+
+
+class MangoPayLegalUserFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayLegalUser
+
+    mangopay_id = None
+    user = factory.SubFactory(UserFactory)
+    birthday = datetime.date(1989, 10, 20)
+    country_of_residence = "US"
+    nationality = "SE"
+    address = None
+    legal_person_type = BUSINESS
+    business_name = "FundedByMe AB"
+    generic_business_email = "hello@fundedbyme.com"
+    first_name = "Arno"
+    last_name = "Smit"
+    headquaters_address = None
+    email = None
+
+
+class LightAuthenticationMangoPayLegalUserFactory(
+        MangoPayLegalUserFactory):
+    pass
+
+
+class RegularAuthenticationMangoPayLegalUserFactory(
+        MangoPayLegalUserFactory):
+    address = "Hammerby Sjostad 3"
+    headquaters_address = "Sveavagen 1"
+    email = "arno.smit@fundedbyme.com"
 
 
 class MangoPayBankAccountFactory(factory.DjangoModelFactory):
