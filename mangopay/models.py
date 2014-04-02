@@ -17,7 +17,9 @@ from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES, LEGAL_USER,
                         CREATED, STATUS_CHOICES_DICT, NATURAL_USER,
                         DOCUMENT_TYPE_CHOICES_DICT, USER_TYPE_CHOICES,
-                        VALIDATED, IDENTITY_PROOF, ADDRESS_PROOF)
+                        VALIDATED, IDENTITY_PROOF, ADDRESS_PROOF,
+                        REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
+                        SHAREHOLDER_DECLARATION)
 from .client import get_mangopay_api_client
 
 
@@ -133,15 +135,16 @@ class MangoPayLegalUser(MangoPayUser):
                 and self.headquaters_address
                 and self.address
                 and self.email
-                # TODO: Check which documents are needed
                 and self.mangopay_documents.filter(
-                    type=IDENTITY_PROOF, status=VALIDATED).exists())
+                    type=REGISTRATION_PROOF, status=VALIDATED).exists()
+                and self.mangopay_documents.filter(
+                    type=ARTICLES_OF_ASSOCIATION, status=VALIDATED).exists()
+                and self.mangopay_documents.filter(
+                    type=SHAREHOLDER_DECLARATION, status=VALIDATED).exists())
 
     def has_strong_authenication(self):
         return (self.has_regular_authenication()
-                # TODO: Check which documents are needed
-                and self.mangopay_documents.filter(
-                    type=ADDRESS_PROOF, status=VALIDATED).exists())
+                and self.mangopay_bank_accounts.exists())
 
 
 class MangoPayDocument(models.Model):

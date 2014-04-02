@@ -3,7 +3,9 @@ from django.test import TestCase
 from mock import patch
 
 from ..models import MangoPayNaturalUser
-from ..constants import VALIDATED, IDENTITY_PROOF, NATURAL_USER, LEGAL_USER
+from ..constants import (VALIDATED, IDENTITY_PROOF, NATURAL_USER, LEGAL_USER,
+                         ARTICLES_OF_ASSOCIATION, REGISTRATION_PROOF,
+                         SHAREHOLDER_DECLARATION)
 
 from .factories import (LightAuthenticationMangoPayNaturalUserFactory,
                         RegularAuthenticationMangoPayNaturalUserFactory,
@@ -84,7 +86,13 @@ class RegularAuthenticationMangoPayLegalUserTests(
     def setUp(self):
         self.user = RegularAuthenticationMangoPayLegalUserFactory()
         MangoPayDocumentFactory(mangopay_user=self.user,
-                                type=IDENTITY_PROOF,
+                                type=REGISTRATION_PROOF,
+                                status=VALIDATED)
+        MangoPayDocumentFactory(mangopay_user=self.user,
+                                type=SHAREHOLDER_DECLARATION,
+                                status=VALIDATED)
+        MangoPayDocumentFactory(mangopay_user=self.user,
+                                type=ARTICLES_OF_ASSOCIATION,
                                 status=VALIDATED)
 
     def test_has_authentication_levels(self):
