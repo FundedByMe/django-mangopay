@@ -15,7 +15,8 @@ from mangopaysdk.entities.cardregistration import CardRegistration
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES, LEGAL_USER,
                         CREATED, STATUS_CHOICES_DICT, NATURAL_USER,
-                        DOCUMENT_TYPE_CHOICES_DICT, USER_TYPE_CHOICES)
+                        DOCUMENT_TYPE_CHOICES_DICT, USER_TYPE_CHOICES,
+                        VALIDATED, IDENTITY_PROOF, ADDRESS_PROOF)
 from .client import get_mangopay_api_client
 
 
@@ -71,6 +72,25 @@ class MangoPayNaturalUser(MangoPayUser):
         self.type = NATURAL_USER
         return super(MangoPayNaturalUser, self).save(*args, **kwargs)
 
+    def has_light_authenication(self):
+        return (self.user
+                and self.country_of_residence
+                and self.nationality
+                and self.birthday)
+
+    def has_regular_authenication(self):
+        return (self.has_light_authenication()
+                and self.address
+                and self.occupation
+                and self.income_range
+                and self.mangopay_documents.filter(
+                    type=IDENTITY_PROOF, status=VALIDATED).exists())
+
+    def has_strong_authenication(self):
+        return (self.has_regular_authenication()
+                and self.mangopay_documents.filter(
+                    type=ADDRESS_PROOF, status=VALIDATED).exists())
+
 
 class MangoPayLegalUser(MangoPayUser):
     # Light Authenication Fields:
@@ -94,6 +114,32 @@ class MangoPayLegalUser(MangoPayUser):
     def save(self, *args, **kwargs):
         self.type = LEGAL_USER
         return super(MangoPayNaturalUser, self).save(*args, **kwargs)
+
+    def has_light_authenication(self):
+        return (self.legal_person_type
+                and self.business_name
+                and self.generic_business_email
+                and self.first_name
+                and self.last_name
+                and self.country_of_residence
+                and self.nationality
+                and self.birthday)
+
+    def has_regular_authenication(self):
+        return (self.has_light_authenication()
+                and self.address
+                and self.headquaters_address
+                and self.address
+                and self.email
+                # TODO: Check which documents are needed
+                and self.mangopay_documents.filter(
+                    type=IDENTITY_PROOF, status=VALIDATED).exists())
+
+    def has_strong_authenication(self):
+        return (self.has_regular_authenication()
+                # TODO: Check which documents are needed
+                and self.mangopay_documents.filter(
+                    type=ADDRESS_PROOF, status=VALIDATED).exists())
 
 
 class MangoPayDocument(models.Model):

@@ -3,9 +3,11 @@ from django.test import TestCase
 from mock import patch
 
 from ..models import MangoPayNaturalUser
+from ..constants import VALIDATED, IDENTITY_PROOF
 
 from .factories import (LightAuthenticationMangoPayNaturalUserFactory,
-                        RegularAuthenticationMangoPayNaturalUserFactory)
+                        RegularAuthenticationMangoPayNaturalUserFactory,
+                        MangoPayDocumentFactory)
 from .client import MockMangoPayApi
 
 
@@ -32,9 +34,22 @@ class LightAuthenticationMangoPayNaturalUserTests(
     def setUp(self):
         self.user = LightAuthenticationMangoPayNaturalUserFactory()
 
+    def test_has_authentication_levels(self):
+        self.assertTrue(self.user.has_light_authenication())
+        self.assertFalse(self.user.has_regular_authenication())
+        self.assertFalse(self.user.has_strong_authenication())
+
 
 class RegularAuthenticationMangoPayNaturalUserTests(
         AbstractMangoPayNaturalUserTests, TestCase):
 
     def setUp(self):
         self.user = RegularAuthenticationMangoPayNaturalUserFactory()
+        MangoPayDocumentFactory(mangopay_user=self.user,
+                                type=IDENTITY_PROOF,
+                                status=VALIDATED)
+
+    def test_has_authentication_levels(self):
+        self.assertTrue(self.user.has_light_authenication())
+        self.assertTrue(self.user.has_regular_authenication())
+        self.assertFalse(self.user.has_strong_authenication())
