@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from mangopaysdk.entities.usernatural import UserNatural
 from mangopaysdk.entities.bankaccount import BankAccount
 from mangopaysdk.entities.kycdocument import KycDocument
+from mangopaysdk.entities.wallet import Wallet
 from mangopaysdk.entities.kycpage import KycPage
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
@@ -222,6 +223,22 @@ class MangoPayBankAccount(models.Model):
         created_bank_account = client.users.CreateBankAccount(
             str(self.mangopay_user.mangopay_id), mangopay_bank_account)
         self.mangopay_id = created_bank_account.Id
+        self.save()
+
+
+class MangoPayWallet(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_user = models.ForeignKey(
+        MangoPayUser, related_name="mangopay_wallets")
+
+    def create(self, currency, description=""):
+        mangopay_wallet = Wallet()
+        mangopay_wallet.Owners = [str(self.mangopay_user.mangopay_id)]
+        mangopay_wallet.Description = description
+        mangopay_wallet.Currency = currency
+        client = get_mangopay_api_client()
+        created_mangopay_wallet = client.wallets.Create(mangopay_wallet)
+        self.mangopay_id = created_mangopay_wallet.Id
         self.save()
 
 

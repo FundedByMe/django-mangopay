@@ -5,3 +5,4 @@ from users import (LightAuthenticationMangoPayNaturalUserTests,
 from bank_account import MangoPayBankAccountTests
 from card_registration import MangoPayCardRegistrationTests
 from document import MangoPayDocumentTests
+from wallet import MangoPayWalletTests
