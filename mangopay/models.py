@@ -13,15 +13,16 @@ from django_iban.fields import IBANField, SWIFTBICField
 from mangopaysdk.entities.cardregistration import CardRegistration
 
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
-                        STATUS_CHOICES, DOCUMENT_TYPE_CHOICES,
-                        CREATED, STATUS_CHOICES_DICT,
-                        DOCUMENT_TYPE_CHOICES_DICT)
+                        STATUS_CHOICES, DOCUMENT_TYPE_CHOICES, LEGAL_USER,
+                        CREATED, STATUS_CHOICES_DICT, NATURAL_USER,
+                        DOCUMENT_TYPE_CHOICES_DICT, USER_TYPE_CHOICES)
 from .client import get_mangopay_api_client
 
 
 class MangoPayUser(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name="mangopay_users")
+    type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES)
 
     # Light Authenication Field:
     birthday = models.DateField(blank=True, null=True)
@@ -29,12 +30,12 @@ class MangoPayUser(models.Model):
     nationality = CountryField()
 
     # Regular Authenication Fields:
-    address = models.CharField(blank=True, max_length=254)
+    address = models.CharField(blank=True, null=True, max_length=254)
 
 
 class MangoPayNaturalUser(MangoPayUser):
     # Regular Authenication Fields:
-    occupation = models.CharField(blank=True, max_length=254)
+    occupation = models.CharField(blank=True, null=True, max_length=254)
     income_range = models.SmallIntegerField(
         blank=True, null=True, choices=INCOME_RANGE_CHOICES)
 
@@ -57,18 +58,18 @@ class MangoPayNaturalUser(MangoPayUser):
         mangopay_user.Birthday = int(self.birthday.strftime("%s"))
         mangopay_user.CountryOfResidence = self.country_of_residence.code
         mangopay_user.Nationality = self.nationality.code
-        if self.occupation:
-            mangopay_user.Occupation = self.occupation
-        if self.income_range:
-            mangopay_user.IncomeRange = self.income_range
-        if self.address:
-            mangopay_user.Address = self.address
-        if self.mangopay_id:
-            mangopay_user.Id = self.mangopay_id
+        mangopay_user.Occupation = self.occupation
+        mangopay_user.IncomeRange = self.income_range
+        mangopay_user.Address = self.address
+        mangopay_user.Id = self.mangopay_id
         return mangopay_user
 
     def __unicode__(self):
         return self.user.get_full_name()
+
+    def save(self, *args, **kwargs):
+        self.type = NATURAL_USER
+        return super(MangoPayNaturalUser, self).save(*args, **kwargs)
 
 
 class MangoPayLegalUser(MangoPayUser):
@@ -90,10 +91,15 @@ class MangoPayLegalUser(MangoPayUser):
     def __unicode__(self):
         return self.first_name + " " + self.last_name
 
+    def save(self, *args, **kwargs):
+        self.type = LEGAL_USER
+        return super(MangoPayNaturalUser, self).save(*args, **kwargs)
+
 
 class MangoPayDocument(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
-    mangopay_user = models.ForeignKey(MangoPayUser)
+    mangopay_user = models.ForeignKey(MangoPayUser,
+                                      related_name="mangopay_documents")
     type = models.CharField(max_length=2,
                             choices=DOCUMENT_TYPE_CHOICES)
     status = models.CharField(blank=True, null=True, max_length=1,
@@ -150,7 +156,8 @@ class MangoPayDocument(models.Model):
 
 
 class MangoPayBankAccount(models.Model):
-    mangopay_user = models.ForeignKey(MangoPayUser)
+    mangopay_user = models.ForeignKey(MangoPayUser,
+                                      related_name="mangopay_bank_accounts")
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     iban = IBANField()
     bic = SWIFTBICField()
@@ -173,7 +180,8 @@ class MangoPayBankAccount(models.Model):
 
 class MangoPayCardRegistration(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
-    mangopay_user = models.ForeignKey(MangoPayUser)
+    mangopay_user = models.ForeignKey(
+        MangoPayUser, related_name="mangopay_card_registrations")
     mangopay_card_id = models.PositiveIntegerField(null=True, blank=True)
 
     def create(self, currency):
