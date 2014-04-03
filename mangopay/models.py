@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -254,6 +255,14 @@ class MangoPayWallet(models.Model):
         self.mangopay_id = created_mangopay_wallet.Id
         self.save()
 
+    def balance(self):
+        wallet = self._get()
+        return PythonMoney(wallet.Balance.Amount, wallet.Balance.Currency)
+
+    def _get(self):
+        client = get_mangopay_api_client()
+        return client.wallets.Get(self.mangopay_id)
+
 
 class MangoPayPayOut(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
@@ -267,11 +276,15 @@ class MangoPayPayOut(models.Model):
     status = models.CharField(max_length=9, choices=PAYOUT_STATUS_CHOICES,
                               blank=True, null=True)
 
-    def create(self, debited_funds, tag="", fees=PythonMoney(0, "EUR")):
+    def create(self, debited_funds=None, fees=None, tag=''):
         pay_out = PayOut()
         pay_out.Tag = tag
         pay_out.AuthorId = self.mangopay_user.mangopay_id
+        if not debited_funds:
+            debited_funds = self.mangopay_wallet.balance()
         pay_out.DebitedFunds = python_money_to_mangopay_money(debited_funds)
+        if not fees:
+            fees = PythonMoney(0, debited_funds.currency)
         pay_out.Fees = python_money_to_mangopay_money(fees)
         pay_out.DebitedWalletId = self.mangopay_wallet.mangopay_id
         pay_out.Type = "BANK_WIRE"
