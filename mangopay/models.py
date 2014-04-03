@@ -8,8 +8,13 @@ from mangopaysdk.entities.bankaccount import BankAccount
 from mangopaysdk.entities.kycdocument import KycDocument
 from mangopaysdk.entities.wallet import Wallet
 from mangopaysdk.entities.kycpage import KycPage
+from mangopaysdk.entities.payout import PayOut
+from mangopaysdk.types.money import Money
+from mangopaysdk.types.payoutpaymentdetailsbankwire import (
+    PayOutPaymentDetailsBankWire)
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
+from money import Money as PythonMoney
 
 from mangopaysdk.entities.cardregistration import CardRegistration
 
@@ -19,8 +24,12 @@ from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         DOCUMENT_TYPE_CHOICES_DICT, USER_TYPE_CHOICES,
                         VALIDATED, IDENTITY_PROOF, ADDRESS_PROOF,
                         REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
-                        SHAREHOLDER_DECLARATION)
+                        SHAREHOLDER_DECLARATION, PAYOUT_STATUS_CHOICES)
 from .client import get_mangopay_api_client
+
+
+def python_money_to_mangopay_money(python_money):
+    return Money(amount=python_money.amount, curreny=python_money.currency)
 
 
 class MangoPayUser(models.Model):
@@ -242,6 +251,45 @@ class MangoPayWallet(models.Model):
         client = get_mangopay_api_client()
         created_mangopay_wallet = client.wallets.Create(mangopay_wallet)
         self.mangopay_id = created_mangopay_wallet.Id
+        self.save()
+
+
+class MangoPayPayOut(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_user = models.ForeignKey(MangoPayUser,
+                                      related_name="mangopay_payouts")
+    mangopay_wallet = models.ForeignKey(MangoPayWallet,
+                                        related_name="mangopay_payouts")
+    mangopay_bank_account = models.ForeignKey(MangoPayBankAccount,
+                                              related_name="mangopay_payouts")
+    execution_date = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=9, choices=PAYOUT_STATUS_CHOICES,
+                              blank=True, null=True)
+
+    def create(self, debited_funds, tag="", fees=PythonMoney(0, "EUR")):
+        pay_out = PayOut()
+        pay_out.Tag = tag
+        pay_out.AuthorId = self.mangopay_user.mangopay_id
+        pay_out.DebitedFunds = python_money_to_mangopay_money(debited_funds)
+        pay_out.Fees = python_money_to_mangopay_money(fees)
+        pay_out.DebitedWalletId = self.mangopay_wallet.mangopay_id
+        pay_out.Type = "BANK_WIRE"
+        details = PayOutPaymentDetailsBankWire()
+        details.BankAccountId = self.mangopay_bank_account.id
+        pay_out.MeanOfPaymentDetails = details
+        client = get_mangopay_api_client()
+        created_pay_out = client.payOuts.Create(pay_out)
+        self.mangopay_id = created_pay_out.Id
+        self._update(created_pay_out)
+
+    def update(self):
+        client = get_mangopay_api_client()
+        pay_out = client.payOuts.Get(self.mangopay_id)
+        self._update(pay_out)
+
+    def _update(self, pay_out):
+        self.status = pay_out.Status
+        self.execution_date = datetime.fromtimestamp(pay_out.ExecutionDate)
         self.save()
 
 
