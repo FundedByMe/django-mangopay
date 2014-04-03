@@ -35,7 +35,8 @@ def python_money_to_mangopay_money(python_money):
 class MangoPayUser(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.ForeignKey(User, related_name="mangopay_users")
-    type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES)
+    type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
+                            null=True)
 
     # Light Authenication Field:
     birthday = models.DateField(blank=True, null=True)
