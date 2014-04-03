@@ -2,15 +2,18 @@ from mangopaysdk.entities.user import User
 from mangopaysdk.entities.bankaccount import BankAccount
 from mangopaysdk.entities.kycdocument import KycDocument
 from mangopaysdk.entities.kycpage import KycPage
+from mangopaysdk.entities.wallet import Wallet
 from mangopaysdk.entities.cardregistration import CardRegistration
 
 
 class MockMangoPayApi():
 
     def __init__(self, user_id=None, bank_account_id=None,
-                 card_registration_id=None, document_id=None):
+                 card_registration_id=None, document_id=None,
+                 wallet_id=None):
         self.users = MockUserApi(user_id, bank_account_id, document_id)
         self.cardRegistrations = MockCardRegistrationApi(card_registration_id)
+        self.wallets = MockWalletApi(wallet_id)
 
 
 class MockUserApi():
@@ -81,3 +84,16 @@ class MockCardRegistrationApi():
         else:
             raise BaseException(
                 "Card Registration must be a CardRegistration Entity")
+
+
+class MockWalletApi():
+
+    def __init__(self, wallet_id):
+        self.wallet_id = wallet_id
+
+    def Create(self, wallet):
+        if isinstance(wallet, Wallet) and not wallet.Id:
+            wallet.Id = self.wallet_id
+            return wallet
+        else:
+            raise BaseException("Wallet must be a Wallet Entity")

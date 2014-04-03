@@ -1,5 +1,13 @@
 from django.utils.translation import ugettext_lazy as _
 
+LEGAL_USER = "L"
+NATURAL_USER = "N"
+
+USER_TYPE_CHOICES = (
+    (LEGAL_USER, _("Legal User")),
+    (NATURAL_USER, _("Natural User")),
+)
+
 
 INCOME_RANGE_CHOICES = (
     (1, _("Less than 18K Euros")),

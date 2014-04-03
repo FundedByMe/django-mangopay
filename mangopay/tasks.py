@@ -1,6 +1,7 @@
 from celery.task import task
 
-from .models import MangoPayNaturalUser, MangoPayBankAccount, MangoPayDocument
+from .models import (MangoPayNaturalUser, MangoPayBankAccount,
+                     MangoPayDocument, MangoPayWallet)
 
 
 @task
@@ -26,3 +27,9 @@ def create_mangopay_document_and_page_and_ask_for_validation(id):
     document.create()
     document.create_page()
     document.ask_for_validation()
+
+
+@task
+def create_mangopay_wallet(id, currency, description=""):
+    wallet = MangoPayWallet.objects.get(id=id, mangopay_id__isnull=True)
+    wallet.create(currency=currency, description=description)
