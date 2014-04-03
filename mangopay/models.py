@@ -337,7 +337,7 @@ class MangoPayCardRegistration(models.Model):
     def create(self, currency):
         client = get_mangopay_api_client()
         card_registration = CardRegistration()
-        card_registration.UserId = str(self.mangopay_user.id)
+        card_registration.UserId = str(self.mangopay_user.mangopay_id)
         card_registration.Currency = currency
         card_registration = client.cardRegistrations.Create(card_registration)
         self.mangopay_id = card_registration.Id
