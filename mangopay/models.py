@@ -319,7 +319,7 @@ class MangoPayCard(models.Model):
             card = client.cards.Get(self.mangopay_id)
             self.expiration_date = card.ExpirationDate
             self.alias = card.Alias
-            self.active = card.Active()
+            self.active = card.Active
             if card.Validity == "UNKNOWN":
                 self.valid = None
             else:
@@ -359,3 +359,10 @@ class MangoPayCardRegistration(models.Model):
         card_registration = client.cardRegistrations.Update(card_registration)
         self.mangopay_card.mangopay_id = card_registration.CardId
         self.mangopay_card.save()
+
+    def save(self, *args, **kwargs):
+        if not self.mangopay_card:
+            mangopay_card = MangoPayCard()
+            mangopay_card.save()
+            self.mangopay_card = mangopay_card
+        super(MangoPayCardRegistration, self).save(*args, **kwargs)

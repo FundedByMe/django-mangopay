@@ -21,3 +21,26 @@ class MangoPayCardRegistrationTests(TestCase):
         self.card_registration.create(currency='EUR')
         self.assertTrue(MangoPayCardRegistration.objects.filter(
             id=self.card_registration.id, mangopay_id=id).exists())
+
+    @patch("mangopay.models.get_mangopay_api_client")
+    def test_get_preregistration_data(self, mock_client):
+        id = 42
+        self.card_registration.mangopay_id = id
+        mock_client.return_value = MockMangoPayApi(card_registration_id=id)
+        preregistration_data = self.card_registration.get_preregistration_data()
+        self.assertTrue(preregistration_data["preregistrationData"])
+        self.assertTrue(preregistration_data["accessKey"])
+        self.assertTrue(preregistration_data["cardRegistrationURL"])
+
+    @patch("mangopay.models.get_mangopay_api_client")
+    def test_request_card(self, mock_client):
+        card_id = 42
+        card_registration_id = 32
+        mock_client.return_value = MockMangoPayApi(
+            card_registration_id=card_registration_id,
+            card_id=card_id)
+        self.card_registration.mangopay_id = card_registration_id
+        self.assertIsNone(self.card_registration.mangopay_card.mangopay_id)
+        self.card_registration.request_card("CardRegistrationData")
+        self.assertEqual(self.card_registration.mangopay_card.mangopay_id,
+                         card_id)

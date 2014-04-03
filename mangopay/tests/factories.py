@@ -7,7 +7,8 @@ import factory
 
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
                       MangoPayLegalUser, MangoPayWallet,
-                      MangoPayCardRegistration, MangoPayDocument)
+                      MangoPayCardRegistration, MangoPayCard,
+                      MangoPayDocument)
 from ..constants import IDENTITY_PROOF, BUSINESS
 
 
@@ -90,12 +91,22 @@ class MangoPayBankAccountFactory(factory.DjangoModelFactory):
     address = "Hundred Acre Wood"
 
 
+class MangoPayCardFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayCard
+
+    mangopay_id = None
+    expiration_date = None
+    alias = None
+    active = False
+    valid = None
+
+
 class MangoPayCardRegistrationFactory(factory.DjangoModelFactory):
     FACTORY_FOR = MangoPayCardRegistration
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
-    mangopay_card = None
+    mangopay_card = factory.SubFactory(MangoPayCardFactory)
 
 
 class MangoPayDocumentFactory(factory.DjangoModelFactory):
