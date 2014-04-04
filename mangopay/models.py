@@ -13,11 +13,10 @@ from mangopaysdk.entities.payout import PayOut
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
+from mangopaysdk.entities.cardregistration import CardRegistration
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 from money import Money as PythonMoney
-
-from mangopaysdk.entities.cardregistration import CardRegistration
 
 from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES, LEGAL_USER,
@@ -307,16 +306,38 @@ class MangoPayPayOut(models.Model):
         self.save()
 
 
+class MangoPayCard(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    expiration_date = models.CharField(blank=True, null=True, max_length=4)
+    alias = models.CharField(blank=True, null=True, max_length=16)
+    is_active = models.BooleanField(default=False)
+    is_valid = models.NullBooleanField()
+
+    def request_card_info(self):
+        if self.mangopay_id:
+            client = get_mangopay_api_client()
+            card = client.cards.Get(self.mangopay_id)
+            self.expiration_date = card.ExpirationDate
+            self.alias = card.Alias
+            self.is_active = card.Active
+            if card.Validity == "UNKNOWN":
+                self.is_valid = None
+            else:
+                self.is_valid = card.Validity == "VALID"
+
+
 class MangoPayCardRegistration(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     mangopay_user = models.ForeignKey(
         MangoPayUser, related_name="mangopay_card_registrations")
-    mangopay_card_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_card = models.OneToOneField(
+        MangoPayCard, null=True, blank=True,
+        related_name="mangopay_card_registration")
 
     def create(self, currency):
         client = get_mangopay_api_client()
         card_registration = CardRegistration()
-        card_registration.UserId = str(self.mangopay_user.id)
+        card_registration.UserId = str(self.mangopay_user.mangopay_id)
         card_registration.Currency = currency
         card_registration = client.cardRegistrations.Create(card_registration)
         self.mangopay_id = card_registration.Id
@@ -330,3 +351,18 @@ class MangoPayCardRegistration(models.Model):
             "accessKey": card_registration.AccessKey,
             "cardRegistrationURL": card_registration.CardRegistrationURL}
         return preregistration_data
+
+    def request_card(self, card_registration_data):
+        client = get_mangopay_api_client()
+        card_registration = client.cardRegistrations.Get(self.mangopay_id)
+        card_registration.RegistrationData = card_registration_data
+        card_registration = client.cardRegistrations.Update(card_registration)
+        self.mangopay_card.mangopay_id = card_registration.CardId
+        self.mangopay_card.save()
+
+    def save(self, *args, **kwargs):
+        if not self.mangopay_card:
+            mangopay_card = MangoPayCard()
+            mangopay_card.save()
+            self.mangopay_card = mangopay_card
+        super(MangoPayCardRegistration, self).save(*args, **kwargs)
