@@ -30,8 +30,9 @@ from .client import get_mangopay_api_client
 
 
 def python_money_to_mangopay_money(python_money):
-    amount = python_money.amount.quantize(Decimal('.01'), rounding=ROUND_FLOOR)
-    return Money(amount=str(amount), currency=str(python_money.currency))
+    amount = python_money.amount.quantize(Decimal('.01'),
+                                          rounding=ROUND_FLOOR) * 100
+    return Money(amount=int(amount), currency=str(python_money.currency))
 
 
 class MangoPayUser(models.Model):
@@ -288,7 +289,6 @@ class MangoPayPayOut(models.Model):
             fees = PythonMoney(0, debited_funds.currency)
         pay_out.Fees = python_money_to_mangopay_money(fees)
         pay_out.DebitedWalletId = self.mangopay_wallet.mangopay_id
-        pay_out.Type = "BANK_WIRE"
         details = PayOutPaymentDetailsBankWire()
         details.BankAccountId = self.mangopay_bank_account.id
         pay_out.MeanOfPaymentDetails = details
