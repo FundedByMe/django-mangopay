@@ -191,7 +191,7 @@ class MangoPayDocument(models.Model):
         client.users.CreateUserKycPage(page, self.mangopay_user.mangopay_id,
                                        self.mangopay_id)
 
-    def update_status(self):
+    def get(self):
         client = get_mangopay_api_client()
         document = client.users.GetUserKycDocument(
             self.mangopay_id, self.mangopay_user.mangopay_id)
@@ -296,7 +296,7 @@ class MangoPayPayOut(models.Model):
         self.mangopay_id = created_pay_out.Id
         self._update(created_pay_out)
 
-    def update(self):
+    def get(self):
         client = get_mangopay_api_client()
         pay_out = client.payOuts.Get(self.mangopay_id)
         self._update(pay_out)

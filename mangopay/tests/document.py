@@ -26,9 +26,9 @@ class MangoPayDocumentTests(TestCase):
                                      mangopay_id=id)
 
     @patch("mangopay.models.get_mangopay_api_client")
-    def test_update_document(self, mock_client):
+    def test_get_document(self, mock_client):
         mock_client.return_value = MockMangoPayApi()
-        self.document.update_status()
+        self.document.get()
         MangoPayDocument.objects.get(id=self.document.id,
                                      status=VALIDATED)
 
