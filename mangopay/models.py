@@ -29,7 +29,7 @@ from .client import get_mangopay_api_client
 
 
 def python_money_to_mangopay_money(python_money):
-    return Money(amount=python_money.amount, curreny=python_money.currency)
+    return Money(amount=python_money.amount, currency=python_money.currency)
 
 
 class MangoPayUser(models.Model):
