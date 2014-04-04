@@ -97,8 +97,8 @@ class MangoPayCardFactory(factory.DjangoModelFactory):
     mangopay_id = None
     expiration_date = None
     alias = None
-    active = False
-    valid = None
+    is_active = False
+    is_valid = None
 
 
 class MangoPayCardRegistrationFactory(factory.DjangoModelFactory):

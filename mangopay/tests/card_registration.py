@@ -28,9 +28,9 @@ class MangoPayCardRegistrationTests(TestCase):
         self.card_registration.mangopay_id = id
         mock_client.return_value = MockMangoPayApi(card_registration_id=id)
         preregistration_data = self.card_registration.get_preregistration_data()
-        self.assertTrue(preregistration_data["preregistrationData"])
-        self.assertTrue(preregistration_data["accessKey"])
-        self.assertTrue(preregistration_data["cardRegistrationURL"])
+        self.assertIsNotNone(preregistration_data["preregistrationData"])
+        self.assertIsNotNone(preregistration_data["accessKey"])
+        self.assertIsNotNone(preregistration_data["cardRegistrationURL"])
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_request_card(self, mock_client):

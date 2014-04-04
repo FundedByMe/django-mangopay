@@ -310,8 +310,8 @@ class MangoPayCard(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     expiration_date = models.CharField(blank=True, null=True, max_length=4)
     alias = models.CharField(blank=True, null=True, max_length=16)
-    active = models.BooleanField(default=False)
-    valid = models.NullBooleanField()
+    is_active = models.BooleanField(default=False)
+    is_valid = models.NullBooleanField()
 
     def request_card_info(self):
         if self.mangopay_id:
@@ -319,11 +319,11 @@ class MangoPayCard(models.Model):
             card = client.cards.Get(self.mangopay_id)
             self.expiration_date = card.ExpirationDate
             self.alias = card.Alias
-            self.active = card.Active
+            self.is_active = card.Active
             if card.Validity == "UNKNOWN":
-                self.valid = None
+                self.is_valid = None
             else:
-                self.valid = card.Validity == "VALID"
+                self.is_valid = card.Validity == "VALID"
 
 
 class MangoPayCardRegistration(models.Model):
