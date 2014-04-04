@@ -15,7 +15,7 @@ from ..constants import IDENTITY_PROOF, BUSINESS
 class UserFactory(factory.DjangoModelFactory):
     FACTORY_FOR = User
 
-    username = factory.Sequence(lambda n: 'user{0}'.format(n))
+    username = factory.Sequence(lambda n: 'username{0}'.format(n))
     first_name = "Sven"
     last_name = "Svensons"
     is_active = True
