@@ -1,5 +1,6 @@
 import base64
 from datetime import datetime
+from decimal import Decimal, ROUND_FLOOR
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -29,8 +30,8 @@ from .client import get_mangopay_api_client
 
 
 def python_money_to_mangopay_money(python_money):
-    return Money(amount=python_money.amount,
-                 currency=str(python_money.currency))
+    amount = python_money.amount.quantize(Decimal('.01'), rounding=ROUND_FLOOR)
+    return Money(amount=amount, currency=str(python_money.currency))
 
 
 class MangoPayUser(models.Model):
