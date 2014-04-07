@@ -34,6 +34,7 @@ class MangoPayPayOutTests(TestCase):
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_get(self, mock_client):
+        mock_client.return_value = MockMangoPayApi()
         self.assertIsNone(self.pay_out.execution_date)
         self.assertIsNone(self.pay_out.status)
         self.pay_out.get()
