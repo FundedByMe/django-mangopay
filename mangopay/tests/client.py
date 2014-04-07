@@ -5,18 +5,22 @@ from mangopaysdk.entities.kycdocument import KycDocument
 from mangopaysdk.entities.kycpage import KycPage
 from mangopaysdk.entities.wallet import Wallet
 from mangopaysdk.entities.cardregistration import CardRegistration
+from mangopaysdk.entities.payout import PayOut
+from mangopaysdk.types.money import Money
 
 
 class MockMangoPayApi():
 
     def __init__(self, user_id=None, bank_account_id=None,
                  card_registration_id=None, card_id=None,
-                 document_id=None, wallet_id=None):
+                 document_id=None, wallet_id=None,
+                 pay_out_id=None):
         self.users = MockUserApi(user_id, bank_account_id, document_id)
         self.cardRegistrations = MockCardRegistrationApi(
             card_registration_id, card_id)
         self.cards = MockCardApi(card_id)
         self.wallets = MockWalletApi(wallet_id)
+        self.payOuts = MockPayOutApi(pay_out_id)
 
 
 class MockUserApi():
@@ -131,3 +135,30 @@ class MockWalletApi():
             return wallet
         else:
             raise TypeError("Wallet must be a Wallet Entity")
+
+    def Get(self, wallet_id):
+        wallet = Wallet()
+        wallet.id = wallet_id
+        wallet.Balance = Money(10000, currency="EUR")
+        return wallet
+
+
+class MockPayOutApi():
+
+    def __init__(self, pay_out_id):
+        self.pay_out_id = pay_out_id
+
+    def Create(self, pay_out):
+        if isinstance(pay_out, PayOut) and not pay_out.Id:
+            pay_out.Id = self.pay_out_id
+            pay_out.ExecutionDate = 12312312
+            return pay_out
+        else:
+            raise BaseException("Wallet must be a Wallet Entity")
+
+    def Get(self, pay_out_id):
+        pay_out = PayOut()
+        pay_out.Id = pay_out_id
+        pay_out.ExecutionDate = 12312312
+        pay_out.Status = "CREATED"
+        return pay_out

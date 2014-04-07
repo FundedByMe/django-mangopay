@@ -259,7 +259,8 @@ class MangoPayWallet(models.Model):
 
     def balance(self):
         wallet = self._get()
-        return PythonMoney(wallet.Balance.Amount, wallet.Balance.Currency)
+        return PythonMoney(wallet.Balance.Amount / 100,
+                           wallet.Balance.Currency)
 
     def _get(self):
         client = get_mangopay_api_client()
