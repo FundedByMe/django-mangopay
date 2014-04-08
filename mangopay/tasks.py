@@ -1,17 +1,19 @@
 from celery.task import task
 
-from .models import (MangoPayNaturalUser, MangoPayBankAccount,
+from .models import (MangoPayUser, MangoPayBankAccount,
                      MangoPayDocument, MangoPayWallet, MangoPayPayOut)
 
 
 @task
-def create_mangopay_natural_user(id):
-    MangoPayNaturalUser.objects.get(id=id, mangopay_id__isnull=True).create()
+def create_mangopay_user(id):
+    MangoPayUser.objects.select_subclasses().get(
+        id=id, mangopay_id__isnull=True).create()
 
 
 @task
-def update_mangopay_natural_user(id):
-    MangoPayNaturalUser.objects.get(id=id, mangopay_id__isnull=False).update()
+def update_mangopay_user(id):
+    MangoPayUser.objects.select_subclasses().get(
+        id=id, mangopay_id__isnull=False).update()
 
 
 @task
