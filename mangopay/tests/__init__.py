@@ -7,3 +7,4 @@ from card_registration import MangoPayCardRegistrationTests
 from card import MangoPayCardTests
 from document import MangoPayDocumentTests
 from wallet import MangoPayWalletTests
+from payout import MangoPayPayOutTests

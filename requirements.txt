@@ -4,3 +4,4 @@ django-iban==0.2.6
 celery==3.0.12
 -e git+https://github.com/izquierdo/python-money.git@5c14ce00d9472ddce55bb7a799f6051509dbd092#egg=python_money
 Sphinx==1.2.2
+django-model-utils==1.4.0
