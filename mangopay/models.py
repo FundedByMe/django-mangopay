@@ -5,6 +5,7 @@ from decimal import Decimal, ROUND_FLOOR
 from django.db import models
 from django.contrib.auth.models import User
 
+from model_utils.managers import InheritanceManager
 from mangopaysdk.entities.usernatural import UserNatural
 from mangopaysdk.entities.userlegal import UserLegal
 from mangopaysdk.entities.bankaccount import BankAccount
@@ -38,6 +39,8 @@ def python_money_to_mangopay_money(python_money):
 
 
 class MangoPayUser(models.Model):
+    objects = InheritanceManager()
+
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.ForeignKey(User, related_name="mangopay_users")
     type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
