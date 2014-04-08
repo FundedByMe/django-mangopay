@@ -39,6 +39,8 @@ class AbstractMangoPayNaturalUserTests(AbstractMangoPayUserTests):
 
     def test_save_saves_type(self):
         self.assertEqual(self.user.type, NATURAL_USER)
+        self.assertFalse(self.user.is_legal())
+        self.assertTrue(self.user.is_natural())
 
 
 class LightAuthenticationMangoPayNaturalUserTests(
@@ -75,6 +77,8 @@ class AbstractMangoPayLegalUserTests(AbstractMangoPayUserTests):
 
     def test_save_saves_type(self):
         self.assertEqual(self.user.type, LEGAL_USER)
+        self.assertTrue(self.user.is_legal())
+        self.assertFalse(self.user.is_natural())
 
 
 class LightAuthenticationMangoPayLegalUserTests(

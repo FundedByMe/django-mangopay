@@ -62,6 +62,12 @@ class MangoPayUser(models.Model):
         client = get_mangopay_api_client()
         return client.users.Update(self._build())
 
+    def is_legal(self):
+        return self.type == LEGAL_USER
+
+    def is_natural(self):
+        return self.type == NATURAL_USER
+
     def _build(self):
         return NotImplementedError
 
