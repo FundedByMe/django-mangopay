@@ -27,7 +27,7 @@ from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         DOCUMENT_TYPE_CHOICES_DICT, USER_TYPE_CHOICES,
                         VALIDATED, IDENTITY_PROOF,
                         REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
-                        SHAREHOLDER_DECLARATION, PAYOUT_STATUS_CHOICES,
+                        SHAREHOLDER_DECLARATION, TRANSACTION_STATUS_CHOICES,
                         LEGAL_PERSON_TYPE_CHOICES_DICT)
 from .client import get_mangopay_api_client
 
@@ -305,7 +305,7 @@ class MangoPayPayOut(models.Model):
     mangopay_bank_account = models.ForeignKey(MangoPayBankAccount,
                                               related_name="mangopay_payouts")
     execution_date = models.DateTimeField(blank=True, null=True)
-    status = models.CharField(max_length=9, choices=PAYOUT_STATUS_CHOICES,
+    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
                               blank=True, null=True)
 
     def create(self, debited_funds=None, fees=None, tag=''):
@@ -398,3 +398,27 @@ class MangoPayCardRegistration(models.Model):
             mangopay_card.save()
             self.mangopay_card = mangopay_card
         super(MangoPayCardRegistration, self).save(*args, **kwargs)
+
+
+class MangoPayPayIn(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_user = models.ForeignKey(MangoPayUser,
+                                      related_name="mangopay_payins")
+    mangopay_wallet = models.ForeignKey(MangoPayWallet,
+                                        related_name="mangopay_payins")
+    execution_date = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES)
+    result_code = models.CharField(null=True, blank=True, max_length=6)
+    result_message = models.CharField(null=True, blank=True, max_length=255)
+
+
+class MangoPayRefund(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_user = models.ForeignKey(MangoPayUser,
+                                      related_name="mangopay_refunds")
+    mangopay_pay_in = models.ForeignKey(MangoPayPayIn,
+                                        related_name="mangopay_refunds")
+    execution_date = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES)
+    result_code = models.CharField(null=True, blank=True, max_length=6)
+    result_message = models.CharField(null=True, blank=True, max_length=255)
