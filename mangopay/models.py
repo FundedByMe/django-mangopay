@@ -437,3 +437,4 @@ class MangoPayRefund(models.Model):
         self.execution_date =\
             datetime.fromtimestamp(created_refund.ExecutionDate)
         self.save()
+        return self.status == "SUCCEEDED"
