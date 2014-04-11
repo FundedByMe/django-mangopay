@@ -58,7 +58,7 @@ STATUS_CHOICES = (
 
 STATUS_CHOICES_DICT = {v: k for k, v in dict(STATUS_CHOICES).iteritems()}
 
-PAYOUT_STATUS_CHOICES = (
+TRANSACTION_STATUS_CHOICES = (
     ("CREATED", _("The request is created but not processed.")),
     ("SUCCEEDED", _("The request has been successfully processed.")),
     ("FAILED", _("The request has failed.")),

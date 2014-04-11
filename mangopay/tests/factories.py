@@ -8,6 +8,7 @@ import factory
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
                       MangoPayLegalUser, MangoPayWallet,
                       MangoPayCardRegistration, MangoPayCard,
+                      MangoPayRefund, MangoPayPayIn,
                       MangoPayPayOut, MangoPayDocument)
 from ..constants import IDENTITY_PROOF, BUSINESS
 
@@ -136,3 +137,25 @@ class MangoPayPayOutFactory(factory.DjangoModelFactory):
     mangopay_bank_account = factory.SubFactory(MangoPayBankAccountFactory)
     execution_date = None
     status = None
+
+
+class MangoPayPayInFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayPayIn
+
+    mangopay_id = None
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
+    execution_date = None
+    status = None
+    result_code = None
+
+
+class MangoPayRefundFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayRefund
+
+    mangopay_id = None
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    mangopay_pay_in = factory.SubFactory(MangoPayPayInFactory)
+    execution_date = None
+    status = None
+    result_code = None
