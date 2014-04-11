@@ -13,6 +13,7 @@ from mangopaysdk.entities.kycdocument import KycDocument
 from mangopaysdk.entities.wallet import Wallet
 from mangopaysdk.entities.kycpage import KycPage
 from mangopaysdk.entities.payout import PayOut
+from mangopaysdk.entities.refund import Refund
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
@@ -407,9 +408,9 @@ class MangoPayPayIn(models.Model):
     mangopay_wallet = models.ForeignKey(MangoPayWallet,
                                         related_name="mangopay_payins")
     execution_date = models.DateTimeField(blank=True, null=True)
-    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES)
+    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
+                              blank=True, null=True)
     result_code = models.CharField(null=True, blank=True, max_length=6)
-    result_message = models.CharField(null=True, blank=True, max_length=255)
 
 
 class MangoPayRefund(models.Model):
@@ -419,6 +420,21 @@ class MangoPayRefund(models.Model):
     mangopay_pay_in = models.ForeignKey(MangoPayPayIn,
                                         related_name="mangopay_refunds")
     execution_date = models.DateTimeField(blank=True, null=True)
-    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES)
+    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
+                              blank=True, null=True)
     result_code = models.CharField(null=True, blank=True, max_length=6)
-    result_message = models.CharField(null=True, blank=True, max_length=255)
+
+    def create_simple(self):
+        pay_in_id = self.mangopay_pay_in.mangopay_id
+        refund = Refund()
+        refund.InitialTransactionId = pay_in_id
+        refund.AuthorId = self.mangopay_user.mangopay_id
+        client = get_mangopay_api_client()
+        created_refund = client.payIns.CreateRefund(pay_in_id, refund)
+        self.status = created_refund.Status
+        self.result_code = created_refund.ResultCode
+        self.mangopay_id = created_refund.Id
+        self.execution_date =\
+            datetime.fromtimestamp(created_refund.ExecutionDate)
+        self.save()
+        return self.status == "SUCCEEDED"
