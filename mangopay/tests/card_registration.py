@@ -32,15 +32,11 @@ class MangoPayCardRegistrationTests(TestCase):
         self.assertIsNotNone(preregistration_data["accessKey"])
         self.assertIsNotNone(preregistration_data["cardRegistrationURL"])
 
-    @patch("mangopay.models.get_mangopay_api_client")
-    def test_request_card(self, mock_client):
+    def test_save_mangopay_card_id(self):
         card_id = 42
         card_registration_id = 32
-        mock_client.return_value = MockMangoPayApi(
-            card_registration_id=card_registration_id,
-            card_id=card_id)
         self.card_registration.mangopay_id = card_registration_id
         self.assertIsNone(self.card_registration.mangopay_card.mangopay_id)
-        self.card_registration.request_card("CardRegistrationData")
+        self.card_registration.save_mangopay_card_id(card_id)
         self.assertEqual(self.card_registration.mangopay_card.mangopay_id,
                          card_id)
