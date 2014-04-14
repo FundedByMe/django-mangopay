@@ -43,6 +43,7 @@ def next_weekday():
             return maybe_add_day(date)
         else:
             return date
+    return maybe_add_day(datetime.now())
 
 
 @task
