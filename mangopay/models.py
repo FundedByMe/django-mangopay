@@ -230,6 +230,7 @@ class MangoPayDocument(models.Model):
         self.refused_reason_message = document.RefusedReasonMessage
         self.status = STATUS_CHOICES_DICT[document.Status]
         self.save()
+        return self
 
     def ask_for_validation(self):
         if self.status == CREATED:
