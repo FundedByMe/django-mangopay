@@ -33,7 +33,7 @@ def create_mangopay_document_and_page_and_ask_for_validation(id):
     document.create_page()
     document.ask_for_validation()
     eta = next_weekday()
-    update_document_status.apply_async({id: id}, eta=eta)
+    update_document_status.apply_async((), {"id": id}, eta=eta)
 
 
 def next_weekday():
@@ -52,7 +52,7 @@ def update_document_status(id):
     updated_document = document.get()
     if updated_document.status == VALIDATION_ASKED:
         eta = next_weekday()
-        update_document_status.apply_async({id: id}, eta=eta)
+        update_document_status.apply_async((), {"id": id}, eta=eta)
 
 
 @task
