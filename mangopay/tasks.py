@@ -32,6 +32,8 @@ def create_mangopay_document_and_page_and_ask_for_validation(id):
     document.create()
     document.create_page()
     document.ask_for_validation()
+    eta = next_weekday()
+    update_document_status.apply_async({id: id}, eta=eta)
 
 
 def next_weekday():
