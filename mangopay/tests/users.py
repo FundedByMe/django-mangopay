@@ -5,7 +5,7 @@ from mock import patch
 from ..models import MangoPayNaturalUser, MangoPayLegalUser
 from ..constants import (VALIDATED, IDENTITY_PROOF, NATURAL_USER, LEGAL_USER,
                          ARTICLES_OF_ASSOCIATION, REGISTRATION_PROOF,
-                         SHAREHOLDER_DECLARATION)
+                         SHAREHOLDER_DECLARATION, REFUSED, VALIDATION_ASKED)
 
 from .factories import (LightAuthenticationMangoPayNaturalUserFactory,
                         RegularAuthenticationMangoPayNaturalUserFactory,
@@ -61,13 +61,28 @@ class RegularAuthenticationMangoPayNaturalUserTests(
     def setUp(self):
         super(RegularAuthenticationMangoPayNaturalUserTests, self).setUp()
         self.user = RegularAuthenticationMangoPayNaturalUserFactory()
-        MangoPayDocumentFactory(mangopay_user=self.user,
-                                type=IDENTITY_PROOF,
-                                status=VALIDATED)
+        self.document = MangoPayDocumentFactory(mangopay_user=self.user,
+                                                type=IDENTITY_PROOF,
+                                                status=VALIDATED)
 
     def test_has_authentication_levels(self):
         self.assertTrue(self.user.has_light_authenication())
         self.assertTrue(self.user.has_regular_authenication())
+
+    def test_required_documents_types_that_need_to_be_reuploaded(self):
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [])
+        self.document.status = REFUSED
+        self.document.save()
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [IDENTITY_PROOF])
+        MangoPayDocumentFactory(mangopay_user=self.user, type=IDENTITY_PROOF,
+                                status=None)
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [])
 
 
 class AbstractMangoPayLegalUserTests(AbstractMangoPayUserTests):
@@ -99,16 +114,40 @@ class RegularAuthenticationMangoPayLegalUserTests(
     def setUp(self):
         super(RegularAuthenticationMangoPayLegalUserTests, self).setUp()
         self.user = RegularAuthenticationMangoPayLegalUserFactory()
-        MangoPayDocumentFactory(mangopay_user=self.user,
-                                type=REGISTRATION_PROOF,
-                                status=VALIDATED)
-        MangoPayDocumentFactory(mangopay_user=self.user,
-                                type=SHAREHOLDER_DECLARATION,
-                                status=VALIDATED)
-        MangoPayDocumentFactory(mangopay_user=self.user,
-                                type=ARTICLES_OF_ASSOCIATION,
-                                status=VALIDATED)
+        self.registration_proof = MangoPayDocumentFactory(
+            mangopay_user=self.user, type=REGISTRATION_PROOF,
+            status=VALIDATED)
+        self.shareholder_declaration = MangoPayDocumentFactory(
+            mangopay_user=self.user, type=SHAREHOLDER_DECLARATION,
+            status=VALIDATED)
+        self.articles_of_association = MangoPayDocumentFactory(
+            mangopay_user=self.user, type=ARTICLES_OF_ASSOCIATION,
+            status=VALIDATED)
 
     def test_has_authentication_levels(self):
         self.assertTrue(self.user.has_light_authenication())
         self.assertTrue(self.user.has_regular_authenication())
+
+    def test_required_documents_types_that_need_to_be_reuploaded(self):
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [])
+        self.registration_proof.status = REFUSED
+        self.registration_proof.save()
+        self.shareholder_declaration.status = REFUSED
+        self.shareholder_declaration.save()
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [REGISTRATION_PROOF, SHAREHOLDER_DECLARATION])
+        MangoPayDocumentFactory(mangopay_user=self.user,
+                                type=SHAREHOLDER_DECLARATION,
+                                status=VALIDATION_ASKED)
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [REGISTRATION_PROOF])
+        MangoPayDocumentFactory(mangopay_user=self.user,
+                                type=REGISTRATION_PROOF,
+                                status=VALIDATED)
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [])
