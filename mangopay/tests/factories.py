@@ -145,6 +145,7 @@ class MangoPayPayInFactory(factory.DjangoModelFactory):
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
     mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
+    mangopay_card = factory.SubFactory(MangoPayCardFactory)
     execution_date = None
     status = None
     result_code = None
