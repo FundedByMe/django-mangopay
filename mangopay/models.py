@@ -26,10 +26,10 @@ from .constants import (INCOME_RANGE_CHOICES, LEGAL_PERSON_TYPE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES, LEGAL_USER,
                         CREATED, STATUS_CHOICES_DICT, NATURAL_USER,
                         DOCUMENT_TYPE_CHOICES_DICT, USER_TYPE_CHOICES,
-                        VALIDATED, IDENTITY_PROOF,
+                        VALIDATED, IDENTITY_PROOF, VALIDATION_ASKED,
                         REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
                         SHAREHOLDER_DECLARATION, TRANSACTION_STATUS_CHOICES,
-                        LEGAL_PERSON_TYPE_CHOICES_DICT)
+                        LEGAL_PERSON_TYPE_CHOICES_DICT, REFUSED)
 from .client import get_mangopay_api_client
 
 
@@ -72,11 +72,35 @@ class MangoPayUser(models.Model):
     def is_natural(self):
         return self.type == NATURAL_USER
 
+    def has_regular_authenication(self):
+        return (self.has_light_authenication()
+                and self._are_required_documents_validated())
+
+    def required_documents_types_that_need_to_be_reuploaded(self):
+        return [t for t in self._required_documents_types() if
+                self._document_needs_to_be_reuploaded(t)]
+
+    def _document_needs_to_be_reuploaded(self, t):
+        return (self.mangopay_documents.filter(
+                type=t, status=REFUSED).exists()
+                and not self.mangopay_documents.filter(
+                    type=t,
+                    status__in=[VALIDATED, VALIDATION_ASKED]).exists()
+                and not self.mangopay_documents.filter(
+                    type=t, status__isnull=True).exists())
+
     def _build(self):
         return NotImplementedError
 
     def _birthday_fmt(self):
         return int(self.birthday.strftime("%s"))
+
+    def _are_required_documents_validated(self):
+        are_validated = True
+        for type in self._required_documents_types():
+            are_validated = self.mangopay_documents.filter(
+                type=type, status=VALIDATED).exists() and are_validated
+        return are_validated
 
 
 class MangoPayNaturalUser(MangoPayUser):
@@ -113,12 +137,14 @@ class MangoPayNaturalUser(MangoPayUser):
                 and self.birthday)
 
     def has_regular_authenication(self):
-        return (self.has_light_authenication()
-                and self.address
+        return (self.address
                 and self.occupation
                 and self.income_range
-                and self.mangopay_documents.filter(
-                    type=IDENTITY_PROOF, status=VALIDATED).exists())
+                and super(MangoPayNaturalUser,
+                          self).has_regular_authenication())
+
+    def _required_documents_types(self):
+        return [IDENTITY_PROOF]
 
 
 class MangoPayLegalUser(MangoPayUser):
@@ -177,17 +203,16 @@ class MangoPayLegalUser(MangoPayUser):
                 and self.birthday)
 
     def has_regular_authenication(self):
-        return (self.has_light_authenication()
-                and self.address
+        return (self.address
                 and self.headquaters_address
                 and self.address
                 and self.email
-                and self.mangopay_documents.filter(
-                    type=REGISTRATION_PROOF, status=VALIDATED).exists()
-                and self.mangopay_documents.filter(
-                    type=ARTICLES_OF_ASSOCIATION, status=VALIDATED).exists()
-                and self.mangopay_documents.filter(
-                    type=SHAREHOLDER_DECLARATION, status=VALIDATED).exists())
+                and super(MangoPayLegalUser, self).has_regular_authenication())
+
+    def _required_documents_types(self):
+        return [REGISTRATION_PROOF,
+                ARTICLES_OF_ASSOCIATION,
+                SHAREHOLDER_DECLARATION]
 
 
 class MangoPayDocument(models.Model):
