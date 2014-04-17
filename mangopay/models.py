@@ -4,6 +4,7 @@ from decimal import Decimal, ROUND_FLOOR
 
 from django.db import models
 from django.contrib.auth.models import User
+from mangopaysdk.types.exceptions.responseexception import ResponseException
 from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 
 from model_utils.managers import InheritanceManager
@@ -438,7 +439,13 @@ class MangoPayPayIn(models.Model):
         pay_in.ExecutionDetails = execution_details
 
         client = get_mangopay_api_client()
-        created_pay_in = client.payIns.Create(pay_in)
+        try:
+            created_pay_in = client.payIns.Create(pay_in)
+        except ResponseException as e:
+            print "ResponseException({0}): {1}, RequestURL: {2}".format(
+                e.Code, e.Message, e.RequestUrl)
+            raise e
+
         self.mangopay_id = created_pay_in.Id
         self._update(created_pay_in)
 
