@@ -4,7 +4,8 @@ from celery.task import task
 
 from .constants import VALIDATION_ASKED
 from .models import (MangoPayUser, MangoPayBankAccount,
-                     MangoPayDocument, MangoPayWallet, MangoPayPayOut)
+                     MangoPayDocument, MangoPayWallet, MangoPayPayOut,
+                     MangoPayPayIn)
 
 
 @task
@@ -65,3 +66,10 @@ def create_mangopay_wallet(id, currency, description=""):
 def create_mangopay_pay_out(id, debited_funds=None, fees=None, tag=''):
     payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=True)
     payout.create()
+
+
+@task
+def create_mangopay_pay_in(id, debited_funds, fees=None,
+                           secure_mode_return_url=None):
+    payin = MangoPayPayIn.objects.get(id=id, mangopay_id__isnull=True)
+    payin.create(debited_funds, fees, secure_mode_return_url)
