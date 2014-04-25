@@ -7,6 +7,7 @@ from mangopaysdk.entities.kycpage import KycPage
 from mangopaysdk.entities.wallet import Wallet
 from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.entities.payout import PayOut
+from mangopaysdk.entities.payin import PayIn
 from mangopaysdk.types.money import Money
 
 
@@ -15,14 +16,14 @@ class MockMangoPayApi():
     def __init__(self, user_id=None, bank_account_id=None,
                  card_registration_id=None, card_id=None,
                  document_id=None, wallet_id=None, refund_id=None,
-                 pay_out_id=None):
+                 pay_out_id=None, pay_in_id=None):
         self.users = MockUserApi(user_id, bank_account_id, document_id)
         self.cardRegistrations = MockCardRegistrationApi(
             card_registration_id, card_id)
         self.cards = MockCardApi(card_id)
         self.wallets = MockWalletApi(wallet_id)
         self.payOuts = MockPayOutApi(pay_out_id)
-        self.payIns = MockPayInApi(refund_id)
+        self.payIns = MockPayInApi(refund_id, pay_in_id)
 
 
 class MockUserApi():
@@ -156,7 +157,7 @@ class MockPayOutApi():
             pay_out.ExecutionDate = 12312312
             return pay_out
         else:
-            raise TypeError("Wallet must be a Wallet Entity")
+            raise TypeError("PayOut must be a PayOut Entity")
 
     def Get(self, pay_out_id):
         pay_out = PayOut()
@@ -168,8 +169,24 @@ class MockPayOutApi():
 
 class MockPayInApi():
 
-    def __init__(self, refund_id):
+    def __init__(self, refund_id, pay_in_id):
         self.refund_id = refund_id
+        self.pay_in_id = pay_in_id
+
+    def Create(self, pay_in):
+        if isinstance(pay_in, PayIn) and not pay_in.Id:
+            pay_in.Id = self.pay_in_id
+            pay_in.ExecutionDate = 12312312
+            return pay_in
+        else:
+            raise TypeError("PayIn must be a PayIn entity")
+
+    def Get(self, pay_in_id):
+        pay_in = PayIn()
+        pay_in.Id = pay_in_id
+        pay_in.ExecutionDate = 12312312
+        pay_in.Status = "SUCCEEDED"
+        return pay_in
 
     def CreateRefund(self, pay_in_id, refund):
         if isinstance(refund, Refund) and pay_in_id:

@@ -4,8 +4,6 @@ from decimal import Decimal, ROUND_FLOOR
 
 from django.db import models
 from django.contrib.auth.models import User
-from mangopaysdk.types.exceptions.responseexception import ResponseException
-from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 
 from model_utils.managers import InheritanceManager
 from mangopaysdk.entities.usernatural import UserNatural
@@ -23,8 +21,8 @@ from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
 from mangopaysdk.types.payinexecutiondetailsdirect import (
     PayInExecutionDetailsDirect)
-from mangopaysdk.types.payinpaymentdetailsdirectcard import (
-    PayInPaymentDetailsDirectCard)
+from mangopaysdk.types.exceptions.responseexception import ResponseException
+from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 from money import Money as PythonMoney
