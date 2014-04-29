@@ -7,6 +7,7 @@ from optparse import OptionParser
 
 from django.conf import settings
 from django.core.management import call_command
+from django.core.files.storage import default_storage
 
 
 def main():
@@ -50,6 +51,7 @@ def main():
             "django.contrib.sites",
             app_name,
         ),
+        "MANGOPAY_PAGE_STORAGE": default_storage,
         "LOGGING": {
             'version': 1,
             'disable_existing_loggers': False,

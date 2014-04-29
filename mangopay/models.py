@@ -4,6 +4,7 @@ from decimal import Decimal, ROUND_FLOOR
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from model_utils.managers import InheritanceManager
 from mangopaysdk.entities.usernatural import UserNatural
@@ -228,7 +229,6 @@ class MangoPayDocument(models.Model):
                             choices=DOCUMENT_TYPE_CHOICES)
     status = models.CharField(blank=True, null=True, max_length=1,
                               choices=STATUS_CHOICES)
-    file = models.FileField(upload_to='mangopay_documents')
     refused_reason_message = models.CharField(null=True, blank=True,
                                               max_length=255)
 
@@ -242,16 +242,6 @@ class MangoPayDocument(models.Model):
         self.mangopay_id = created_document.Id
         self.status = STATUS_CHOICES_DICT[created_document.Status]
         self.save()
-
-    def create_page(self):
-        page = KycPage()
-        self.file.open(mode='rb')
-        bytes = base64.b64encode(self.file.read())
-        self.file.close()
-        page.File = bytes.decode("utf-8")
-        client = get_mangopay_api_client()
-        client.users.CreateUserKycPage(page, self.mangopay_user.mangopay_id,
-                                       self.mangopay_id)
 
     def get(self):
         client = get_mangopay_api_client()
@@ -278,6 +268,24 @@ class MangoPayDocument(models.Model):
 
     def __unicode__(self):
         return str(self.mangopay_id) + " " + self.get_status_display()
+
+
+class MangoPayPage(models.Model):
+    document = models.ForeignKey(MangoPayDocument,
+                                 related_name="mangopay_pages")
+    file = models.FileField(upload_to='mangopay_pages',
+                            storage=settings.MANGOPAY_PAGE_STORAGE)
+
+    def create(self):
+        page = KycPage()
+        self.file.open(mode='rb')
+        bytes = base64.b64encode(self.file.read())
+        self.file.close()
+        page.File = bytes.decode("utf-8")
+        client = get_mangopay_api_client()
+        client.users.CreateUserKycPage(page,
+                                       self.document.mangopay_user.mangopay_id,
+                                       self.document.mangopay_id)
 
 
 class MangoPayBankAccount(models.Model):

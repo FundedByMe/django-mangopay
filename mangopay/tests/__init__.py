@@ -10,3 +10,4 @@ from wallet import MangoPayWalletTests
 from payout import MangoPayPayOutTests
 from payin import MangoPayPayInTests
 from refund import MangoPayRefundTests
+from page import MangoPayPageTests

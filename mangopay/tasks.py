@@ -25,12 +25,13 @@ def create_mangopay_bank_account(id):
 
 
 @task
-def create_mangopay_document_and_page_and_ask_for_validation(id):
+def create_mangopay_document_and_pages_and_ask_for_validation(id):
     document = MangoPayDocument.objects.get(
         id=id, mangopay_id__isnull=True, file__isnull=False,
         type__isnull=False)
     document.create()
-    document.create_page()
+    for page in document.mangopay_pages.all():
+        page.create()
     document.ask_for_validation()
     eta = next_weekday()
     update_document_status.apply_async((), {"id": id}, eta=eta)
