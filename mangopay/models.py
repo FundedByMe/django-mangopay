@@ -5,6 +5,7 @@ from decimal import Decimal, ROUND_FLOOR
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.core.files.storage import default_storage
 
 from model_utils.managers import InheritanceManager
 from mangopaysdk.entities.usernatural import UserNatural
@@ -270,11 +271,23 @@ class MangoPayDocument(models.Model):
         return str(self.mangopay_id) + " " + self.get_status_display()
 
 
+def page_storage():
+    if settings.MANGOPAY_PAGE_DEFAULT_STORAGE:
+        return default_storage
+    else:
+        from storages.backends.s3boto import S3BotoStorage
+        return S3BotoStorage(
+            headers={'Content-Disposition': 'attachment',
+                     'X-Robots-Tag': 'noindex, nofollow, noimageindex'},
+            bucket=settings.AWS_MEDIA_BUCKET_NAME,
+            custom_domain=settings.AWS_MEDIA_CUSTOM_DOMAIN)
+
+
 class MangoPayPage(models.Model):
     document = models.ForeignKey(MangoPayDocument,
                                  related_name="mangopay_pages")
     file = models.FileField(upload_to='mangopay_pages',
-                            storage=settings.MANGOPAY_PAGE_STORAGE)
+                            storage=page_storage())
 
     def create(self):
         page = KycPage()

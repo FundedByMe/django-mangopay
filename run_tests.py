@@ -51,7 +51,7 @@ def main():
             "django.contrib.sites",
             app_name,
         ),
-        "MANGOPAY_PAGE_STORAGE": default_storage,
+        "MANGOPAY_PAGE_DEFAULT_STORAGE": True,
         "LOGGING": {
             'version': 1,
             'disable_existing_loggers': False,
