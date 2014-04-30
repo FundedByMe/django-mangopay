@@ -23,3 +23,11 @@ class MangoPayPayInTests(TestCase):
                            fees=Money(5, "EUR"),
                            secure_mode_return_url="http://test.com")
         MangoPayPayIn.objects.get(id=self.pay_in.id, mangopay_id=id)
+
+    @patch("mangopay.models.get_mangopay_api_client")
+    def test_get(self, mock_client):
+        mock_client.return_value = MockMangoPayApi()
+        self.assertIsNone(self.pay_in.status)
+        self.pay_in.get()
+        self.pay_in = MangoPayPayIn.objects.get(id=self.pay_in.id)
+        self.assertIsNotNone(self.pay_in.status)

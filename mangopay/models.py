@@ -480,9 +480,15 @@ class MangoPayPayIn(models.Model):
         self.mangopay_id = created_pay_in.Id
         self._update(created_pay_in)
 
+    def get(self):
+        client = get_mangopay_api_client()
+        pay_in = client.payIns.Get(self.mangopay_id)
+        self._update(pay_in)
+
     def _update(self, pay_in):
         self.status = pay_in.Status
-        self.execution_date = datetime.fromtimestamp(pay_in.ExecutionDate)
+        if pay_in.ExecutionDate:
+            self.execution_date = datetime.fromtimestamp(pay_in.ExecutionDate)
         self.save()
 
 class MangoPayRefund(models.Model):
