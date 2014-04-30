@@ -8,7 +8,7 @@ import factory
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
                       MangoPayLegalUser, MangoPayWallet,
                       MangoPayCardRegistration, MangoPayCard,
-                      MangoPayRefund, MangoPayPayIn,
+                      MangoPayRefund, MangoPayPayIn, MangoPayPage,
                       MangoPayPayOut, MangoPayDocument)
 from ..constants import IDENTITY_PROOF, BUSINESS
 
@@ -117,8 +117,14 @@ class MangoPayDocumentFactory(factory.DjangoModelFactory):
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
     type = IDENTITY_PROOF
     status = None
-    file = None
     refused_reason_message = None
+
+
+class MangoPayPageFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayPage
+
+    document = factory.SubFactory(MangoPayDocumentFactory)
+    file = "fake_file.jpg"
 
 
 class MangoPayWalletFactory(factory.DjangoModelFactory):

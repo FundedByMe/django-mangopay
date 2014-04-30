@@ -1,5 +1,3 @@
-import os
-
 from django.test import TestCase
 
 from mock import patch
@@ -39,9 +37,3 @@ class MangoPayDocumentTests(TestCase):
         self.document.ask_for_validation()
         MangoPayDocument.objects.get(id=self.document.id,
                                      status=VALIDATION_ASKED)
-
-    @patch("mangopay.models.get_mangopay_api_client")
-    def test_create_page(self, mock_client):
-        mock_client.return_value = MockMangoPayApi()
-        self.document.file = os.getcwd() + "/mangopay/tests/test.png"
-        self.document.create_page()
