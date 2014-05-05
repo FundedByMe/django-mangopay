@@ -27,7 +27,9 @@ class MangoPayPayInTests(TestCase):
     @patch("mangopay.models.get_mangopay_api_client")
     def test_get(self, mock_client):
         mock_client.return_value = MockMangoPayApi()
+        self.assertIsNone(self.pay_in.secure_mode_redirect_url)
         self.assertIsNone(self.pay_in.status)
         self.pay_in.get()
         self.pay_in = MangoPayPayIn.objects.get(id=self.pay_in.id)
         self.assertIsNotNone(self.pay_in.status)
+        self.assertIsNotNone(self.pay_in.secure_mode_redirect_url)

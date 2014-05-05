@@ -461,6 +461,7 @@ class MangoPayPayIn(models.Model):
     status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
                               blank=True, null=True)
     result_code = models.CharField(null=True, blank=True, max_length=6)
+    secure_mode_redirect_url = models.URLField(null=True, blank=True)
 
     def create(self, debited_funds, fees=None, secure_mode_return_url=None):
         pay_in = PayIn()
@@ -502,6 +503,8 @@ class MangoPayPayIn(models.Model):
         self.status = pay_in.Status
         if pay_in.ExecutionDate:
             self.execution_date = datetime.fromtimestamp(pay_in.ExecutionDate)
+        self.secure_mode_redirect_url = pay_in.\
+            ExecutionDetails.SecureModeRedirectURL
         self.save()
 
 class MangoPayRefund(models.Model):
