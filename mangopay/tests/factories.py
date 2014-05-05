@@ -155,6 +155,7 @@ class MangoPayPayInFactory(factory.DjangoModelFactory):
     execution_date = None
     status = None
     result_code = None
+    secure_mode_redirect_url = None
 
 
 class MangoPayRefundFactory(factory.DjangoModelFactory):

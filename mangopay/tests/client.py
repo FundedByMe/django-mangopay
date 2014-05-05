@@ -9,6 +9,8 @@ from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.entities.payout import PayOut
 from mangopaysdk.entities.payin import PayIn
 from mangopaysdk.types.money import Money
+from mangopaysdk.types.payinexecutiondetailsdirect import (
+    PayInExecutionDetailsDirect)
 
 
 class MockMangoPayApi():
@@ -185,6 +187,8 @@ class MockPayInApi():
         pay_in = PayIn()
         pay_in.Id = pay_in_id
         pay_in.ExecutionDate = 12312312
+        pay_in.ExecutionDetails = PayInExecutionDetailsDirect()
+        pay_in.ExecutionDetails.SecureModeRedirectURL = "https://test.com"
         pay_in.Status = "SUCCEEDED"
         return pay_in
 
