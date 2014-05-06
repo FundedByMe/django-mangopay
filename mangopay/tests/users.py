@@ -3,7 +3,7 @@ from django.test import TestCase
 from mock import patch
 
 from ..models import MangoPayNaturalUser, MangoPayLegalUser
-from ..constants import (VALIDATED, IDENTITY_PROOF, NATURAL_USER, LEGAL_USER,
+from ..constants import (VALIDATED, IDENTITY_PROOF, NATURAL_USER, BUSINESS,
                          ARTICLES_OF_ASSOCIATION, REGISTRATION_PROOF,
                          SHAREHOLDER_DECLARATION, REFUSED, VALIDATION_ASKED)
 
@@ -91,7 +91,7 @@ class AbstractMangoPayLegalUserTests(AbstractMangoPayUserTests):
         self.klass = MangoPayLegalUser
 
     def test_save_saves_type(self):
-        self.assertEqual(self.user.type, LEGAL_USER)
+        self.assertEqual(self.user.type, BUSINESS)
         self.assertTrue(self.user.is_legal())
         self.assertFalse(self.user.is_natural())
 

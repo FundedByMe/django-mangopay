@@ -10,6 +10,8 @@ USER_TYPE_CHOICES = (
     (ORGANIZATION, "ORGANIZATION"),
 )
 
+USER_TYPE_CHOICES_DICT = dict(USER_TYPE_CHOICES)
+
 INCOME_RANGE_CHOICES = (
     (1, _("Less than 18K Euros")),
     (2, _("Between 18K and 30K Euros")),

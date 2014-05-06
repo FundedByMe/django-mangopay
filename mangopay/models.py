@@ -23,7 +23,6 @@ from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
 from mangopaysdk.types.payinexecutiondetailsdirect import (
     PayInExecutionDetailsDirect)
-from mangopaysdk.types.exceptions.responseexception import ResponseException
 from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
@@ -36,8 +35,8 @@ from .constants import (INCOME_RANGE_CHOICES,
                         VALIDATED, IDENTITY_PROOF, VALIDATION_ASKED,
                         REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
                         SHAREHOLDER_DECLARATION, TRANSACTION_STATUS_CHOICES,
-                        LEGAL_PERSON_TYPE_CHOICES_DICT, REFUSED, BUSINESS,
-                        ORGANIZATION)
+                        REFUSED, BUSINESS, ORGANIZATION,
+                        USER_TYPE_CHOICES_DICT)
 from .client import get_mangopay_api_client
 
 
@@ -172,8 +171,7 @@ class MangoPayLegalUser(MangoPayUser):
         mangopay_user = UserLegal()
         mangopay_user.Email = self.generic_business_email
         mangopay_user.Name = self.business_name
-        mangopay_user.LegalPersonType =\
-            LEGAL_PERSON_TYPE_CHOICES_DICT[self.legal_person_type]
+        mangopay_user.LegalPersonType = USER_TYPE_CHOICES_DICT[self.type]
         mangopay_user.HeadquartersAddress = self.headquaters_address
         mangopay_user.LegalRepresentativeFirstName = self.first_name
         mangopay_user.LegalRepresentativeLastName = self.last_name
@@ -193,7 +191,7 @@ class MangoPayLegalUser(MangoPayUser):
             return super(MangoPayLegalUser, self).__unicode__()
 
     def has_light_authenication(self):
-        return (self.legal_person_type
+        return (self.type
                 and self.business_name
                 and self.generic_business_email
                 and self.first_name
@@ -211,9 +209,9 @@ class MangoPayLegalUser(MangoPayUser):
 
     def _required_documents_types(self):
         types = [REGISTRATION_PROOF]
-        if self.legal_person_type == BUSINESS:
+        if self.type == BUSINESS:
             types.append(SHAREHOLDER_DECLARATION)
-        elif self.legal_person_type == ORGANIZATION:
+        elif self.type == ORGANIZATION:
             types.append(ARTICLES_OF_ASSOCIATION)
         return types
 
