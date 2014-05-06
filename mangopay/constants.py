@@ -1,13 +1,14 @@
 from django.utils.translation import ugettext_lazy as _
 
-LEGAL_USER = "L"
 NATURAL_USER = "N"
+BUSINESS = "B"
+ORGANIZATION = "O"
 
 USER_TYPE_CHOICES = (
-    (LEGAL_USER, _("Legal User")),
     (NATURAL_USER, _("Natural User")),
+    (BUSINESS, "BUSINESS"),
+    (ORGANIZATION, "ORGANIZATION"),
 )
-
 
 INCOME_RANGE_CHOICES = (
     (1, _("Less than 18K Euros")),
@@ -17,16 +18,6 @@ INCOME_RANGE_CHOICES = (
     (5, _("Between 80K and 120K Euros")),
     (6, _("Greater than 120K Euros")),
 )
-
-BUSINESS = "B"
-ORGANIZATION = "O"
-
-LEGAL_PERSON_TYPE_CHOICES = (
-    (BUSINESS, "BUSINESS"),
-    (ORGANIZATION, "ORGANIZATION"),
-)
-
-LEGAL_PERSON_TYPE_CHOICES_DICT = dict(LEGAL_PERSON_TYPE_CHOICES)
 
 IDENTITY_PROOF = "IP"
 REGISTRATION_PROOF = "RP"
