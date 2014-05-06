@@ -484,12 +484,7 @@ class MangoPayPayIn(models.Model):
         pay_in.ExecutionDetails = execution_details
 
         client = get_mangopay_api_client()
-        try:
-            created_pay_in = client.payIns.Create(pay_in)
-        except ResponseException as e:
-            print "ResponseException({0}): {1}, RequestURL: {2}".format(
-                e.Code, e.Message, e.RequestUrl)
-            raise e
+        created_pay_in = client.payIns.Create(pay_in)
 
         self.mangopay_id = created_pay_in.Id
         self._update(created_pay_in)
@@ -501,6 +496,7 @@ class MangoPayPayIn(models.Model):
 
     def _update(self, pay_in):
         self.status = pay_in.Status
+        self.result_code = pay_in.ResultCode
         if pay_in.ExecutionDate:
             self.execution_date = datetime.fromtimestamp(pay_in.ExecutionDate)
         self.secure_mode_redirect_url = pay_in.\
