@@ -63,6 +63,6 @@ def create_mangopay_wallet(id, currency, description=""):
 
 
 @task
-def create_mangopay_pay_out(id, debited_funds=None, fees=None, tag=''):
+def create_mangopay_pay_out(id, tag=''):
     payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=True)
-    payout.create(debited_funds, fees, tag)
+    payout.create(tag)

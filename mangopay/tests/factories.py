@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
+from money import Money
 import factory
 
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
@@ -143,6 +144,8 @@ class MangoPayPayOutFactory(factory.DjangoModelFactory):
     mangopay_bank_account = factory.SubFactory(MangoPayBankAccountFactory)
     execution_date = None
     status = None
+    debited_funds = Money(0, "EUR")
+    fees = Money(0, "EUR")
 
 
 class MangoPayPayInFactory(factory.DjangoModelFactory):

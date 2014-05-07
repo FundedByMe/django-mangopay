@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.files.storage import default_storage
 
+from money.contrib.django.models.fields import MoneyField
 from model_utils.managers import InheritanceManager
 from mangopaysdk.entities.usernatural import UserNatural
 from mangopaysdk.entities.userlegal import UserLegal
@@ -354,17 +355,18 @@ class MangoPayPayOut(models.Model):
     execution_date = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
                               blank=True, null=True)
+    debited_funds = MoneyField(default=0, default_currency="EUR",
+                               decimal_places=2, max_digits=12)
+    fees = MoneyField(default=0, default_currency="EUR", decimal_places=2,
+                      max_digits=12)
 
-    def create(self, debited_funds=None, fees=None, tag=''):
+    def create(self, tag=''):
         pay_out = PayOut()
         pay_out.Tag = tag
         pay_out.AuthorId = self.mangopay_user.mangopay_id
-        if not debited_funds:
-            debited_funds = self.mangopay_wallet.balance()
-        pay_out.DebitedFunds = python_money_to_mangopay_money(debited_funds)
-        if not fees:
-            fees = PythonMoney(0, debited_funds.currency)
-        pay_out.Fees = python_money_to_mangopay_money(fees)
+        pay_out.DebitedFunds = python_money_to_mangopay_money(
+            self.debited_funds)
+        pay_out.Fees = python_money_to_mangopay_money(self.fees)
         pay_out.DebitedWalletId = self.mangopay_wallet.mangopay_id
         details = PayOutPaymentDetailsBankWire()
         details.BankAccountId = self.mangopay_bank_account.id
