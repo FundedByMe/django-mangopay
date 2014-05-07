@@ -55,13 +55,13 @@ class RegularAuthenticationMangoPayNaturalUserFactory(
 class MangoPayLegalUserFactory(factory.DjangoModelFactory):
     FACTORY_FOR = MangoPayLegalUser
 
+    type = BUSINESS
     mangopay_id = None
     user = factory.SubFactory(UserFactory)
     birthday = datetime.date(1989, 10, 20)
     country_of_residence = "US"
     nationality = "SE"
     address = None
-    legal_person_type = BUSINESS
     business_name = "FundedByMe AB"
     generic_business_email = "hello@fundedbyme.com"
     first_name = "Arno"
