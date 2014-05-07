@@ -12,7 +12,8 @@ from .client import MockMangoPayApi
 class MangoPayPayOutTests(TestCase):
 
     def setUp(self):
-        self.pay_out = MangoPayPayOutFactory()
+        self.pay_out = MangoPayPayOutFactory(debited_funds=Money(100, "SEK"),
+                                             fees=Money(10, "SEK"))
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_create_with_defaults(self, mock_client):
@@ -27,9 +28,7 @@ class MangoPayPayOutTests(TestCase):
         id = 76
         mock_client.return_value = MockMangoPayApi(pay_out_id=id)
         self.assertIsNone(self.pay_out.mangopay_id)
-        self.pay_out.create(debited_funds=Money(100, "EUR"),
-                            fees=Money(5, "EUR"),
-                            tag='sdgsd')
+        self.pay_out.create(tag='sdgsd')
         MangoPayPayOut.objects.get(id=self.pay_out.id, mangopay_id=id)
 
     @patch("mangopay.models.get_mangopay_api_client")
