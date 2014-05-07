@@ -57,7 +57,7 @@ TRANSACTION_STATUS_CHOICES = (
     ("FAILED", _("The request has failed.")),
 )
 
-ERROR_CODES = (
+ERROR_MESSAGES = (
     ("001999", _("Generic Operation error")),
     ("001001", _("Insufficient wallet balance")),
     ("001002", _("Author is not the wallet owner")),
@@ -73,7 +73,7 @@ ERROR_CODES = (
     ("105299", _("Token input Error")),
     ("105202", _("Card number: invalid format")),
     ("105203", _("Expiry date: missing or invalid format")),
-    ("105204", _("CVV: missing or invalid format")),
+    ("105204", _("CSC: missing or invalid format")),
     ("105205", _("Callback URL: Invalid format")),
     ("105206", _("Registration data : Invalid format")),
     ("101001", _("The user does not complete transaction")),
@@ -110,3 +110,5 @@ ERROR_CODES = (
     ("09104", _("Client certificate is disabled")),
     ("09201", _("You do not have permissions to make this API call")),
 )
+
+ERROR_MESSAGES_DICT = dict(ERROR_MESSAGES)
