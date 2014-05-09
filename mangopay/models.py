@@ -492,7 +492,8 @@ class MangoPayPayIn(models.Model):
         self.status = pay_in.Status
         self.result_code = pay_in.ResultCode
         if pay_in.ExecutionDate:
-            self.execution_date = datetime.fromtimestamp(pay_in.ExecutionDate)
+            execution_date = int(pay_in.ExecutionDate)
+            self.execution_date = datetime.fromtimestamp(execution_date)
         self.secure_mode_redirect_url = pay_in.\
             ExecutionDetails.SecureModeRedirectURL
         self.save()
