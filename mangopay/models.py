@@ -383,7 +383,8 @@ class MangoPayPayOut(models.Model):
 
     def _update(self, pay_out):
         self.status = pay_out.Status
-        self.execution_date = datetime.fromtimestamp(pay_out.ExecutionDate)
+        if pay_out.ExecutionDate:
+            self.execution_date = datetime.fromtimestamp(pay_out.ExecutionDate)
         self.save()
 
 
