@@ -262,7 +262,7 @@ class MangoPayDocument(models.Model):
                                 'not in the created state')
 
     def __unicode__(self):
-        return str(self.mangopay_id) + " " + self.get_status_display()
+        return str(self.mangopay_id) + " " + str(self.status)
 
 
 def page_storage():
