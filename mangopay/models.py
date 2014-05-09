@@ -369,7 +369,7 @@ class MangoPayPayOut(models.Model):
         pay_out.Fees = python_money_to_mangopay_money(self.fees)
         pay_out.DebitedWalletId = self.mangopay_wallet.mangopay_id
         details = PayOutPaymentDetailsBankWire()
-        details.BankAccountId = self.mangopay_bank_account.id
+        details.BankAccountId = self.mangopay_bank_account.mangopay_id
         pay_out.MeanOfPaymentDetails = details
         client = get_mangopay_api_client()
         created_pay_out = client.payOuts.Create(pay_out)
