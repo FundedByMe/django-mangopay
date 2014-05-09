@@ -50,7 +50,7 @@ def python_money_to_mangopay_money(python_money):
 def get_execution_date_as_datetime(mangopay_entity):
     execution_date = mangopay_entity.ExecutionDate
     if execution_date:
-        return datetime.fromtimestamp(int(mangopay_entity.ExecutionDate))
+        return datetime.fromtimestamp(int(execution_date))
 
 
 class MangoPayUser(models.Model):
