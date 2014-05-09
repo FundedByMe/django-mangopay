@@ -47,6 +47,12 @@ def python_money_to_mangopay_money(python_money):
     return Money(amount=int(amount), currency=str(python_money.currency))
 
 
+def get_execution_date_as_datetime(mangopay_entity):
+    execution_date = mangopay_entity.ExecutionDate
+    if execution_date:
+        return datetime.fromtimestamp(int(execution_date))
+
+
 class MangoPayUser(models.Model):
     objects = InheritanceManager()
 
@@ -369,7 +375,7 @@ class MangoPayPayOut(models.Model):
         pay_out.Fees = python_money_to_mangopay_money(self.fees)
         pay_out.DebitedWalletId = self.mangopay_wallet.mangopay_id
         details = PayOutPaymentDetailsBankWire()
-        details.BankAccountId = self.mangopay_bank_account.id
+        details.BankAccountId = self.mangopay_bank_account.mangopay_id
         pay_out.MeanOfPaymentDetails = details
         client = get_mangopay_api_client()
         created_pay_out = client.payOuts.Create(pay_out)
@@ -382,8 +388,8 @@ class MangoPayPayOut(models.Model):
         self._update(pay_out)
 
     def _update(self, pay_out):
+        self.execution_date = get_execution_date_as_datetime(pay_out)
         self.status = pay_out.Status
-        self.execution_date = datetime.fromtimestamp(pay_out.ExecutionDate)
         self.save()
 
 
@@ -493,8 +499,7 @@ class MangoPayPayIn(models.Model):
     def _update(self, pay_in):
         self.status = pay_in.Status
         self.result_code = pay_in.ResultCode
-        if pay_in.ExecutionDate:
-            self.execution_date = datetime.fromtimestamp(pay_in.ExecutionDate)
+        self.execution_date = get_execution_date_as_datetime(pay_in)
         self.secure_mode_redirect_url = pay_in.\
             ExecutionDetails.SecureModeRedirectURL
         self.save()
@@ -521,7 +526,6 @@ class MangoPayRefund(models.Model):
         self.status = created_refund.Status
         self.result_code = created_refund.ResultCode
         self.mangopay_id = created_refund.Id
-        self.execution_date =\
-            datetime.fromtimestamp(created_refund.ExecutionDate)
+        self.execution_date = get_execution_date_as_datetime(refund)
         self.save()
         return self.status == "SUCCEEDED"
