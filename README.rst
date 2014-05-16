@@ -18,16 +18,16 @@ you need to send a recieve from Mangopay. These
 Installation
 ============
 
-#. Install package from PyPI:
+1. Install package from PyPI:
 
 ::
 
     pip install django-mangopay
 
 
-#. `Create a test client <https://github.com/MangoPay/mangopay2-python-sdk#client-creation-example-you-need-to-call-it-only-once>`_
+2. `Create a test client <https://github.com/MangoPay/mangopay2-python-sdk#client-creation-example-you-need-to-call-it-only-once>`_
 
-#. Add your newly created client id and password to your django settings.
+3. Add your newly created client id and password to your django settings.
 
 
 Example
