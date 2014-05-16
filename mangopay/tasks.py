@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from celery.task import task
 
-from .constants import VALIDATION_ASKED, CREATED
+from .constants import VALIDATION_ASKED
 from .models import (MangoPayUser, MangoPayBankAccount,
                      MangoPayDocument, MangoPayWallet, MangoPayPayOut)
 
@@ -74,6 +74,6 @@ def create_mangopay_pay_out(id, tag=''):
 def update_mangopay_pay_out(id):
     payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=False)
     payout = payout.update()
-    if not payout.status or payout.status == CREATED:
+    if not payout.status or payout.status == "CREATED":
         eta = next_weekday()
         update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
