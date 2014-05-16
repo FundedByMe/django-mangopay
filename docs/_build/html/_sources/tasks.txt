@@ -1,2 +1,11 @@
 Tasks
 =====
+
+create_mangopay_user
+update_mangopay_user
+create_mangopay_bank_account
+create_mangopay_document_and_pages_and_ask_for_validation
+update_document_status
+create_mangopay_wallet
+create_mangopay_pay_out
+update_mangopay_pay_out

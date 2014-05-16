@@ -23,7 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Django-Mangopay 0.0.1 documentation" href="#" /> 
+    <link rel="top" title="Django-Mangopay 0.0.1 documentation" href="#" />
+    <link rel="next" title="Installation" href="installation.html" /> 
   </head>
   <body>
     <div class="related">
@@ -32,6 +33,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="N">next</a> |</li>
         <li><a href="#">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,50 +62,18 @@ you to persist the data that you need to send and recieve from Mangopay. These
 models have functions that correspond to the Mangopay&#8217;s API calls. Celery tasks
 are also provided if you want to call these functions asynchronously. Read
 extended documentation is provide at <a class="reference external" href="http://django-mangopay.readthedocs.org/en/latest/">Read the Docs</a>.</p>
-</div>
-<div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<ol class="arabic simple">
-<li>Install package from PyPI:</li>
-</ol>
-<div class="highlight-python"><div class="highlight"><pre>pip install django-mangopay
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><a class="reference external" href="https://github.com/MangoPay/mangopay2-python-sdk#client-creation-example-you-need-to-call-it-only-once">Create a test client</a></li>
-<li>Add your newly created client id and password to your django settings.</li>
-</ol>
-</div>
-<div class="section" id="example">
-<h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python"><div class="highlight"><pre>from mangopay.client import get_mangopay_api_client
-client = get_mangopay_api_client()
-client.users.GetAll()
-[&lt;mangopaysdk.entities.usernatural.UserNatural object at 0x5e33c50&gt;]
-</pre></div>
-</div>
-</div>
-<div class="section" id="settings">
-<h1>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h1>
-<p><tt class="docutils literal"><span class="pre">django.conf.settings.MANGOPAY_CLIENT_ID</span></tt></p>
-<p>The client id you made up when you created your mangopay account.</p>
-<p><tt class="docutils literal"><span class="pre">django.conf.settings.MANGOPAY_PASSPHRASE</span></tt></p>
-<p>The passphase you recieved when you set up your client.</p>
-<p><tt class="docutils literal"><span class="pre">django.conf.settings.MANGOPAY_DEBUG_MODE</span></tt></p>
-<p>0 or 1</p>
+<p>Contents:</p>
 <div class="toctree-wrapper compound">
-<ul class="simple">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 </div>
-<p><strong>Contents</strong></p>
-<div class="toctree-wrapper compound">
-<ul class="simple">
-</ul>
-</div>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-</ul>
 </div>
 
 
@@ -110,16 +82,9 @@ client.users.GetAll()
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to Django-Mangopay&#8217;s documentation!</a></li>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#example">Example</a></li>
-<li><a class="reference internal" href="#settings">Settings</a><ul>
-</ul>
-</li>
-</ul>
-
+  <h4>Next topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="next chapter">Installation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
@@ -148,6 +113,9 @@ client.users.GetAll()
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >next</a> |</li>
         <li><a href="#">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>
