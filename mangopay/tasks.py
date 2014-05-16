@@ -73,7 +73,7 @@ def create_mangopay_pay_out(id, tag=''):
 @task
 def update_mangopay_pay_out(id):
     payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=False)
-    payout = payout.update()
+    payout = payout.get()
     if not payout.status or payout.status == "CREATED":
         eta = next_weekday()
         update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
