@@ -11,9 +11,9 @@
 
 Django-Mangopay is a `Django <https://www.djangoproject.com/>`_ wrapper for the
 PSP `Mangopay's V2 API <http://docs.mangopay.com/api-references/>`_. More
-specifically it provides Django specfic functionality around `Mangopay's Python
+specifically it provides Django-specfic functionality around `Mangopay's Python
 SDK <https://github.com/MangoPay/mangopay2-python-sdk>`_. It creates a Mangopay
-Client via settings in your `settings.py`. It provides Django Models that allow
+Client via settings in your ``settings.py``. It provides Django Models that allow
 you to persist the data that you need to send and recieve from Mangopay. These
 models have functions that correspond to the Mangopay's API calls. Celery tasks
 are also provided if you want to call these functions asynchronously. Read
