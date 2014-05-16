@@ -1,3 +1,9 @@
+Django-Mangopay is a `Django <https://www.djangoproject.com/>`_ wrapper for `Mangopay V2 <http://www.mangopay.com/>`_. There is already a
+Mangopay provides an SDK for calling their API via python. This package extends
+this functionality so that you can create and save Django Models with the data
+you need to send a recieve from Mangopay. These
+
+
 .. image:: https://pypip.in/v/django-mangopay/badge.png
     :target: https://crate.io/packages/django-mangopay/
     :alt: Latest PyPI version
@@ -5,14 +11,6 @@
 .. image:: https://travis-ci.org/FundedByMe/django-mangopay.svg?branch=master
     :target: https://travis-ci.org/FundedByMe/django-mangopay
     :alt: Travis CI Status
-
-Overview
-========
-
-Django-Mangopay is a `Django <https://www.djangoproject.com/>`_ wrapper for `Mangopay V2 <http://www.mangopay.com/>`_. There is already a
-Mangopay provides an SDK for calling their API via python. This package extends
-this functionality so that you can create and save Django Models with the data
-you need to send a recieve from Mangopay. These
 
 
 Installation
