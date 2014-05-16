@@ -380,17 +380,18 @@ class MangoPayPayOut(models.Model):
         client = get_mangopay_api_client()
         created_pay_out = client.payOuts.Create(pay_out)
         self.mangopay_id = created_pay_out.Id
-        self._update(created_pay_out)
+        return self._update(created_pay_out)
 
     def get(self):
         client = get_mangopay_api_client()
         pay_out = client.payOuts.Get(self.mangopay_id)
-        self._update(pay_out)
+        return self._update(pay_out)
 
     def _update(self, pay_out):
         self.execution_date = get_execution_date_as_datetime(pay_out)
         self.status = pay_out.Status
         self.save()
+        return self
 
 
 class MangoPayCard(models.Model):

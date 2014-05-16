@@ -66,3 +66,14 @@ def create_mangopay_wallet(id, currency, description=""):
 def create_mangopay_pay_out(id, tag=''):
     payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=True)
     payout.create(tag)
+    eta = next_weekday()
+    update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
+
+
+@task
+def update_mangopay_pay_out(id):
+    payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=False)
+    payout = payout.get()
+    if not payout.status or payout.status == "CREATED":
+        eta = next_weekday()
+        update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
