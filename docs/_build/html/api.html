@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Correspondance to Mangopay Rest API &mdash; Django-Mangopay 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django-Mangopay 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="Tasks" href="tasks.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tasks.html" title="Tasks"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="correspondance-to-mangopay-rest-api">
+<h1>Correspondance to Mangopay Rest API<a class="headerlink" href="#correspondance-to-mangopay-rest-api" title="Permalink to this headline">¶</a></h1>
+<p>This library is a wrapper of the Mangopay API as described <a class="reference external" href="http://docs.mangopay.com/api-references/">here</a>. This page goes through each of
+Mangopay&#8217;s API calls and described the corresponding call in this library and the
+corresponding <a class="reference external" href="https://github.com/MangoPay/mangopay2-python-sdk/tree/master/mangopaysdk/entities">entity</a>
+provided from the  mangopay2-python-sdk.</p>
+<div class="section" id="access">
+<h2>Access<a class="headerlink" href="#access" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-v2-oauth-token">
+<h3>POST /v2/oauth/token<a class="headerlink" href="#post-v2-oauth-token" title="Permalink to this headline">¶</a></h3>
+<p>The client handles authentication with a token once you have set up your client
+as described in the installation instructions. Once confrigured it is easy to
+get an instance of it to contect to.</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">import mangopay.client</p>
+<p class="last">client = get_mangopay_api_client()</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="activity-research-lists">
+<h2>Activity, research &amp; lists<a class="headerlink" href="#activity-research-lists" title="Permalink to this headline">¶</a></h2>
+<p>None of the API calls listed by Mangopay as falling under the category of &#8220;Activity, research &amp; lists&#8221; are supported at the moment. It is however possible to call use the mangopay-sdk to call them indirectly. An example is given below.</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">import mangopay.client</p>
+<p class="last">client = get_mangopay_api_client()
+# GET /Events
+client.events.Get()</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="users">
+<h2>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h2>
+<p>All API calls under the &#8220;Users&#8221; are supported.</p>
+<div class="section" id="id1">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/users/natural-users/">POST /users/natural</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>To create a natural user object just instantiate an instance of
+<tt class="docutils literal"><span class="pre">MangoPayNaturalUser</span></tt>, populate the requried fields, and call <tt class="docutils literal"><span class="pre">create()</span></tt> on
+it as shown below.</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">from django.contrib.auth.models import User
+from datetime import date
+import mangopay.models</p>
+<p>user = User.object.get(id=1)</p>
+<p>mangopay_user = MangoPayNaturalUser()
+mangopay_user.user = user
+mangopay_user.country_of_residence = &#8220;SE&#8221;
+mangopay_user.nationality = &#8220;US&#8221;
+mangopay_user.birthday = date(1989, 10, 20)
+mangopay_user.save()</p>
+<p class="last">mangopay_user.create()</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="wallets">
+<h2>Wallets<a class="headerlink" href="#wallets" title="Permalink to this headline">¶</a></h2>
+<p>MangoPayWallet</p>
+</div>
+<div class="section" id="payins">
+<h2>PayIns<a class="headerlink" href="#payins" title="Permalink to this headline">¶</a></h2>
+<p>MangoPayBankAccount
+MangoPayPayOut
+MangoPayCard
+MangoPayCardRegistration
+MangoPayPayIn
+MangoPayRefund</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Correspondance to Mangopay Rest API</a><ul>
+<li><a class="reference internal" href="#access">Access</a><ul>
+<li><a class="reference internal" href="#post-v2-oauth-token">POST /v2/oauth/token</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#activity-research-lists">Activity, research &amp; lists</a></li>
+<li><a class="reference internal" href="#users">Users</a><ul>
+<li><a class="reference internal" href="#id1">POST /users/natural</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#wallets">Wallets</a></li>
+<li><a class="reference internal" href="#payins">PayIns</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tasks.html"
+                        title="next chapter">Tasks</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tasks.html" title="Tasks"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="index.html">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Rebecca Meritz.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -8,9 +8,8 @@ Contents:
 .. toctree::
 
     installation
-    tutorial
-    models
+    api
     tasks
     settings
-    license
     contributing
+    license
