@@ -391,6 +391,7 @@ class MangoPayPayOut(models.Model):
         self.execution_date = get_execution_date_as_datetime(pay_out)
         self.status = pay_out.Status
         self.save()
+        return self
 
 
 class MangoPayCard(models.Model):
