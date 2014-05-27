@@ -275,10 +275,25 @@ requests are welcome.
 
 `POST /payins/{PayIn_Id}/Refund`_
 *********************************
+Currently on simple refunds are supported. That means you can only create a
+complete refund on a pay in, not a partial one. To create a simple refund just
+instantiate a ``MangoPayRefund`` object and add the payin you want to refund and
+the user; then save it and call ``create_simple()``. The MangoPay's Id, the
+execution date, and status will be updated in the object. If the refund was
+successful then ``create_simple`` will return ``True``.
 
 ::
 
-    MangoPayRefund.create_simple()
+    from mangopay.models import MangoPayRefund, MangoPayPayIn
+
+    refund = MangoPayRefund()
+    payin = MangoPayPayIn.objects.get(id=1)
+    refund.payin = payin
+    refund.mangopay_user = payin.mangopay_user
+    refund.save()
+
+    refund.create_simple()
+
 
 `GET /refunds/{Refund_Id}`_
 ***************************
@@ -318,7 +333,7 @@ generated id, the status, and the execution date will be saved to the object.
 
 `GET /payouts/{PayOut_Id}`_
 ***************************
-Geting a payout will update the status and execution date from MangoPay.
+Getting a payout will update the status and execution date from MangoPay.
 
 ::
 
