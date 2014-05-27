@@ -292,16 +292,41 @@ PayOuts
 `POST /payouts/bankwire`_
 *************************
 
+Payouts can be transfer money from a wallet to a user's bank account. In order
+to a payout to run successfully they correct level of user verifications but
+have been completed. To use it simply instantiate the ``MangoPayPayOut`` object
+add the user, the wallet you want to transfer from, and the bank account you
+want to transfer to, the funds to be debited, and optionally the fees to be
+taken; then save it and run ``create()``. MangoPay's
+generated id, the status, and the execution date will be saved to the object.
+
 ::
 
-    MangoPayPayOut.create()
+    from money import Money
+    from mangopay.models import MangoPayPayOut, MangoPayUser, MangoPayWallet, MangoPayBankAccount
+
+    payout = MangoPayPayOut()
+    payout.mangopay_user = MangoPayUser.object.get(id=1)
+    payout.mangopay_wallet = MangoPayUser.object.get(id=1)
+    payout.mangopay_bank_account = MangoPayBankAccount.object.get(id=1)
+    payout.debited_funds = Money(1000, "EUR")
+    payout.fees = Money(10, "EUR")
+    payout.save()
+
+    payout.create()
+
 
 `GET /payouts/{PayOut_Id}`_
 ***************************
+Geting a payout will update the status and execution date from MangoPay.
 
 ::
 
-    MangoPayPayOut.get()
+    from mangopay.models import MangoPayPayOut
+
+    payout = MangoPayPayOut.object.get(id=1)
+    payout.get()
+
 
 
 
