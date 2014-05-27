@@ -2,8 +2,8 @@ Correspondance to Mangopay Rest API
 ===================================
 
 This library is a wrapper of the Mangopay API as described `here
-<http://docs.mangopay.com/api-references/>`_. Each of the API calls listed here
-are described with how to match them.
+<http://docs.mangopay.com/api-references/>`_. Each of the API calls provided
+are shown with an explaination of how to use them.
 
 Access
 ------
@@ -13,7 +13,7 @@ Access
 
 The client handles authentication with a token once you have set up your client
 as described in the installation instructions. Once confrigured it is easy to
-get an instance of it to contect to.
+get an instance of the client.
 
 ::
 
@@ -25,7 +25,7 @@ get an instance of it to contect to.
 Activity, research & lists
 --------------------------
 
-None of the API calls listed by Mangopay as falling under the category of "Activity, research & lists" are supported at the moment. It is however possible to call use the mangopay-sdk to call them indirectly. An example is given below.
+None of the API calls listed by Mangopay as falling under the category of "Activity, research & lists" by this library supported at the moment. It is however possible to call use the mangopay-sdk to call them indirectly. An example is given below.
 
 ::
 
@@ -37,8 +37,6 @@ None of the API calls listed by Mangopay as falling under the category of "Activ
 
 Users
 -----
-
-All API calls under the "Users" are supported.
 
 `POST /users/natural <http://docs.mangopay.com/api-references/users/natural-users/>`_
 *************************************************************************************
@@ -109,8 +107,9 @@ required fields, and call ``create()`` or ``update()`` on it as shown below.
 `GET /users/{user_Id} <http://docs.mangopay.com/api-references/users/>`_
 ************************************************************************
 
-This call is not supported directly. Infomation on the about the mangopay should
-already be saved on your MangoPayUserModel in the normal case.
+This call is not supported. Infomation on the about the mangopay user will
+already be saved on your MangoPayUserModel when you call ``create`` and/or
+``update``.
 
 `POST /KYC/Documents <http://docs.mangopay.com/api-references/kyc/documents/>`_
 *******************************************************************************
@@ -122,10 +121,6 @@ To create a mangopay document for a user just instantiate a
 Once you have added all the pages you wanted to the document you
 can ask for validation from mangopay via ``ask_for_validation()``. This should
 change the status of the document to ``VALIDATION_ASKED``.
-
-One business day after asking for validation you should be able to see if mangopay approved the document or not via
-``get()`` which will get the updated document from mangopay. At this point it
-should either have the status of ``VALIDATED`` or ``REFUSED``.
 
 ::
 
@@ -149,9 +144,38 @@ should either have the status of ``VALIDATED`` or ``REFUSED``.
 
 `POST /KYC/Documents/Pages <http://docs.mangopay.com/api-references/kyc/pages/>`_
 *********************************************************************************
+A document can have many pages, but needs at least one. Instantiate one
+``MangoPayPage`` per file and call ``create()`` on the object to create it.
+
+::
+
+    from mangopay.models import MangoPayPage
+
+    document = MangoPayDocument.object.get(id=1)
+    file = file("tmp/file")
+    page = MangoPayPage(file=file, document=document)
+    page.save()
+    page.create()
+
+
+In order for this call to work you need to decide were you want to store your
+files. Files can either be saved to Django's default storage by setting
+``MANGOPAY_PAGE_DEFAULT_STORAGE`` to ``True``, or you can configure your files to be
+stored on AWS by setting AWS storage via ``S3BotoStorage``. ``AWS_MEDIA_BUCKET_NAME`` and ``AWS_MEDIA_CUSTOM_DOMAIN`` must be in your setting in this case.
 
 `GET /KYC/Documents/{Document_Id} <http://docs.mangopay.com/api-references/kyc/documents/>`_
 ********************************************************************************************
+One business day after asking for validation you should be able to see if mangopay approved the document or not via
+``get()`` which will get the updated document from mangopay. At this point it
+should either have the status of ``VALIDATED`` or ``REFUSED``.
+
+::
+
+    from mangopay.document import MangoPayDocument
+
+    document = MangoPayDocument.object.get(id=1)
+    document.get()
+
 
 Wallets
 -------
