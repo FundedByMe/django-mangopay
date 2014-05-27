@@ -214,10 +214,23 @@ Not supported via this library or the API it is only supported by MangoPay's web
 
 `POST /payins/card/direct`_
 ***************************
+Once you have successfully registered a card you can create a payin from that
+card to a created wallet. Instantiate a ``MangoPayPayIn`` model, add the user,
+wallet, and card; then call create with funds to be debited and optionally the
+fees and the secure mode return url. The payin will be created and the
+execution date, status, result code, id, status, and secure mode redirect url
+will be saved to the object.
 
 ::
 
-    MangoPayPayIn.create()
+    from mangopay.models import (MangoPayPayIn, MangoPayCard, MangoPayWallet,
+                                 MangoPayUser)
+
+    payin = MangoPayPayIn()
+    payin.mangopay_user = MangoPayUser.objects.get(id=1)
+    payin.mangopay_wallet= MangoPayWallet.objects.get(id=1)
+    payin.mangopay_card = MangoPayCard.objects.get(id=1)
+    payin.create(debited_funds=Money(1001, "EUR"))
 
 `POST /payins/preauthorized/direct`_
 ************************************
@@ -227,10 +240,16 @@ requests welcome.
 
 `GET /payins/{PayIn_Id}`_
 *************************
+Once a ``MangoPayPayIn`` is created it's associated status can be updated via
+calling ``get()`` on the instance.
 
 ::
 
-    MangoPayPayIn.get()
+    from mangopay.models import MangoPayPayIn
+
+    payin = MangoPayPayIn.objects.get(id=1)
+    payin.get()
+
 
 `POST /cardregistration`_
 **************************
@@ -365,19 +384,3 @@ Getting a payout will update the status and execution date from MangoPay.
 
     payout = MangoPayPayOut.object.get(id=1)
     payout.get()
-
-
-
-
-
-
-
-
-
-TODO:
-MangoPayBankAccount.create()
-Link Headers to API calls
-Double check file creation
-Link to S3BotoDocumentation
-Links to how to do a pull request
-Links to settings pages
