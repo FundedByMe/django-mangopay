@@ -51,7 +51,7 @@ it as shown below. You can also edit the user, just update the the values you wa
     from datetime import date
     from mangopay.models import MangoPayNaturalUser
 
-    user = User.object.get(id=1)
+    user = User.objects.get(id=1)
 
     mangopay_user = MangoPayNaturalUser()
     mangopay_user.user = user
@@ -82,7 +82,7 @@ required fields, and call ``create()`` or ``update()`` on it as shown below.
     from mangopay.models import MangoPayLegalUser
     from mangopay.constants import BUSINESS
 
-    user = User.object.get(id=1)
+    user = User.objects.get(id=1)
 
     mangopay_user = MangoPayLegalUser()
     mangopay_user.user = user
@@ -127,7 +127,7 @@ change the status of the document to ``VALIDATION_ASKED``.
     from mangopay.models import MangoPayUser
     from mangopay.constants import IDENTITY_PROOF
 
-    mangopay_user = MangoPayUser.object.get(id=1)
+    mangopay_user = MangoPayUser.objects.get(id=1)
 
     mangopay_document = MangoPayDocument()
     mangopay_document.mangopay_user = mangopay_user
@@ -151,7 +151,7 @@ A document can have many pages, but needs at least one. Instantiate one
 
     from mangopay.models import MangoPayPage
 
-    document = MangoPayDocument.object.get(id=1)
+    document = MangoPayDocument.objects.get(id=1)
     file = file("tmp/file")
     page = MangoPayPage(file=file, document=document)
     page.save()
@@ -173,7 +173,7 @@ should either have the status of ``VALIDATED`` or ``REFUSED``.
 
     from mangopay.models import MangoPayDocument
 
-    document = MangoPayDocument.object.get(id=1)
+    document = MangoPayDocument.objects.get(id=1)
     document.get()
 
 
@@ -190,7 +190,7 @@ to it, save it and call ``create()`` on it with a supported currency.
 
     from mangopay.models MangoPayWallet, MangoPayUser
 
-    user = MangoPayUser.object.get(id=1)
+    user = MangoPayUser.objects.get(id=1)
     wallet = MangoPayWallet()
     wallet.mangopay_user = user
     wallet.save()
@@ -260,7 +260,7 @@ Before a card can be used it must be registered with a user. Just instantiate a 
     from mangopay.models import MangoPayCardRegistration, MangoPayUser
 
     card_registration = MangoPayCardRegistration()
-    card_registration.mangopay_user = MangoPayUser.object.get(id=1)
+    card_registration.mangopay_user = MangoPayUser.objects.get(id=1)
     card_registration.create("EUR")
 
 
@@ -364,9 +364,9 @@ generated id, the status, and the execution date will be saved to the object.
     from mangopay.models import MangoPayPayOut, MangoPayUser, MangoPayWallet, MangoPayBankAccount
 
     payout = MangoPayPayOut()
-    payout.mangopay_user = MangoPayUser.object.get(id=1)
-    payout.mangopay_wallet = MangoPayUser.object.get(id=1)
-    payout.mangopay_bank_account = MangoPayBankAccount.object.get(id=1)
+    payout.mangopay_user = MangoPayUser.objects.get(id=1)
+    payout.mangopay_wallet = MangoPayUser.objects.get(id=1)
+    payout.mangopay_bank_account = MangoPayBankAccount.objects.get(id=1)
     payout.debited_funds = Money(1000, "EUR")
     payout.fees = Money(10, "EUR")
     payout.save()
@@ -382,5 +382,5 @@ Getting a payout will update the status and execution date from MangoPay.
 
     from mangopay.models import MangoPayPayOut
 
-    payout = MangoPayPayOut.object.get(id=1)
+    payout = MangoPayPayOut.objects.get(id=1)
     payout.get()
