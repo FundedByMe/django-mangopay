@@ -233,25 +233,49 @@ requests welcome.
     MangoPayPayIn.get()
 
 `POST /cardregistration`_
-*********************
+**************************
+Before a card can be used it must be registered with a user. Just instantiate a ``MangoPayCardRegistration`` object, add a user to it, and call ``create()`` with a supported currency. When you do this MangoPay's ID will be saved to the object.
 
 ::
 
-    MangoPayCardRegistration.create()
+    from mangopay.models import MangoPayCardRegistration, MangoPayUser
+
+    card_registration = MangoPayCardRegistration()
+    card_registration.mangopay_user = MangoPayUser.object.get(id=1)
+    card_registration.create("EUR")
+
 
 `GET /cardregistration/{CardRegistration_Id}`_
-*******************************************
+**********************************************
+Once you have created a ``MangoPayCardRegistration`` object you can
+access the card's preregistration data by calling ``get_preregistration_data()``. This data comes in the form of a dictionary with the keys: "preregistrationData", "accessKey", and "cardRegistrationURL".
 
 ::
 
-    MangoPayCardRegistration.get_preregistration_data()
+    from mangopay.models import MangoPayCardRegistration
+
+    card_registration = MangoPayCardRegistration.objects.get(id=1)
+    card_registration.get_preregistration_data()
+
 
 `GET /cards/{Card_Id}`_
 ********************
+After registering a card with MangoPay you should get back the card's Id. If you
+save that card's Id to the related ``MangoPayCard`` object by calling
+``save_mangopay_card_id()``, then later you can access the card's info by calling
+``request_card_info()``. Requesting the card's info will save the
+expiration date, alias, and active and valid state to the ``MangoPayCard``
+object.
 
 ::
 
-    MangoPayCard.request_card_info()
+    from mangopay.models import MangoPayCardRegistration
+
+    card_registration = MangoPayCardRegistration.objects.get(id=1)
+    card_registration.save_mangopay_card_id("123456")
+
+    card_registration.mangopay_card.request_card_info()
+
 
 `POST /preauthorization/card/direct`_
 **********************************
@@ -355,3 +379,5 @@ MangoPayBankAccount.create()
 Link Headers to API calls
 Double check file creation
 Link to S3BotoDocumentation
+Links to how to do a pull request
+Links to settings pages
