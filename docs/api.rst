@@ -171,7 +171,7 @@ should either have the status of ``VALIDATED`` or ``REFUSED``.
 
 ::
 
-    from mangopay.document import MangoPayDocument
+    from mangopay.models import MangoPayDocument
 
     document = MangoPayDocument.object.get(id=1)
     document.get()
@@ -180,11 +180,29 @@ should either have the status of ``VALIDATED`` or ``REFUSED``.
 Wallets
 -------
 
-MangoPayWallet
-
 `POST /wallets`_
+****************
+
+In order create a wallet just instantiate a ``MangoPayWallet`` object, add user
+to it, save it and call ``create()`` on it with a supported currency.
+
+::
+
+    from mangopay.models MangoPayWallet, MangoPayUser
+
+    user = MangoPayUser.object.get(id=1)
+    wallet = MangoPayWallet()
+    wallet.mangopay_user = user
+    wallet.save()
+
+    wallet.create("SEK", "Sven's Wallet")
+
 
 `GET /wallets/{Wallet_Id}`_
+***************************
+
+``GET`` is not supported directly, however you can call ``balance()`` on a
+created ``MangoPayWallet`` to find the amount of ``Money`` on the wallet.
 
 PayIns
 ------
