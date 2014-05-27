@@ -11,6 +11,7 @@ To run the tests you will need to install the all requirements including the
 test specfic ones and then run the test runner.
 
 ::
+
     pip install -r requirements.txt
     pip install -r requirements_test.txt
 

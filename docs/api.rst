@@ -180,8 +180,8 @@ should either have the status of ``VALIDATED`` or ``REFUSED``.
 Wallets
 -------
 
-`POST /wallets`_
-****************
+`POST /wallets <http://docs.mangopay.com/api-references/wallets/>`_
+********************************************************************
 
 In order create a wallet just instantiate a ``MangoPayWallet`` object, add user
 to it, save it and call ``create()`` on it with a supported currency.
@@ -198,8 +198,8 @@ to it, save it and call ``create()`` on it with a supported currency.
     wallet.create("SEK", "Sven's Wallet")
 
 
-`GET /wallets/{Wallet_Id}`_
-***************************
+`GET /wallets/{Wallet_Id} <http://docs.mangopay.com/api-references/wallets/>`_
+******************************************************************************
 
 ``GET`` is not supported directly, however you can call ``balance()`` on a
 created ``MangoPayWallet`` to find the amount of ``Money`` on the wallet.
@@ -207,13 +207,13 @@ created ``MangoPayWallet`` to find the amount of ``Money`` on the wallet.
 PayIns
 ------
 
-`POST /payins/card/web`_
-*************************
+`POST /payins/card/web <http://docs.mangopay.com/api-references/payins/payins-card-web/>`_
+******************************************************************************************
 
 Not supported via this library or the API it is only supported by MangoPay's web interface.
 
-`POST /payins/card/direct`_
-***************************
+`POST /payins/card/direct <http://docs.mangopay.com/api-references/payins/payindirectcard/>`_
+**********************************************************************************************
 Once you have successfully registered a card you can create a payin from that
 card to a created wallet. Instantiate a ``MangoPayPayIn`` model, add the user,
 wallet, and card; then call create with funds to be debited and optionally the
@@ -232,14 +232,14 @@ will be saved to the object.
     payin.mangopay_card = MangoPayCard.objects.get(id=1)
     payin.create(debited_funds=Money(1001, "EUR"))
 
-`POST /payins/preauthorized/direct`_
-************************************
+`POST /payins/preauthorized/direct <http://docs.mangopay.com/api-references/payins/preauthorized-payin/>`_
+**********************************************************************************************************
 
 Preauthorizations are not currently supported by this library. Pull
 requests welcome.
 
-`GET /payins/{PayIn_Id}`_
-*************************
+`GET /payins/{PayIn_Id} <http://docs.mangopay.com/api-references/payins/>`_
+***************************************************************************
 Once a ``MangoPayPayIn`` is created it's associated status can be updated via
 calling ``get()`` on the instance.
 
@@ -251,8 +251,8 @@ calling ``get()`` on the instance.
     payin.get()
 
 
-`POST /cardregistration`_
-**************************
+`POST /cardregistration <http://docs.mangopay.com/api-references/card-registration/>`_
+***************************************************************************************
 Before a card can be used it must be registered with a user. Just instantiate a ``MangoPayCardRegistration`` object, add a user to it, and call ``create()`` with a supported currency. When you do this MangoPay's ID will be saved to the object.
 
 ::
@@ -264,8 +264,8 @@ Before a card can be used it must be registered with a user. Just instantiate a 
     card_registration.create("EUR")
 
 
-`GET /cardregistration/{CardRegistration_Id}`_
-**********************************************
+`GET /cardregistration/{CardRegistration_Id} <http://docs.mangopay.com/api-references/card-registration/>`_
+************************************************************************************************************
 Once you have created a ``MangoPayCardRegistration`` object you can
 access the card's preregistration data by calling ``get_preregistration_data()``. This data comes in the form of a dictionary with the keys: "preregistrationData", "accessKey", and "cardRegistrationURL".
 
@@ -277,8 +277,8 @@ access the card's preregistration data by calling ``get_preregistration_data()``
     card_registration.get_preregistration_data()
 
 
-`GET /cards/{Card_Id}`_
-***********************
+`GET /cards/{Card_Id} <http://docs.mangopay.com/api-references/card/>`_
+***********************************************************************
 After registering a card with MangoPay you should get back the card's Id. If you
 save that card's Id to the related ``MangoPayCard`` object by calling
 ``save_mangopay_card_id()``, then later you can access the card's info by calling
@@ -296,14 +296,14 @@ object.
     card_registration.mangopay_card.request_card_info()
 
 
-`POST /preauthorization/card/direct`_
-**************************************
+`POST /preauthorization/card/direct <http://docs.mangopay.com/api-references/card/pre-authorization/>`_
+*******************************************************************************************************
 
 Preauthorizations are not currently supported by this library. Pull
 requests welcome.
 
-`GET /preauthorization/{PreAuthorization_Id}`_
-***********************************************
+`GET /preauthorization/{PreAuthorization_Id} <http://docs.mangopay.com/api-references/card/pre-authorization/>`_
+****************************************************************************************************************
 
 Preauthorizations are not currently supported by this library. Pull
 requests welcome.
@@ -311,13 +311,13 @@ requests welcome.
 Refunds
 -------
 
-`POST /transfers/{Transfer_Id}/Refund`_
-***************************************
+`POST /transfers/{Transfer_Id}/Refund <http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-transfer/>`_
+*********************************************************************************************************************
 Transfers and refunds of those transfers are not supported by this library. Pull
 requests are welcome.
 
-`POST /payins/{PayIn_Id}/Refund`_
-*********************************
+`POST /payins/{PayIn_Id}/Refund <http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-pay-in/>`_
+*************************************************************************************************************
 Currently on simple refunds are supported. That means you can only create a
 complete refund on a pay in, not a partial one. To create a simple refund just
 instantiate a ``MangoPayRefund`` object and add the payin you want to refund and
@@ -338,8 +338,8 @@ successful then ``create_simple`` will return ``True``.
     refund.create_simple()
 
 
-`GET /refunds/{Refund_Id}`_
-***************************
+`GET /refunds/{Refund_Id} <http://docs.mangopay.com/api-references/refund/>`_
+******************************************************************************
 
 Getting a refund via its ID is not supported by this library. Pull requests
 welcome.
@@ -347,8 +347,8 @@ welcome.
 PayOuts
 -------
 
-`POST /payouts/bankwire`_
-*************************
+`POST /payouts/bankwire <http://docs.mangopay.com/api-references/pay-out-bank-wire/>`_
+***************************************************************************************
 
 Payouts can be transfer money from a wallet to a user's bank account. In order
 to a payout to run successfully they correct level of user verifications but
@@ -374,8 +374,8 @@ generated id, the status, and the execution date will be saved to the object.
     payout.create()
 
 
-`GET /payouts/{PayOut_Id}`_
-***************************
+`GET /payouts/{PayOut_Id} <http://docs.mangopay.com/api-references/pay-out-bank-wire/>`_
+*****************************************************************************************
 Getting a payout will update the status and execution date from MangoPay.
 
 ::
