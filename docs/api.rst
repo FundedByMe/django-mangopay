@@ -207,48 +207,111 @@ created ``MangoPayWallet`` to find the amount of ``Money`` on the wallet.
 PayIns
 ------
 
-MangoPayPayIn
-MangoPayCard
-MangoPayCardRegistration
-
 `POST /payins/card/web`_
 *********************
 
-Supported by the web interface something done on your own via the API.
+Not supported via this library or the API it is only supported by MangoPay's web interface.
 
 `POST /payins/card/direct`_
+***************************
+
+::
+
+    MangoPayPayIn.create()
 
 `POST /payins/preauthorized/direct`_
+************************************
+
+Preauthorizations are not currently supported by this library. Pull
+requests welcome.
 
 `GET /payins/{PayIn_Id}`_
+*************************
+
+::
+
+    MangoPayPayIn.get()
 
 `POST /cardregistration`_
 *********************
 
+::
+
+    MangoPayCardRegistration.create()
+
 `GET /cardregistration/{CardRegistration_Id}`_
 *******************************************
+
+::
+
+    MangoPayCardRegistration.get_preregistration_data()
 
 `GET /cards/{Card_Id}`_
 ********************
 
+::
+
+    MangoPayCard.request_card_info()
+
 `POST /preauthorization/card/direct`_
 **********************************
+
+Preauthorizations are not currently supported by this library. Pull
+requests welcome.
 
 `GET /preauthorization/{PreAuthorization_Id}`_
 *******************************************
 
+Preauthorizations are not currently supported by this library. Pull
+requests welcome.
+
 Refunds
 -------
-MangoPayRefund
 
 `POST /transfers/{Transfer_Id}/Refund`_
+***************************************
+Transfers and refunds of those transfers are not supported by this library. Pull
+requests are welcome.
+
 `POST /payins/{PayIn_Id}/Refund`_
+*********************************
+
+::
+
+    MangoPayRefund.create_simple()
+
 `GET /refunds/{Refund_Id}`_
+***************************
+
+Getting a refund via its ID is not supported by this library. Pull requests
+welcome.
 
 PayOuts
 -------
-MangoPayBankAccount`
-MangoPayPayOut`
 
 `POST /payouts/bankwire`_
+*************************
+
+::
+
+    MangoPayPayOut.create()
+
 `GET /payouts/{PayOut_Id}`_
+***************************
+
+::
+
+    MangoPayPayOut.get()
+
+
+
+
+
+
+
+
+TODO:
+MangoPayBankAccount.create()
+Link Headers to API calls
+Double check file creation
+Link to S3BotoDocumentation
