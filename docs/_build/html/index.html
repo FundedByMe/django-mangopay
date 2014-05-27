@@ -68,20 +68,67 @@ extended documentation is provide at <a class="reference external" href="http://
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">Correspondance to Mangopay Rest API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#access">Access</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#post-v2-oauth-token">POST /v2/oauth/token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id1">POST /v2/oauth/token</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#activity-research-lists">Activity, research &amp; lists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#users">Users</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id1">POST /users/natural</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id2">POST /users/natural</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id3">POST /users/legal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id4">GET /users/{user_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id5">POST /KYC/Documents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id6">POST /KYC/Documents/Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id7">GET /KYC/Documents/{Document_Id}</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#wallets">Wallets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#payins">PayIns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#wallets">Wallets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-wallets">POST /wallets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-wallets-wallet-id">GET /wallets/{Wallet_Id}</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#payins">PayIns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-payins-card-web">POST /payins/card/web</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-payins-card-direct">POST /payins/card/direct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-payins-preauthorized-direct">POST /payins/preauthorized/direct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-payins-payin-id">GET /payins/{PayIn_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-cardregistration">POST /cardregistration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-cardregistration-cardregistration-id">GET /cardregistration/{CardRegistration_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-cards-card-id">GET /cards/{Card_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-preauthorization-card-direct">POST /preauthorization/card/direct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-preauthorization-preauthorization-id">GET /preauthorization/{PreAuthorization_Id}</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#refunds">Refunds</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-transfers-transfer-id-refund">POST /transfers/{Transfer_Id}/Refund</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-payins-payin-id-refund">POST /payins/{PayIn_Id}/Refund</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-refunds-refund-id">GET /refunds/{Refund_Id}</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#payouts">PayOuts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-payouts-bankwire">POST /payouts/bankwire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-payouts-payout-id">GET /payouts/{PayOut_Id}</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#create-mangopay-user">create_mangopay_user</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#update-mangopay-user">update_mangopay_user</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#create-mangopay-bank-account">create_mangopay_bank_account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#create-mangopay-document-and-pages-and-ask-for-validation">create_mangopay_document_and_pages_and_ask_for_validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#update-document-status">update_document_status</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#create-mangopay-wallet">create_mangopay_wallet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#create-mangopay-pay-out">create_mangopay_pay_out</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#update-mangopay-pay-out">update_mangopay_pay_out</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#django-conf-settings-mangopay-client-id"><tt class="docutils literal"><span class="pre">django.conf.settings.MANGOPAY_CLIENT_ID</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#django-conf-settings-mangopay-passphrase"><tt class="docutils literal"><span class="pre">django.conf.settings.MANGOPAY_PASSPHRASE</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#django-conf-settings-mangopay-debug-mode"><tt class="docutils literal"><span class="pre">django.conf.settings.MANGOPAY_DEBUG_MODE</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#django-conf-settings-mangopay-page-default-storage"><tt class="docutils literal"><span class="pre">django.conf.settings.MANGOPAY_PAGE_DEFAULT_STORAGE</span></tt></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">MIT License</a></li>
 </ul>

@@ -23,7 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Django-Mangopay 0.0.1 documentation" href="index.html" /> 
+    <link rel="top" title="Django-Mangopay 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="Settings" href="settings.html" />
+    <link rel="prev" title="Correspondance to Mangopay Rest API" href="api.html" /> 
   </head>
   <body>
     <div class="related">
@@ -32,6 +34,12 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="settings.html" title="Settings"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="Correspondance to Mangopay Rest API"
+             accesskey="P">previous</a> |</li>
         <li><a href="index.html">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>  
@@ -43,14 +51,46 @@
             
   <div class="section" id="tasks">
 <h1>Tasks<a class="headerlink" href="#tasks" title="Permalink to this headline">¶</a></h1>
-<p>create_mangopay_user
-update_mangopay_user
-create_mangopay_bank_account
-create_mangopay_document_and_pages_and_ask_for_validation
-update_document_status
-create_mangopay_wallet
-create_mangopay_pay_out
-update_mangopay_pay_out</p>
+<p>Celery tasks are provided. If desired you may use them to asynchcroniously call
+the MangoPay API.</p>
+<div class="section" id="create-mangopay-user">
+<h2>create_mangopay_user<a class="headerlink" href="#create-mangopay-user" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayUser</span></tt> and creates it.</p>
+</div>
+<div class="section" id="update-mangopay-user">
+<h2>update_mangopay_user<a class="headerlink" href="#update-mangopay-user" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayUser</span></tt> and updates it.</p>
+</div>
+<div class="section" id="create-mangopay-bank-account">
+<h2>create_mangopay_bank_account<a class="headerlink" href="#create-mangopay-bank-account" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayBankAccount</span></tt> and creates it.</p>
+</div>
+<div class="section" id="create-mangopay-document-and-pages-and-ask-for-validation">
+<h2>create_mangopay_document_and_pages_and_ask_for_validation<a class="headerlink" href="#create-mangopay-document-and-pages-and-ask-for-validation" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayDocument</span></tt> creates the document and all the related
+pages and then asks for validation of the document. Runs
+<tt class="docutils literal"><span class="pre">update_document_status</span></tt> the following weekday. MangoPay says they will verify
+and update the status of your document the following business day.</p>
+</div>
+<div class="section" id="update-document-status">
+<h2>update_document_status<a class="headerlink" href="#update-document-status" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayDocument</span></tt> and updates the status of it. The task will
+call itself again the next weekday if document still has the status
+&#8220;VALIDATION_ASKED&#8221;.</p>
+</div>
+<div class="section" id="create-mangopay-wallet">
+<h2>create_mangopay_wallet<a class="headerlink" href="#create-mangopay-wallet" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayWallet</span></tt> and creates it.</p>
+</div>
+<div class="section" id="create-mangopay-pay-out">
+<h2>create_mangopay_pay_out<a class="headerlink" href="#create-mangopay-pay-out" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayPayOut</span></tt> and creates it.</p>
+</div>
+<div class="section" id="update-mangopay-pay-out">
+<h2>update_mangopay_pay_out<a class="headerlink" href="#update-mangopay-pay-out" title="Permalink to this headline">¶</a></h2>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayPayOut</span></tt> and updates it. If its still has the status
+&#8220;CREATED&#8221; it will be run again the following weekday.</p>
+</div>
 </div>
 
 
@@ -59,6 +99,27 @@ update_mangopay_pay_out</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tasks</a><ul>
+<li><a class="reference internal" href="#create-mangopay-user">create_mangopay_user</a></li>
+<li><a class="reference internal" href="#update-mangopay-user">update_mangopay_user</a></li>
+<li><a class="reference internal" href="#create-mangopay-bank-account">create_mangopay_bank_account</a></li>
+<li><a class="reference internal" href="#create-mangopay-document-and-pages-and-ask-for-validation">create_mangopay_document_and_pages_and_ask_for_validation</a></li>
+<li><a class="reference internal" href="#update-document-status">update_document_status</a></li>
+<li><a class="reference internal" href="#create-mangopay-wallet">create_mangopay_wallet</a></li>
+<li><a class="reference internal" href="#create-mangopay-pay-out">create_mangopay_pay_out</a></li>
+<li><a class="reference internal" href="#update-mangopay-pay-out">update_mangopay_pay_out</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">Correspondance to Mangopay Rest API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="settings.html"
+                        title="next chapter">Settings</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/tasks.txt"
@@ -87,6 +148,12 @@ update_mangopay_pay_out</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="settings.html" title="Settings"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="Correspondance to Mangopay Rest API"
+             >previous</a> |</li>
         <li><a href="index.html">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
       </ul>
     </div>

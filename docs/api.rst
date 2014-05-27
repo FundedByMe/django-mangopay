@@ -208,7 +208,7 @@ PayIns
 ------
 
 `POST /payins/card/web`_
-*********************
+*************************
 
 Not supported via this library or the API it is only supported by MangoPay's web interface.
 
@@ -278,7 +278,7 @@ access the card's preregistration data by calling ``get_preregistration_data()``
 
 
 `GET /cards/{Card_Id}`_
-********************
+***********************
 After registering a card with MangoPay you should get back the card's Id. If you
 save that card's Id to the related ``MangoPayCard`` object by calling
 ``save_mangopay_card_id()``, then later you can access the card's info by calling
@@ -297,13 +297,13 @@ object.
 
 
 `POST /preauthorization/card/direct`_
-**********************************
+**************************************
 
 Preauthorizations are not currently supported by this library. Pull
 requests welcome.
 
 `GET /preauthorization/{PreAuthorization_Id}`_
-*******************************************
+***********************************************
 
 Preauthorizations are not currently supported by this library. Pull
 requests welcome.
@@ -383,4 +383,4 @@ Getting a payout will update the status and execution date from MangoPay.
     from mangopay.models import MangoPayPayOut
 
     payout = MangoPayPayOut.objects.get(id=1)
-    payout.get()
+    payout.get():
