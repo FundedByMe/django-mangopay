@@ -66,6 +66,9 @@ ERROR_MESSAGES = (
     ("001401", _("Transaction has already been successfully refunded")),
     ("005403", _("The refund cannot exceed initial transaction amount")),
     ("005404", _("The refunded fees cannot exceed initial fee amount")),
+    ("005405", _("Balance of client fee wallet insufficient")),
+    ("005407", _("Duplicate operation: you cannot refund the same amount more"
+                 " than once for a transaction during the same day.")),
     ("105101", _("Invalid card number")),
     ("105102", _("Invalid cardholder name")),
     ("105103", _("Invalid PIN code")),
@@ -90,11 +93,16 @@ ERROR_MESSAGES = (
                  "Too much attempts for the same transaction")),
     ("101112", _("Maximum amount exceeded.")),
     ("101115", _("Debit limit exceeded")),
+    ("101119", _("Debit limit exceeded")),
+    ("101199", _("Transaction refused")),
     ("101399", _("Secure mode: 3DSecure authentication is not available")),
     ("001599", _("Token processing error. The token has not been created")),
-    ("002999", _("The user is blocked doe to KYC limitation.")),
+    ("002999", _("The user is blocked due to KYC limitation.")),
     ("008999", _("Fraud policy error")),
-    ("008001", _("Lost Card")),
+    ("008001", _("Counterfeit Card")),
+    ("008002", _("Lost Card. A 'lost card' error is a rule carried by the bank"
+                 " which deactivates a card due to too many payments or "
+                 "attempts.")),
     ("008004", _("Card bin not authorized")),
     ("008005", _("Security violation")),
     ("008006", _("Fraud suspected by the bank")),
@@ -102,13 +110,18 @@ ERROR_MESSAGES = (
     ("008500", _("Transaction blocked by Fraud Policy")),
     ("008600", _("Wallet blocked by Fraud policy")),
     ("008700", _("User blocked by Fraud policy")),
-    ("009199", _("PSP technical error.")),
+    ("009199", _("PSP technical error. You could get this error if your card"
+                 "is not supported by the payment service provider, or if the "
+                 "amount is higher than the maximum amount per transaction")),
     ("009499", _("Bank technical error")),
     ("009999", _("Technical error")),
     ("09101", _("Username/Password is incorrect")),
     ("09102", _("Account is locked or inactive")),
     ("09104", _("Client certificate is disabled")),
     ("09201", _("You do not have permissions to make this API call")),
+    ("02625", _("Invalid card number")),
+    ("02626", _("Invalid date format")),
+    ("02627", _("Invalid CSC number")),
 )
 
 ERROR_MESSAGES_DICT = dict(ERROR_MESSAGES)
