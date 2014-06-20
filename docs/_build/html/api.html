@@ -1,0 +1,496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Correspondance to Mangopay Rest API &mdash; Django-Mangopay 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Django-Mangopay 0.0.1 documentation" href="index.html" />
+    <link rel="next" title="Tasks" href="tasks.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tasks.html" title="Tasks"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="correspondance-to-mangopay-rest-api">
+<h1>Correspondance to Mangopay Rest API<a class="headerlink" href="#correspondance-to-mangopay-rest-api" title="Permalink to this headline">¶</a></h1>
+<p>This library is a wrapper of the Mangopay API as described <a class="reference external" href="http://docs.mangopay.com/api-references/">here</a>. Each of the API calls provided
+are shown with an explaination of how to use them.</p>
+<div class="section" id="access">
+<h2>Access<a class="headerlink" href="#access" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/authenticating/">POST /v2/oauth/token</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The client handles authentication with a token once you have set up your client
+as described in the installation instructions. Once confrigured it is easy to
+get an instance of the client.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">mangopay.client</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">get_mangopay_api_client</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="activity-research-lists">
+<h2>Activity, research &amp; lists<a class="headerlink" href="#activity-research-lists" title="Permalink to this headline">¶</a></h2>
+<p>None of the API calls listed by Mangopay as falling under the category of &#8220;Activity, research &amp; lists&#8221; by this library supported at the moment. It is however possible to call use the mangopay-sdk to call them indirectly. An example is given below.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">mangopay.client</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">get_mangopay_api_client</span><span class="p">()</span>
+<span class="c"># GET /Events</span>
+<span class="n">client</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">Get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="users">
+<h2>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/users/natural-users/">POST /users/natural</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>To create a natural user object just instantiate an instance of
+<tt class="docutils literal"><span class="pre">MangoPayNaturalUser</span></tt>, populate the requried fields, and call <tt class="docutils literal"><span class="pre">create()</span></tt> on
+it as shown below. You can also edit the user, just update the the values you want to change in the model and then call <tt class="docutils literal"><span class="pre">update()</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayNaturalUser</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">MangoPayNaturalUser</span><span class="p">()</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">country_of_residence</span> <span class="o">=</span> <span class="s">&quot;SE&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">nationality</span> <span class="o">=</span> <span class="s">&quot;US&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">birthday</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">1989</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="s">&quot;Högbergsgatan 66C&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/users/legal-users/">POST /users/legal</a><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Creating and editing a legal user is the same as creating a natural user except Mangopay
+required different fields. Instantiate the <tt class="docutils literal"><span class="pre">MangoPayLegalUser</span></tt>, populate the
+required fields, and call <tt class="docutils literal"><span class="pre">create()</span></tt> or <tt class="docutils literal"><span class="pre">update()</span></tt> on it as shown below.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayLegalUser</span>
+<span class="kn">from</span> <span class="nn">mangopay.constants</span> <span class="kn">import</span> <span class="n">BUSINESS</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">MangoPayLegalUser</span><span class="p">()</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">country_of_residence</span> <span class="o">=</span> <span class="s">&quot;SE&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">nationality</span> <span class="o">=</span> <span class="s">&quot;US&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">birthday</span> <span class="o">=</span> <span class="n">date</span><span class="p">(</span><span class="mi">1989</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">first_name</span> <span class="o">=</span> <span class="s">&quot;Rebecca&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">last_name</span> <span class="o">=</span> <span class="s">&quot;Meritz&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">generic_business_email</span> <span class="o">=</span> <span class="s">&quot;office@fundedbyme.com&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">business_name</span> <span class="o">=</span> <span class="s">&quot;FundedByMe AB&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BUSINESS</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">headquaters_address</span> <span class="o">=</span> <span class="s">&quot;Regeringsgatan 29, 111 53 Stockholm&quot;</span>
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">mangopay_user</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/users/">GET /users/{user_Id}</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>This call is not supported. Infomation on the about the mangopay user will
+already be saved on your MangoPayUserModel when you call <tt class="docutils literal"><span class="pre">create</span></tt> and/or
+<tt class="docutils literal"><span class="pre">update</span></tt>.</p>
+</div>
+<div class="section" id="id5">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/kyc/documents/">POST /KYC/Documents</a><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>To create a mangopay document for a user just instantiate a
+<tt class="docutils literal"><span class="pre">MangoPayDocument</span></tt>, save the user and type to the document, and the call
+<tt class="docutils literal"><span class="pre">create()</span></tt>. If successfully created the document&#8217;s status should be updated to
+<tt class="docutils literal"><span class="pre">CREATED</span></tt> and it should be assigned a <tt class="docutils literal"><span class="pre">mangopay_id</span></tt>.
+Once you have added all the pages you wanted to the document you
+can ask for validation from mangopay via <tt class="docutils literal"><span class="pre">ask_for_validation()</span></tt>. This should
+change the status of the document to <tt class="docutils literal"><span class="pre">VALIDATION_ASKED</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayUser</span>
+<span class="kn">from</span> <span class="nn">mangopay.constants</span> <span class="kn">import</span> <span class="n">IDENTITY_PROOF</span>
+
+<span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">MangoPayUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">mangopay_document</span> <span class="o">=</span> <span class="n">MangoPayDocument</span><span class="p">()</span>
+<span class="n">mangopay_document</span><span class="o">.</span><span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">mangopay_user</span>
+<span class="n">mangopay_document</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">IDENTITY_PROOF</span>
+<span class="n">mangopay_document</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">mangopay_document</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="c"># Then add a 1+ MangoPayPages to your mangopay_document</span>
+
+<span class="n">mangopay_document</span><span class="o">.</span><span class="n">ask_for_validation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/kyc/pages/">POST /KYC/Documents/Pages</a><a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>A document can have many pages, but needs at least one. Instantiate one
+<tt class="docutils literal"><span class="pre">MangoPayPage</span></tt> per file and call <tt class="docutils literal"><span class="pre">create()</span></tt> on the object to create it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayPage</span>
+
+<span class="n">document</span> <span class="o">=</span> <span class="n">MangoPayDocument</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="s">&quot;tmp/file&quot;</span><span class="p">)</span>
+<span class="n">page</span> <span class="o">=</span> <span class="n">MangoPayPage</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="nb">file</span><span class="p">,</span> <span class="n">document</span><span class="o">=</span><span class="n">document</span><span class="p">)</span>
+<span class="n">page</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="n">page</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In order for this call to work you need to decide were you want to store your
+files. Files can either be saved to Django&#8217;s default storage by setting
+<tt class="docutils literal"><span class="pre">MANGOPAY_PAGE_DEFAULT_STORAGE</span></tt> to <tt class="docutils literal"><span class="pre">True</span></tt>, or you can configure your files to be
+stored on AWS by setting AWS storage via <tt class="docutils literal"><span class="pre">S3BotoStorage</span></tt>. <tt class="docutils literal"><span class="pre">AWS_MEDIA_BUCKET_NAME</span></tt> and <tt class="docutils literal"><span class="pre">AWS_MEDIA_CUSTOM_DOMAIN</span></tt> must be in your setting in this case.</p>
+</div>
+<div class="section" id="id7">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/kyc/documents/">GET /KYC/Documents/{Document_Id}</a><a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>One business day after asking for validation you should be able to see if mangopay approved the document or not via
+<tt class="docutils literal"><span class="pre">get()</span></tt> which will get the updated document from mangopay. At this point it
+should either have the status of <tt class="docutils literal"><span class="pre">VALIDATED</span></tt> or <tt class="docutils literal"><span class="pre">REFUSED</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayDocument</span>
+
+<span class="n">document</span> <span class="o">=</span> <span class="n">MangoPayDocument</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">document</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="wallets">
+<h2>Wallets<a class="headerlink" href="#wallets" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/wallets/">POST /wallets</a><a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>In order create a wallet just instantiate a <tt class="docutils literal"><span class="pre">MangoPayWallet</span></tt> object, add user
+to it, save it and call <tt class="docutils literal"><span class="pre">create()</span></tt> on it with a supported currency.</p>
+<div class="highlight-python"><div class="highlight"><pre>from mangopay.models MangoPayWallet, MangoPayUser
+
+user = MangoPayUser.objects.get(id=1)
+wallet = MangoPayWallet()
+wallet.mangopay_user = user
+wallet.save()
+
+wallet.create(&quot;SEK&quot;, &quot;Sven&#39;s Wallet&quot;)
+</pre></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/wallets/">GET /wallets/{Wallet_Id}</a><a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">GET</span></tt> is not supported directly, however you can call <tt class="docutils literal"><span class="pre">balance()</span></tt> on a
+created <tt class="docutils literal"><span class="pre">MangoPayWallet</span></tt> to find the amount of <tt class="docutils literal"><span class="pre">Money</span></tt> on the wallet.</p>
+</div>
+</div>
+<div class="section" id="payins">
+<h2>PayIns<a class="headerlink" href="#payins" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id10">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/payins/payins-card-web/">POST /payins/card/web</a><a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p>Not supported via this library or the API it is only supported by MangoPay&#8217;s web interface.</p>
+</div>
+<div class="section" id="id11">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/payins/payindirectcard/">POST /payins/card/direct</a><a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<p>Once you have successfully registered a card you can create a payin from that
+card to a created wallet. Instantiate a <tt class="docutils literal"><span class="pre">MangoPayPayIn</span></tt> model, add the user,
+wallet, and card; then call create with funds to be debited and optionally the
+fees and the secure mode return url. The payin will be created and the
+execution date, status, result code, id, status, and secure mode redirect url
+will be saved to the object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="p">(</span><span class="n">MangoPayPayIn</span><span class="p">,</span> <span class="n">MangoPayCard</span><span class="p">,</span> <span class="n">MangoPayWallet</span><span class="p">,</span>
+                             <span class="n">MangoPayUser</span><span class="p">)</span>
+
+<span class="n">payin</span> <span class="o">=</span> <span class="n">MangoPayPayIn</span><span class="p">()</span>
+<span class="n">payin</span><span class="o">.</span><span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">MangoPayUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">payin</span><span class="o">.</span><span class="n">mangopay_wallet</span><span class="o">=</span> <span class="n">MangoPayWallet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">payin</span><span class="o">.</span><span class="n">mangopay_card</span> <span class="o">=</span> <span class="n">MangoPayCard</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">payin</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">debited_funds</span><span class="o">=</span><span class="n">Money</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span> <span class="s">&quot;EUR&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id12">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/payins/preauthorized-payin/">POST /payins/preauthorized/direct</a><a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>Preauthorizations are not currently supported by this library. Pull
+requests welcome.</p>
+</div>
+<div class="section" id="id13">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/payins/">GET /payins/{PayIn_Id}</a><a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<p>Once a <tt class="docutils literal"><span class="pre">MangoPayPayIn</span></tt> is created it&#8217;s associated status can be updated via
+calling <tt class="docutils literal"><span class="pre">get()</span></tt> on the instance.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayPayIn</span>
+
+<span class="n">payin</span> <span class="o">=</span> <span class="n">MangoPayPayIn</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">payin</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id14">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card-registration/">POST /cardregistration</a><a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<p>Before a card can be used it must be registered with a user. Just instantiate a <tt class="docutils literal"><span class="pre">MangoPayCardRegistration</span></tt> object, add a user to it, and call <tt class="docutils literal"><span class="pre">create()</span></tt> with a supported currency. When you do this MangoPay&#8217;s ID will be saved to the object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayCardRegistration</span><span class="p">,</span> <span class="n">MangoPayUser</span>
+
+<span class="n">card_registration</span> <span class="o">=</span> <span class="n">MangoPayCardRegistration</span><span class="p">()</span>
+<span class="n">card_registration</span><span class="o">.</span><span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">MangoPayUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">card_registration</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;EUR&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id15">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card-registration/">GET /cardregistration/{CardRegistration_Id}</a><a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<p>Once you have created a <tt class="docutils literal"><span class="pre">MangoPayCardRegistration</span></tt> object you can
+access the card&#8217;s preregistration data by calling <tt class="docutils literal"><span class="pre">get_preregistration_data()</span></tt>. This data comes in the form of a dictionary with the keys: &#8220;preregistrationData&#8221;, &#8220;accessKey&#8221;, and &#8220;cardRegistrationURL&#8221;.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayCardRegistration</span>
+
+<span class="n">card_registration</span> <span class="o">=</span> <span class="n">MangoPayCardRegistration</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">card_registration</span><span class="o">.</span><span class="n">get_preregistration_data</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id16">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/">GET /cards/{Card_Id}</a><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<p>After registering a card with MangoPay you should get back the card&#8217;s Id. If you
+save that card&#8217;s Id to the related <tt class="docutils literal"><span class="pre">MangoPayCard</span></tt> object by calling
+<tt class="docutils literal"><span class="pre">save_mangopay_card_id()</span></tt>, then later you can access the card&#8217;s info by calling
+<tt class="docutils literal"><span class="pre">request_card_info()</span></tt>. Requesting the card&#8217;s info will save the
+expiration date, alias, and active and valid state to the <tt class="docutils literal"><span class="pre">MangoPayCard</span></tt>
+object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayCardRegistration</span>
+
+<span class="n">card_registration</span> <span class="o">=</span> <span class="n">MangoPayCardRegistration</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">card_registration</span><span class="o">.</span><span class="n">save_mangopay_card_id</span><span class="p">(</span><span class="s">&quot;123456&quot;</span><span class="p">)</span>
+
+<span class="n">card_registration</span><span class="o">.</span><span class="n">mangopay_card</span><span class="o">.</span><span class="n">request_card_info</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id17">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/pre-authorization/">POST /preauthorization/card/direct</a><a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<p>Preauthorizations are not currently supported by this library. Pull
+requests welcome.</p>
+</div>
+<div class="section" id="id18">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/pre-authorization/">GET /preauthorization/{PreAuthorization_Id}</a><a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<p>Preauthorizations are not currently supported by this library. Pull
+requests welcome.</p>
+</div>
+</div>
+<div class="section" id="refunds">
+<h2>Refunds<a class="headerlink" href="#refunds" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id19">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-transfer/">POST /transfers/{Transfer_Id}/Refund</a><a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<p>Transfers and refunds of those transfers are not supported by this library. Pull
+requests are welcome.</p>
+</div>
+<div class="section" id="id20">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-pay-in/">POST /payins/{PayIn_Id}/Refund</a><a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<p>Currently on simple refunds are supported. That means you can only create a
+complete refund on a pay in, not a partial one. To create a simple refund just
+instantiate a <tt class="docutils literal"><span class="pre">MangoPayRefund</span></tt> object and add the payin you want to refund and
+the user; then save it and call <tt class="docutils literal"><span class="pre">create_simple()</span></tt>. The MangoPay&#8217;s Id, the
+execution date, and status will be updated in the object. If the refund was
+successful then <tt class="docutils literal"><span class="pre">create_simple</span></tt> will return <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayRefund</span><span class="p">,</span> <span class="n">MangoPayPayIn</span>
+
+<span class="n">refund</span> <span class="o">=</span> <span class="n">MangoPayRefund</span><span class="p">()</span>
+<span class="n">payin</span> <span class="o">=</span> <span class="n">MangoPayPayIn</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">refund</span><span class="o">.</span><span class="n">payin</span> <span class="o">=</span> <span class="n">payin</span>
+<span class="n">refund</span><span class="o">.</span><span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">payin</span><span class="o">.</span><span class="n">mangopay_user</span>
+<span class="n">refund</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">refund</span><span class="o">.</span><span class="n">create_simple</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id21">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/">GET /refunds/{Refund_Id}</a><a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<p>Getting a refund via its ID is not supported by this library. Pull requests
+welcome.</p>
+</div>
+</div>
+<div class="section" id="payouts">
+<h2>PayOuts<a class="headerlink" href="#payouts" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id22">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/pay-out-bank-wire/">POST /payouts/bankwire</a><a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<p>Payouts can be transfer money from a wallet to a user&#8217;s bank account. In order
+to a payout to run successfully they correct level of user verifications but
+have been completed. To use it simply instantiate the <tt class="docutils literal"><span class="pre">MangoPayPayOut</span></tt> object
+add the user, the wallet you want to transfer from, and the bank account you
+want to transfer to, the funds to be debited, and optionally the fees to be
+taken; then save it and run <tt class="docutils literal"><span class="pre">create()</span></tt>. MangoPay&#8217;s
+generated id, the status, and the execution date will be saved to the object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">money</span> <span class="kn">import</span> <span class="n">Money</span>
+<span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayPayOut</span><span class="p">,</span> <span class="n">MangoPayUser</span><span class="p">,</span> <span class="n">MangoPayWallet</span><span class="p">,</span> <span class="n">MangoPayBankAccount</span>
+
+<span class="n">payout</span> <span class="o">=</span> <span class="n">MangoPayPayOut</span><span class="p">()</span>
+<span class="n">payout</span><span class="o">.</span><span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">MangoPayUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">payout</span><span class="o">.</span><span class="n">mangopay_wallet</span> <span class="o">=</span> <span class="n">MangoPayUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">payout</span><span class="o">.</span><span class="n">mangopay_bank_account</span> <span class="o">=</span> <span class="n">MangoPayBankAccount</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">payout</span><span class="o">.</span><span class="n">debited_funds</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s">&quot;EUR&quot;</span><span class="p">)</span>
+<span class="n">payout</span><span class="o">.</span><span class="n">fees</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s">&quot;EUR&quot;</span><span class="p">)</span>
+<span class="n">payout</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">payout</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id23">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/pay-out-bank-wire/">GET /payouts/{PayOut_Id}</a><a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<p>Getting a payout will update the status and execution date from MangoPay.</p>
+<div class="highlight-python"><div class="highlight"><pre>from mangopay.models import MangoPayPayOut
+
+payout = MangoPayPayOut.objects.get(id=1)
+payout.get():
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Correspondance to Mangopay Rest API</a><ul>
+<li><a class="reference internal" href="#access">Access</a><ul>
+<li><a class="reference internal" href="#id1">POST /v2/oauth/token</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#activity-research-lists">Activity, research &amp; lists</a></li>
+<li><a class="reference internal" href="#users">Users</a><ul>
+<li><a class="reference internal" href="#id2">POST /users/natural</a></li>
+<li><a class="reference internal" href="#id3">POST /users/legal</a></li>
+<li><a class="reference internal" href="#id4">GET /users/{user_Id}</a></li>
+<li><a class="reference internal" href="#id5">POST /KYC/Documents</a></li>
+<li><a class="reference internal" href="#id6">POST /KYC/Documents/Pages</a></li>
+<li><a class="reference internal" href="#id7">GET /KYC/Documents/{Document_Id}</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#wallets">Wallets</a><ul>
+<li><a class="reference internal" href="#id8">POST /wallets</a></li>
+<li><a class="reference internal" href="#id9">GET /wallets/{Wallet_Id}</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#payins">PayIns</a><ul>
+<li><a class="reference internal" href="#id10">POST /payins/card/web</a></li>
+<li><a class="reference internal" href="#id11">POST /payins/card/direct</a></li>
+<li><a class="reference internal" href="#id12">POST /payins/preauthorized/direct</a></li>
+<li><a class="reference internal" href="#id13">GET /payins/{PayIn_Id}</a></li>
+<li><a class="reference internal" href="#id14">POST /cardregistration</a></li>
+<li><a class="reference internal" href="#id15">GET /cardregistration/{CardRegistration_Id}</a></li>
+<li><a class="reference internal" href="#id16">GET /cards/{Card_Id}</a></li>
+<li><a class="reference internal" href="#id17">POST /preauthorization/card/direct</a></li>
+<li><a class="reference internal" href="#id18">GET /preauthorization/{PreAuthorization_Id}</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#refunds">Refunds</a><ul>
+<li><a class="reference internal" href="#id19">POST /transfers/{Transfer_Id}/Refund</a></li>
+<li><a class="reference internal" href="#id20">POST /payins/{PayIn_Id}/Refund</a></li>
+<li><a class="reference internal" href="#id21">GET /refunds/{Refund_Id}</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#payouts">PayOuts</a><ul>
+<li><a class="reference internal" href="#id22">POST /payouts/bankwire</a></li>
+<li><a class="reference internal" href="#id23">GET /payouts/{PayOut_Id}</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tasks.html"
+                        title="next chapter">Tasks</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tasks.html" title="Tasks"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="index.html">Django-Mangopay 0.0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Rebecca Meritz.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

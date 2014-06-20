@@ -3,5 +3,13 @@ Welcome to Django-Mangopay's documentation!
 
 .. include:: ../README.rst
 
+Contents:
+
 .. toctree::
-   :maxdepth: 2
+
+    installation
+    api
+    tasks
+    settings
+    contributing
+    license

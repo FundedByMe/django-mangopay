@@ -1,0 +1,14 @@
+Models
+======
+
+MangoPayNaturalUser
+MangoPayLegalUser
+MangoPayDocument
+MangoPayPage
+MangoPayBankAccount
+MangoPayWallet
+MangoPayPayOut
+MangoPayCard
+MangoPayCardRegistration
+MangoPayPayIn
+MangoPayRefund
