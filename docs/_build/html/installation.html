@@ -52,14 +52,16 @@
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <ol class="arabic simple">
-<li>Install package from PyPI:</li>
+<li>Install package from PyPI.</li>
 </ol>
 <div class="highlight-python"><div class="highlight"><pre>pip install django-mangopay
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li><a class="reference external" href="https://github.com/MangoPay/mangopay2-python-sdk#client-creation-example-you-need-to-call-it-only-once">Create a test client</a></li>
-<li>Add your newly created client id :ref:´settings_client_id´ and password <a class="reference internal" href="settings.html#settings-passpharse"><em>MANGOPAY_PASSPHRASE</em></a> to your django settings.</li>
+<li><a class="reference external" href="https://github.com/MangoPay/mangopay2-python-sdk#client-creation-example-you-need-to-call-it-only-once">Create a test client</a>.</li>
+<li>Add your newly created <a class="reference internal" href="settings.html#settings-client-id"><em>MANGOPAY_CLIENT_ID</em></a> and <a class="reference internal" href="settings.html#settings-passpharse"><em>MANGOPAY_PASSPHRASE</em></a> to your django settings, as well as the <em class="xref std std-ref">settings_base_url</em>.</li>
+<li>To run django-mangopay in production just change the above setting to be the
+settings for your production server.</li>
 </ol>
 </div>
 
