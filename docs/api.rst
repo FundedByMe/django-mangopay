@@ -25,11 +25,11 @@ get an instance of the client.
 Activity, research & lists
 --------------------------
 
-None of the API calls listed by Mangopay as falling under the category of "Activity, research & lists" by this library supported at the moment. It is however possible to call use the mangopay-sdk to call them indirectly. An example is given below.
+None of the API calls listed by Mangopay as falling under the category are supported. However with the client provided, it is possible to use the mangopay-sdk to call them. An example is given below.
 
 ::
 
-    import mangopay.client
+    from mangopay.client import get_mangopay_api_client
 
     client = get_mangopay_api_client()
     # GET /Events
@@ -37,6 +37,8 @@ None of the API calls listed by Mangopay as falling under the category of "Activ
 
 Users
 -----
+
+.. _post_users_natural:
 
 `POST /users/natural <http://docs.mangopay.com/api-references/users/natural-users/>`_
 *************************************************************************************
@@ -67,12 +69,13 @@ it as shown below. You can also edit the user, just update the the values you wa
 
     mangopay_user.update()
 
+.. _post_user_legal:
 
 `POST /users/legal <http://docs.mangopay.com/api-references/users/legal-users/>`_
 *********************************************************************************
 
 Creating and editing a legal user is the same as creating a natural user except Mangopay
-required different fields. Instantiate the ``MangoPayLegalUser``, populate the
+requires different fields. Instantiate the ``MangoPayLegalUser``, populate the
 required fields, and call ``create()`` or ``update()`` on it as shown below.
 
 ::
@@ -103,19 +106,20 @@ required fields, and call ``create()`` or ``update()`` on it as shown below.
 
     mangopay_user.update()
 
-
 `GET /users/{user_Id} <http://docs.mangopay.com/api-references/users/>`_
 ************************************************************************
 
-This call is not supported. Infomation on the about the mangopay user will
+This call is not supported. Infomation about the mangopay user will
 already be saved on your MangoPayUserModel when you call ``create`` and/or
 ``update``.
+
+.. _post_kyc_documents:
 
 `POST /KYC/Documents <http://docs.mangopay.com/api-references/kyc/documents/>`_
 *******************************************************************************
 
 To create a mangopay document for a user just instantiate a
-``MangoPayDocument``, save the user and type to the document, and the call
+``MangoPayDocument``, save the user and type to the document, and then call
 ``create()``. If successfully created the document's status should be updated to
 ``CREATED`` and it should be assigned a ``mangopay_id``.
 Once you have added all the pages you wanted to the document you
@@ -160,8 +164,10 @@ A document can have many pages, but needs at least one. Instantiate one
 
 In order for this call to work you need to decide were you want to store your
 files. Files can either be saved to Django's default storage by setting
-``MANGOPAY_PAGE_DEFAULT_STORAGE`` to ``True``, or you can configure your files to be
-stored on AWS by setting AWS storage via ``S3BotoStorage``. ``AWS_MEDIA_BUCKET_NAME`` and ``AWS_MEDIA_CUSTOM_DOMAIN`` must be in your setting in this case.
+:ref:`settings_page_default_storage` to ``True``, or you can configure your files to be
+stored on AWS by setting AWS storage via `S3BotoStorage <http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html>`_. ``AWS_MEDIA_BUCKET_NAME`` and ``AWS_MEDIA_CUSTOM_DOMAIN`` must be in your setting in this case.
+
+.. _get_kyc_documents:
 
 `GET /KYC/Documents/{Document_Id} <http://docs.mangopay.com/api-references/kyc/documents/>`_
 ********************************************************************************************
@@ -176,14 +182,41 @@ should either have the status of ``VALIDATED`` or ``REFUSED``.
     document = MangoPayDocument.objects.get(id=1)
     document.get()
 
+.. _post_user_bank_account:
+
+`POST /users/{userId}/bankaccounts/{type} <http://docs.mangopay.com/api-references/bank-accounts/>`_
+****************************************************************************************************
+In order to complete a payout you must have registered a bank account. To do
+this instantiate a  ``MangoPayBankAccount`` and add the required fields, then call ``create()``. Only BIC & IBAN bank registrations are currently supported by this library.
+
+::
+
+    from mangopay.models import MangoPayBankAccount, MangoPayUser
+
+    bank_account = MangoPayBankAccount()
+    bank_account.mangopay_user = MangoPayUser.objects.get(id=1)
+    bank_account.iban = "SE3550000000054910000003"
+    bank_account.bic = "53H555"
+    address = "Högbergsgatan 66C, 11854 Stockholm, Sweden"
+
+
+
+`GET /users/{userId}/bankaccounts/{id} <http://docs.mangopay.com/api-references/bank-accounts/>`_
+*************************************************************************************************
+
+This call is not supported the data should already be persisted on your
+``MangoPayBankAccount`` model.
+
 
 Wallets
 -------
 
+.. _post_wallets:
+
 `POST /wallets <http://docs.mangopay.com/api-references/wallets/>`_
 ********************************************************************
 
-In order create a wallet just instantiate a ``MangoPayWallet`` object, add user
+In order to create a wallet just instantiate a ``MangoPayWallet`` object, add user
 to it, save it and call ``create()`` on it with a supported currency.
 
 ::
@@ -236,7 +269,7 @@ will be saved to the object.
 **********************************************************************************************************
 
 Preauthorizations are not currently supported by this library. Pull
-requests welcome.
+requests are welcome. See :ref:`contributing`.
 
 `GET /payins/{PayIn_Id} <http://docs.mangopay.com/api-references/payins/>`_
 ***************************************************************************
@@ -300,13 +333,13 @@ object.
 *******************************************************************************************************
 
 Preauthorizations are not currently supported by this library. Pull
-requests welcome.
+requests are welcome. See :ref:`contributing`.
 
 `GET /preauthorization/{PreAuthorization_Id} <http://docs.mangopay.com/api-references/card/pre-authorization/>`_
 ****************************************************************************************************************
 
 Preauthorizations are not currently supported by this library. Pull
-requests welcome.
+requests are welcome. See :ref:`contributing`.
 
 Refunds
 -------
@@ -318,7 +351,7 @@ requests are welcome.
 
 `POST /payins/{PayIn_Id}/Refund <http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-pay-in/>`_
 *************************************************************************************************************
-Currently on simple refunds are supported. That means you can only create a
+Currently only simple refunds are supported. That means you can only create a
 complete refund on a pay in, not a partial one. To create a simple refund just
 instantiate a ``MangoPayRefund`` object and add the payin you want to refund and
 the user; then save it and call ``create_simple()``. The MangoPay's Id, the
@@ -347,12 +380,14 @@ welcome.
 PayOuts
 -------
 
+.. _post_payouts_bankwire:
+
 `POST /payouts/bankwire <http://docs.mangopay.com/api-references/pay-out-bank-wire/>`_
 ***************************************************************************************
 
-Payouts can be transfer money from a wallet to a user's bank account. In order
-to a payout to run successfully they correct level of user verifications but
-have been completed. To use it simply instantiate the ``MangoPayPayOut`` object
+Payouts transfer money from a wallet to a user's bank account. In order
+for a payout to run successfully, the user's KYC requirements must
+be fufilled. To use it simply instantiate the ``MangoPayPayOut`` object
 add the user, the wallet you want to transfer from, and the bank account you
 want to transfer to, the funds to be debited, and optionally the fees to be
 taken; then save it and run ``create()``. MangoPay's
@@ -373,6 +408,7 @@ generated id, the status, and the execution date will be saved to the object.
 
     payout.create()
 
+.. _get_payouts:
 
 `GET /payouts/{PayOut_Id} <http://docs.mangopay.com/api-references/pay-out-bank-wire/>`_
 *****************************************************************************************

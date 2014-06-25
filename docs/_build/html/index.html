@@ -54,14 +54,13 @@
 <div class="line"><br /></div>
 </div>
 <p>Django-Mangopay is a <a class="reference external" href="https://www.djangoproject.com/">Django</a> wrapper for the
-PSP <a class="reference external" href="http://docs.mangopay.com/api-references/">Mangopay&#8217;s V2 API</a>. More
-specifically it provides Django-specfic functionality around <a class="reference external" href="https://github.com/MangoPay/mangopay2-python-sdk">Mangopay&#8217;s Python
+PSP <a class="reference external" href="http://docs.mangopay.com/api-references/">Mangopay&#8217;s V2 API</a>. It provides Django-specfic functionality around <a class="reference external" href="https://github.com/MangoPay/mangopay2-python-sdk">Mangopay&#8217;s Python
 SDK</a>. It creates a Mangopay
 Client via settings in your <tt class="docutils literal"><span class="pre">settings.py</span></tt>. It provides Django Models that allow
 you to persist the data that you need to send and recieve from Mangopay. These
 models have functions that correspond to the Mangopay&#8217;s API calls. Celery tasks
-are also provided if you want to call these functions asynchronously. Read
-extended documentation is provide at <a class="reference external" href="http://django-mangopay.readthedocs.org/en/latest/">Read the Docs</a>.</p>
+are also provided if you want to call these functions asynchronously.</p>
+<p>Read extended documentation provided at <a class="reference external" href="http://django-mangopay.readthedocs.org/en/latest/">Read the Docs</a>.</p>
 <p>Contents:</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -73,40 +72,42 @@ extended documentation is provide at <a class="reference external" href="http://
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#activity-research-lists">Activity, research &amp; lists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#users">Users</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id2">POST /users/natural</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id3">POST /users/legal</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id4">GET /users/{user_Id}</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id5">POST /KYC/Documents</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id6">POST /KYC/Documents/Pages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id7">GET /KYC/Documents/{Document_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-users-natural">POST /users/natural</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-user-legal">POST /users/legal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id5">GET /users/{user_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-kyc-documents">POST /KYC/Documents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id8">POST /KYC/Documents/Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-kyc-documents">GET /KYC/Documents/{Document_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-user-bank-account">POST /users/{userId}/bankaccounts/{type}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id11">GET /users/{userId}/bankaccounts/{id}</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#wallets">Wallets</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id8">POST /wallets</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id9">GET /wallets/{Wallet_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-wallets">POST /wallets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id14">GET /wallets/{Wallet_Id}</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#payins">PayIns</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id10">POST /payins/card/web</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id11">POST /payins/card/direct</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id12">POST /payins/preauthorized/direct</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id13">GET /payins/{PayIn_Id}</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id14">POST /cardregistration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id15">GET /cardregistration/{CardRegistration_Id}</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id16">GET /cards/{Card_Id}</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id17">POST /preauthorization/card/direct</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id18">GET /preauthorization/{PreAuthorization_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id15">POST /payins/card/web</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id16">POST /payins/card/direct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id17">POST /payins/preauthorized/direct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id18">GET /payins/{PayIn_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id19">POST /cardregistration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id20">GET /cardregistration/{CardRegistration_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id21">GET /cards/{Card_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id22">POST /preauthorization/card/direct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id23">GET /preauthorization/{PreAuthorization_Id}</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#refunds">Refunds</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id19">POST /transfers/{Transfer_Id}/Refund</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id20">POST /payins/{PayIn_Id}/Refund</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id21">GET /refunds/{Refund_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id24">POST /transfers/{Transfer_Id}/Refund</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id25">POST /payins/{PayIn_Id}/Refund</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id26">GET /refunds/{Refund_Id}</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#payouts">PayOuts</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id22">POST /payouts/bankwire</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id23">GET /payouts/{PayOut_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#post-payouts-bankwire">POST /payouts/bankwire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#get-payouts">GET /payouts/{PayOut_Id}</a></li>
 </ul>
 </li>
 </ul>
@@ -125,6 +126,7 @@ extended documentation is provide at <a class="reference external" href="http://
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-client-id"><tt class="docutils literal"><span class="pre">MANGOPAY_CLIENT_ID</span></tt></a></li>
 <li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-passphrase"><tt class="docutils literal"><span class="pre">MANGOPAY_PASSPHRASE</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-base-url"><tt class="docutils literal"><span class="pre">MANGOPAY_BASE_URL</span></tt></a></li>
 <li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-debug-mode"><tt class="docutils literal"><span class="pre">MANGOPAY_DEBUG_MODE</span></tt></a></li>
 <li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-page-default-storage"><tt class="docutils literal"><span class="pre">MANGOPAY_PAGE_DEFAULT_STORAGE</span></tt></a></li>
 </ul>

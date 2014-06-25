@@ -15,6 +15,14 @@ The client id you made up when you created your mangopay account.
 
 The passphase you recieved when you set up your client.
 
+.. _setting_base_url:
+
+``MANGOPAY_BASE_URL``
+---------------------
+
+Set to https://api.mangopay.com in production and https://api.sandbox.mangopay.com for testing.
+
+
 ``MANGOPAY_DEBUG_MODE``
 -----------------------
 
