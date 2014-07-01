@@ -27,8 +27,7 @@ def create_mangopay_bank_account(id):
 @task
 def create_mangopay_document_and_pages_and_ask_for_validation(id):
     document = MangoPayDocument.objects.get(
-        id=id, mangopay_id__isnull=True, file__isnull=False,
-        type__isnull=False)
+        id=id, mangopay_id__isnull=True, type__isnull=False)
     document.create()
     for page in document.mangopay_pages.all():
         page.create()
