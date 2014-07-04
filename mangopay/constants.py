@@ -51,10 +51,14 @@ STATUS_CHOICES = (
 
 STATUS_CHOICES_DICT = {v: k for k, v in dict(STATUS_CHOICES).iteritems()}
 
+PENDING = "CREATED"
+SUCCEEDED = "SUCCEEDED"
+FAILED = "FAILED"
+
 TRANSACTION_STATUS_CHOICES = (
-    ("CREATED", _("The request is created but not processed.")),
-    ("SUCCEEDED", _("The request has been successfully processed.")),
-    ("FAILED", _("The request has failed.")),
+    (PENDING, _("The request is created but not processed.")),
+    (SUCCEEDED, _("The request has been successfully processed.")),
+    (FAILED, _("The request has failed.")),
 )
 
 ERROR_MESSAGES = (
@@ -110,7 +114,7 @@ ERROR_MESSAGES = (
     ("008500", _("Transaction blocked by Fraud Policy")),
     ("008600", _("Wallet blocked by Fraud policy")),
     ("008700", _("User blocked by Fraud policy")),
-    ("009199", _("PSP technical error. You could get this error if your card"
+    ("009199", _("PSP technical error. You could get this error if your card "
                  "is not supported by the payment service provider, or if the "
                  "amount is higher than the maximum amount per transaction")),
     ("009499", _("Bank technical error")),
