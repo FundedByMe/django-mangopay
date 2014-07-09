@@ -3,9 +3,14 @@ from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
 
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.files.storage import default_storage
+
+try:
+    from django.contrib.auth import get_user_model as auth_get_user_model
+except ImportError:
+    auth_get_user_model = None
+    from django.contrib.auth.models import User
 
 from money.contrib.django.models.fields import MoneyField
 from model_utils.managers import InheritanceManager
@@ -39,6 +44,13 @@ from .constants import (INCOME_RANGE_CHOICES,
                         REFUSED, BUSINESS, ORGANIZATION,
                         USER_TYPE_CHOICES_DICT)
 from .client import get_mangopay_api_client
+
+
+def get_user_model(*args, **kwargs):
+    if auth_get_user_model is not None:
+        return auth_get_user_model(*args, **kwargs)
+    else:
+        return User
 
 
 def python_money_to_mangopay_money(python_money):
