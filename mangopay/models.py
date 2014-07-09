@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.files.storage import default_storage
 
@@ -57,7 +57,7 @@ class MangoPayUser(models.Model):
     objects = InheritanceManager()
 
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
-    user = models.ForeignKey(User, related_name="mangopay_users")
+    user = models.ForeignKey(get_user_model(), related_name="mangopay_users")
     type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
                             null=True)
 
