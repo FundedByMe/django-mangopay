@@ -6,12 +6,6 @@ from django.db import models
 from django.conf import settings
 from django.core.files.storage import default_storage
 
-try:
-    from django.contrib.auth import get_user_model as auth_get_user_model
-except ImportError:
-    auth_get_user_model = None
-    from django.contrib.auth.models import User
-
 from money.contrib.django.models.fields import MoneyField
 from model_utils.managers import InheritanceManager
 from mangopaysdk.entities.usernatural import UserNatural
@@ -46,11 +40,7 @@ from .constants import (INCOME_RANGE_CHOICES,
 from .client import get_mangopay_api_client
 
 
-def get_user_model(*args, **kwargs):
-    if auth_get_user_model is not None:
-        return auth_get_user_model(*args, **kwargs)
-    else:
-        return User
+auth_user_model = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
 def python_money_to_mangopay_money(python_money):
@@ -69,7 +59,7 @@ class MangoPayUser(models.Model):
     objects = InheritanceManager()
 
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
-    user = models.ForeignKey(get_user_model(), related_name="mangopay_users")
+    user = models.ForeignKey(auth_user_model, related_name="mangopay_users")
     type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
                             null=True)
 
