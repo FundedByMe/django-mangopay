@@ -60,8 +60,6 @@ class MangoPayUser(models.Model):
 
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.ForeignKey(auth_user_model, related_name="mangopay_users")
-    first_name = models.CharField(max_length=99)
-    last_name = models.CharField(max_length=99)
     type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
                             null=True)
 
@@ -126,6 +124,8 @@ class MangoPayNaturalUser(MangoPayUser):
     occupation = models.CharField(blank=True, null=True, max_length=254)
     income_range = models.SmallIntegerField(
         blank=True, null=True, choices=INCOME_RANGE_CHOICES)
+    first_name = models.CharField(null=True, blank=True, max_length=99)
+    last_name = models.CharField(null=True, blank=True, max_length=99)
     email = models.EmailField(blank=True, null=True, max_length=254)
 
     def _build(self):
@@ -197,6 +197,8 @@ class MangoPayLegalUser(MangoPayUser):
     generic_business_email = models.EmailField(max_length=254)
     # first_name, last_name, and email belong to the Legal Representative
     # who is not always the same person as the linked user
+    first_name = models.CharField(max_length=99)
+    last_name = models.CharField(max_length=99)
 
     # Regular Authenication Fields:
     headquaters_address = models.CharField(blank=True, max_length=254,
