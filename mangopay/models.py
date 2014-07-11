@@ -126,6 +126,7 @@ class MangoPayNaturalUser(MangoPayUser):
     occupation = models.CharField(blank=True, null=True, max_length=254)
     income_range = models.SmallIntegerField(
         blank=True, null=True, choices=INCOME_RANGE_CHOICES)
+    email = models.EmailField(blank=True, null=True, max_length=254)
 
     def _build(self):
         mangopay_user = UserNatural()
