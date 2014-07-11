@@ -127,9 +127,9 @@ class MangoPayNaturalUser(MangoPayUser):
 
     def _build(self):
         mangopay_user = UserNatural()
-        mangopay_user.FirstName = self.user.first_name
-        mangopay_user.LastName = self.user.last_name
-        mangopay_user.Email = self.user.email
+        mangopay_user.FirstName = self._first_name
+        mangopay_user.LastName = self._last_name
+        mangopay_user.Email = self._email
         mangopay_user.Birthday = self._birthday_fmt()
         mangopay_user.CountryOfResidence = self.country_of_residence.code
         mangopay_user.Nationality = self.nationality.code
@@ -161,6 +161,32 @@ class MangoPayNaturalUser(MangoPayUser):
 
     def _required_documents_types(self):
         return [IDENTITY_PROOF]
+
+    @property
+    def _first_name(self):
+        if self.first_name:
+            return self.first_name
+        try:
+            return self.user.first_name  # for Django < 1.5
+        except AttributeError:
+            pass
+        return ''
+
+    @property
+    def _last_name(self):
+        if self.last_name:
+            return self.last_name
+        try:
+            return self.user.last_name  # for Django < 1.5
+        except AttributeError:
+            pass
+        return ''
+
+    @property
+    def _email(self):
+        if self.email:
+            return self.email
+        return self.user.email
 
 
 class MangoPayLegalUser(MangoPayUser):
