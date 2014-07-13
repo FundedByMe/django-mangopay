@@ -170,7 +170,7 @@ class MangoPayNaturalUser(MangoPayUser):
         if self.first_name:
             return self.first_name
         try:
-            return self.user.first_name  # for Django < 1.5
+            return self.user.first_name  # if attribute exists
         except AttributeError:
             pass
         return ''
@@ -180,7 +180,7 @@ class MangoPayNaturalUser(MangoPayUser):
         if self.last_name:
             return self.last_name
         try:
-            return self.user.last_name  # for Django < 1.5
+            return self.user.last_name  # if attribute exists
         except AttributeError:
             pass
         return ''
@@ -189,7 +189,11 @@ class MangoPayNaturalUser(MangoPayUser):
     def _email(self):
         if self.email:
             return self.email
-        return self.user.email
+        try:
+            return self.user.email  # if attribute exists
+        except AttributeError:
+            pass
+        return ''
 
 
 class MangoPayLegalUser(MangoPayUser):
