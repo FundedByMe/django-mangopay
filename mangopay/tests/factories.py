@@ -18,7 +18,7 @@ from ..constants import IDENTITY_PROOF, BUSINESS
 try:
     USER_MODEL_FACTORY = settings.AUTH_USER_MODEL_FACTORY
 except AttributeError:
-    USER_MODEL_FACTORY = "mangopay.factories.UserFactory"
+    USER_MODEL_FACTORY = "mangopay.tests.factories.UserFactory"
 
 
 class UserFactory(factory.DjangoModelFactory):
