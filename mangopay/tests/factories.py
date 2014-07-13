@@ -15,9 +15,9 @@ from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
 from ..constants import IDENTITY_PROOF, BUSINESS
 
 
-if settings.AUTH_USER_MODEL_FACTORY:
+try:
     USER_MODEL_FACTORY = settings.AUTH_USER_MODEL_FACTORY
-else:
+except AttributeError:
     USER_MODEL_FACTORY = "mangopay.factories.UserFactory"
 
 
