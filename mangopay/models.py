@@ -3,7 +3,6 @@ from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
 
 from django.db import models
-from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.files.storage import default_storage
 
@@ -41,6 +40,9 @@ from .constants import (INCOME_RANGE_CHOICES,
 from .client import get_mangopay_api_client
 
 
+auth_user_model = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+
+
 def python_money_to_mangopay_money(python_money):
     amount = python_money.amount.quantize(Decimal('.01'),
                                           rounding=ROUND_FLOOR) * 100
@@ -57,16 +59,19 @@ class MangoPayUser(models.Model):
     objects = InheritanceManager()
 
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
-    user = models.ForeignKey(User, related_name="mangopay_users")
+    user = models.ForeignKey(auth_user_model, related_name="mangopay_users")
     type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
                             null=True)
+    first_name = models.CharField(null=True, blank=True, max_length=99)
+    last_name = models.CharField(null=True, blank=True, max_length=99)
+    email = models.EmailField(max_length=254, blank=True, null=True)
 
-    # Light Authenication Field:
+    # Light Authentication Field:
     birthday = models.DateField(blank=True, null=True)
     country_of_residence = CountryField()
     nationality = CountryField()
 
-    # Regular Authenication Fields:
+    # Regular Authentication Fields:
     address = models.CharField(blank=True, null=True, max_length=254)
 
     def create(self):
@@ -116,6 +121,36 @@ class MangoPayUser(models.Model):
                 type=type, status=VALIDATED).exists() and are_validated
         return are_validated
 
+    @property
+    def _first_name(self):
+        if self.first_name:
+            return self.first_name
+        try:
+            return self.user.first_name
+        except AttributeError:
+            pass
+        return ''
+
+    @property
+    def _last_name(self):
+        if self.last_name:
+            return self.last_name
+        try:
+            return self.user.last_name
+        except AttributeError:
+            pass
+        return ''
+
+    @property
+    def _email(self):
+        if self.email:
+            return self.email
+        try:
+            return self.user.email
+        except AttributeError:
+            pass
+        return ''
+
 
 class MangoPayNaturalUser(MangoPayUser):
     # Regular Authenication Fields:
@@ -125,9 +160,9 @@ class MangoPayNaturalUser(MangoPayUser):
 
     def _build(self):
         mangopay_user = UserNatural()
-        mangopay_user.FirstName = self.user.first_name
-        mangopay_user.LastName = self.user.last_name
-        mangopay_user.Email = self.user.email
+        mangopay_user.FirstName = self._first_name
+        mangopay_user.LastName = self._last_name
+        mangopay_user.Email = self._email
         mangopay_user.Birthday = self._birthday_fmt()
         mangopay_user.CountryOfResidence = self.country_of_residence.code
         mangopay_user.Nationality = self.nationality.code
@@ -164,15 +199,10 @@ class MangoPayNaturalUser(MangoPayUser):
 class MangoPayLegalUser(MangoPayUser):
     business_name = models.CharField(max_length=254)
     generic_business_email = models.EmailField(max_length=254)
-    # first_name, last_name, and email belong to the Legal Representative
-    # who is not always the same person as the linked user
-    first_name = models.CharField(max_length=99)
-    last_name = models.CharField(max_length=99)
 
     # Regular Authenication Fields:
     headquaters_address = models.CharField(blank=True, max_length=254,
                                            null=True)
-    email = models.EmailField(max_length=254, blank=True, null=True)
 
     def _build(self):
         mangopay_user = UserLegal()

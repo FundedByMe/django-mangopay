@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.conf import settings
 
 from money import Money
 import factory
@@ -12,6 +13,12 @@ from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
                       MangoPayRefund, MangoPayPayIn, MangoPayPage,
                       MangoPayPayOut, MangoPayDocument)
 from ..constants import IDENTITY_PROOF, BUSINESS
+
+
+user_model_factory = getattr(
+    settings,
+    "AUTH_USER_MODEL_FACTORY",
+    "mangopay.tests.factories.UserFactory")
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -31,7 +38,7 @@ class MangoPayNaturalUserFactory(factory.DjangoModelFactory):
     FACTORY_FOR = MangoPayNaturalUser
 
     mangopay_id = None
-    user = factory.SubFactory(UserFactory)
+    user = factory.SubFactory(user_model_factory)
     birthday = datetime.date(1989, 10, 20)
     country_of_residence = "US"
     nationality = "SE"
@@ -58,7 +65,7 @@ class MangoPayLegalUserFactory(factory.DjangoModelFactory):
 
     type = BUSINESS
     mangopay_id = None
-    user = factory.SubFactory(UserFactory)
+    user = factory.SubFactory(user_model_factory)
     birthday = datetime.date(1989, 10, 20)
     country_of_residence = "US"
     nationality = "SE"
