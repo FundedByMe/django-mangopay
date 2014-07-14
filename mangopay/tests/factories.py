@@ -15,7 +15,10 @@ from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
 from ..constants import IDENTITY_PROOF, BUSINESS
 
 
-USER_MODEL_FACTORY = getattr(settings, "AUTH_USER_MODEL_FACTORY", "mangopay.tests.factories.UserFactory")
+user_model_factory = getattr(
+    settings,
+    "AUTH_USER_MODEL_FACTORY",
+    "mangopay.tests.factories.UserFactory")
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -35,7 +38,7 @@ class MangoPayNaturalUserFactory(factory.DjangoModelFactory):
     FACTORY_FOR = MangoPayNaturalUser
 
     mangopay_id = None
-    user = factory.SubFactory(USER_MODEL_FACTORY)
+    user = factory.SubFactory(user_model_factory)
     birthday = datetime.date(1989, 10, 20)
     country_of_residence = "US"
     nationality = "SE"
@@ -62,7 +65,7 @@ class MangoPayLegalUserFactory(factory.DjangoModelFactory):
 
     type = BUSINESS
     mangopay_id = None
-    user = factory.SubFactory(USER_MODEL_FACTORY)
+    user = factory.SubFactory(user_model_factory)
     birthday = datetime.date(1989, 10, 20)
     country_of_residence = "US"
     nationality = "SE"
