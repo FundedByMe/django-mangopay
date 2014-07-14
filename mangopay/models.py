@@ -62,6 +62,9 @@ class MangoPayUser(models.Model):
     user = models.ForeignKey(auth_user_model, related_name="mangopay_users")
     type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
                             null=True)
+    first_name = models.CharField(null=True, blank=True, max_length=99)
+    last_name = models.CharField(null=True, blank=True, max_length=99)
+    email = models.EmailField(max_length=254, blank=True, null=True)
 
     # Light Authentication Field:
     birthday = models.DateField(blank=True, null=True)
@@ -118,15 +121,42 @@ class MangoPayUser(models.Model):
                 type=type, status=VALIDATED).exists() and are_validated
         return are_validated
 
+    @property
+    def _first_name(self):
+        if self.first_name:
+            return self.first_name
+        try:
+            return self.user.first_name
+        except AttributeError:
+            pass
+        return ''
+
+    @property
+    def _last_name(self):
+        if self.last_name:
+            return self.last_name
+        try:
+            return self.user.last_name
+        except AttributeError:
+            pass
+        return ''
+
+    @property
+    def _email(self):
+        if self.email:
+            return self.email
+        try:
+            return self.user.email
+        except AttributeError:
+            pass
+        return ''
+
 
 class MangoPayNaturalUser(MangoPayUser):
     # Regular Authenication Fields:
     occupation = models.CharField(blank=True, null=True, max_length=254)
     income_range = models.SmallIntegerField(
         blank=True, null=True, choices=INCOME_RANGE_CHOICES)
-    first_name = models.CharField(null=True, blank=True, max_length=99)
-    last_name = models.CharField(null=True, blank=True, max_length=99)
-    email = models.EmailField(blank=True, null=True, max_length=254)
 
     def _build(self):
         mangopay_user = UserNatural()
@@ -165,49 +195,14 @@ class MangoPayNaturalUser(MangoPayUser):
     def _required_documents_types(self):
         return [IDENTITY_PROOF]
 
-    @property
-    def _first_name(self):
-        if self.first_name:
-            return self.first_name
-        try:
-            return self.user.first_name  # if attribute exists
-        except AttributeError:
-            pass
-        return ''
-
-    @property
-    def _last_name(self):
-        if self.last_name:
-            return self.last_name
-        try:
-            return self.user.last_name  # if attribute exists
-        except AttributeError:
-            pass
-        return ''
-
-    @property
-    def _email(self):
-        if self.email:
-            return self.email
-        try:
-            return self.user.email  # if attribute exists
-        except AttributeError:
-            pass
-        return ''
-
 
 class MangoPayLegalUser(MangoPayUser):
     business_name = models.CharField(max_length=254)
     generic_business_email = models.EmailField(max_length=254)
-    # first_name, last_name, and email belong to the Legal Representative
-    # who is not always the same person as the linked user
-    first_name = models.CharField(max_length=99)
-    last_name = models.CharField(max_length=99)
 
     # Regular Authenication Fields:
     headquaters_address = models.CharField(blank=True, max_length=254,
                                            null=True)
-    email = models.EmailField(max_length=254, blank=True, null=True)
 
     def _build(self):
         mangopay_user = UserLegal()
