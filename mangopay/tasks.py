@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from celery.task import task
+from mangopaysdk.types.exceptions.responseexception import ResponseException
 
 from .constants import VALIDATION_ASKED
 from .models import (MangoPayUser, MangoPayBankAccount,
@@ -9,26 +10,40 @@ from .models import (MangoPayUser, MangoPayBankAccount,
 
 @task
 def create_mangopay_user(id):
-    MangoPayUser.objects.select_subclasses().get(
-        id=id, mangopay_id__isnull=True).create()
+    try:
+        MangoPayUser.objects.select_subclasses().get(
+            id=id, mangopay_id__isnull=True).create()
+    except ResponseException as exc:
+        raise create_mangopay_user.retry((), {"id": id}, exc=exc)
 
 
 @task
 def update_mangopay_user(id):
-    MangoPayUser.objects.select_subclasses().get(
-        id=id, mangopay_id__isnull=False).update()
+    try:
+        MangoPayUser.objects.select_subclasses().get(
+            id=id, mangopay_id__isnull=False).update()
+    except ResponseException as exc:
+        raise update_mangopay_user.retry((), {"id": id}, exc=exc)
 
 
 @task
 def create_mangopay_bank_account(id):
-    MangoPayBankAccount.objects.get(id=id, mangopay_id__isnull=True).create()
+    try:
+        MangoPayBankAccount.objects.get(
+            id=id, mangopay_id__isnull=True).create()
+    except ResponseException as exc:
+        raise create_mangopay_bank_account.retry((), {"id": id}, exc=exc)
 
 
 @task
 def create_mangopay_document_and_pages_and_ask_for_validation(id):
     document = MangoPayDocument.objects.get(
         id=id, mangopay_id__isnull=True, type__isnull=False)
-    document.create()
+    try:
+        document.create()
+    except ResponseException as exc:
+        raise create_mangopay_document_and_pages_and_ask_for_validation.retry(
+            exc=exc)
     for page in document.mangopay_pages.all():
         page.create()
     document.ask_for_validation()
@@ -49,22 +64,31 @@ def next_weekday():
 @task
 def update_document_status(id):
     document = MangoPayDocument.objects.get(id=id, status=VALIDATION_ASKED)
-    updated_document = document.get()
+    try:
+        updated_document = document.get()
+    except ResponseException as exc:
+        raise update_document_status.retry((), {"id": id}, exc=exc)
     if updated_document.status == VALIDATION_ASKED:
         eta = next_weekday()
         update_document_status.apply_async((), {"id": id}, eta=eta)
 
 
 @task
-def create_mangopay_wallet(id, currency, description=""):
+def create_mangopay_wallet(id, currency, description):
     wallet = MangoPayWallet.objects.get(id=id, mangopay_id__isnull=True)
-    wallet.create(currency=currency, description=description)
+    try:
+        wallet.create(currency=currency, description=description)
+    except ResponseException as exc:
+        raise create_mangopay_wallet.retry((), {"id": id}, exc=exc)
 
 
 @task
 def create_mangopay_pay_out(id, tag=''):
     payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=True)
-    payout.create(tag)
+    try:
+        payout.create(tag)
+    except ResponseException as exc:
+        raise create_mangopay_pay_out.retry((), {"id": id}, exc=exc)
     eta = next_weekday()
     update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
 
@@ -72,7 +96,10 @@ def create_mangopay_pay_out(id, tag=''):
 @task
 def update_mangopay_pay_out(id):
     payout = MangoPayPayOut.objects.get(id=id, mangopay_id__isnull=False)
-    payout = payout.get()
+    try:
+        payout = payout.get()
+    except ResponseException as exc:
+        raise update_mangopay_pay_out.retry((), {"id": id}, exc=exc)
     if not payout.status or payout.status == "CREATED":
         eta = next_weekday()
         update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
