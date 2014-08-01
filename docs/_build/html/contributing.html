@@ -53,7 +53,7 @@
 <span id="id1"></span><h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
 <p>We welcome your contribution.</p>
 <p>Please report issues via <a class="reference external" href="https://github.com/FundedByMe/django-mangopay/issues">Githubs Issue tracker</a>.</p>
-<p>Please <a class="reference external" href="https://github.com/FundedByMe/django-mangopay/pulls">submit pull requests here</a>. All pull requests should include tests. Tests should not touch Mangopay&#8217;s sandbox only the <tt class="docutils literal"><span class="pre">MockMangoPayApi</span></tt> in <tt class="docutils literal"><span class="pre">tests/client.py</span></tt>. You must however manually insure all functionatlity works against Mangopay&#8217;s sandbox.</p>
+<p>Please <a class="reference external" href="https://github.com/FundedByMe/django-mangopay/pulls">submit pull requests here</a>. All pull requests should include tests. Tests should not touch Mangopay&#8217;s sandbox only the <tt class="docutils literal"><span class="pre">MockMangoPayApi</span></tt> in <tt class="docutils literal"><span class="pre">tests/client.py</span></tt>. You must however manually insure all functionality works against Mangopay&#8217;s sandbox.</p>
 <p>To run the tests you will need to install the all requirements including the
 test specfic ones and then run the test runner.</p>
 <div class="highlight-python"><div class="highlight"><pre>pip install -r requirements.txt
@@ -62,6 +62,19 @@ pip install -r requirements_test.txt
 ./run_tests.py
 </pre></div>
 </div>
+<p>If you make any changes to the documentation you will need to rebuild the docs
+and commit those changes too.</p>
+<div class="highlight-python"><div class="highlight"><pre>cd docs
+make_html
+</pre></div>
+</div>
+<p>If you use custom User model in your django project and you would like to run the tests, you will need
+to create your own User model factory (using factory_boy) and reference it in your django settings in the AUTH_USER_MODEL_FACTORY setting.</p>
+<p>Example:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>AUTH_USER_MODEL_FACTORY = &#8220;my_app.factories.UserFactory&#8221;</dd>
+</dl>
 </div>
 
 

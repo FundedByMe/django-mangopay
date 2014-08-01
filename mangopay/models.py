@@ -496,7 +496,7 @@ class MangoPayPayIn(models.Model):
     result_code = models.CharField(null=True, blank=True, max_length=6)
     secure_mode_redirect_url = models.URLField(null=True, blank=True)
 
-    def create(self, debited_funds, fees=None, secure_mode_return_url=None):
+    def create(self, secure_mode_return_url, debited_funds, fees=None):
         pay_in = PayIn()
         pay_in.AuthorId = self.mangopay_user.mangopay_id
         pay_in.CreditedUserId = self.mangopay_wallet.mangopay_user.mangopay_id
