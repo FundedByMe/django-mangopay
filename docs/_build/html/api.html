@@ -256,8 +256,8 @@ created <tt class="docutils literal"><span class="pre">MangoPayWallet</span></tt
 <h3><a class="reference external" href="http://docs.mangopay.com/api-references/payins/payindirectcard/">POST /payins/card/direct</a><a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <p>Once you have successfully registered a card you can create a payin from that
 card to a created wallet. Instantiate a <tt class="docutils literal"><span class="pre">MangoPayPayIn</span></tt> model, add the user,
-wallet, and card; then call create with funds to be debited and optionally the
-fees and the secure mode return url. The payin will be created and the
+wallet, and card; then call create with the return url, the funds to be debited
+and optionally the fees. The payin will be created and the
 execution date, status, result code, id, status, and secure mode redirect url
 will be saved to the object.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="p">(</span><span class="n">MangoPayPayIn</span><span class="p">,</span> <span class="n">MangoPayCard</span><span class="p">,</span> <span class="n">MangoPayWallet</span><span class="p">,</span>
@@ -267,7 +267,8 @@ will be saved to the object.</p>
 <span class="n">payin</span><span class="o">.</span><span class="n">mangopay_user</span> <span class="o">=</span> <span class="n">MangoPayUser</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">payin</span><span class="o">.</span><span class="n">mangopay_wallet</span><span class="o">=</span> <span class="n">MangoPayWallet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">payin</span><span class="o">.</span><span class="n">mangopay_card</span> <span class="o">=</span> <span class="n">MangoPayCard</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">payin</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">debited_funds</span><span class="o">=</span><span class="n">Money</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span> <span class="s">&quot;EUR&quot;</span><span class="p">))</span>
+<span class="n">payin</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">secure_mode_return_url</span><span class="o">=</span><span class="s">&quot;https://my/secure/mode/return/url&quot;</span><span class="p">,</span>
+    <span class="n">debited_funds</span><span class="o">=</span><span class="n">Money</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span> <span class="s">&quot;EUR&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>

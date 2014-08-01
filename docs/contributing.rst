@@ -19,7 +19,16 @@ test specfic ones and then run the test runner.
 
     ./run_tests.py
 
-If you use custom User model in your django project and you would like to run the tests, you will need 
+If you make any changes to the documentation you will need to rebuild the docs
+and commit those changes too.
+
+::
+
+    cd docs
+    make html
+
+
+If you use custom User model in your django project and you would like to run the tests, you will need
 to create your own User model factory (using factory_boy) and reference it in your django settings in the AUTH_USER_MODEL_FACTORY setting.
 
 Example:

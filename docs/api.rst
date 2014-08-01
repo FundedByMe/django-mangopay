@@ -249,8 +249,8 @@ Not supported via this library or the API it is only supported by MangoPay's web
 **********************************************************************************************
 Once you have successfully registered a card you can create a payin from that
 card to a created wallet. Instantiate a ``MangoPayPayIn`` model, add the user,
-wallet, and card; then call create with funds to be debited and optionally the
-fees and the secure mode return url. The payin will be created and the
+wallet, and card; then call create with the return url, the funds to be debited
+and optionally the fees. The payin will be created and the
 execution date, status, result code, id, status, and secure mode redirect url
 will be saved to the object.
 
@@ -263,7 +263,8 @@ will be saved to the object.
     payin.mangopay_user = MangoPayUser.objects.get(id=1)
     payin.mangopay_wallet= MangoPayWallet.objects.get(id=1)
     payin.mangopay_card = MangoPayCard.objects.get(id=1)
-    payin.create(debited_funds=Money(1001, "EUR"))
+    payin.create(secure_mode_return_url="https://my/secure/mode/return/url",
+        debited_funds=Money(1001, "EUR"))
 
 `POST /payins/preauthorized/direct <http://docs.mangopay.com/api-references/payins/preauthorized-payin/>`_
 **********************************************************************************************************
