@@ -43,7 +43,7 @@ def create_mangopay_document_and_pages_and_ask_for_validation(id):
         document.create()
     except ResponseException as exc:
         raise create_mangopay_document_and_pages_and_ask_for_validation.retry(
-            exc=exc)
+            (), {"id": id}, exc=exc)
     for page in document.mangopay_pages.all():
         page.create()
     document.ask_for_validation()
@@ -79,7 +79,8 @@ def create_mangopay_wallet(id, currency, description):
     try:
         wallet.create(currency=currency, description=description)
     except ResponseException as exc:
-        raise create_mangopay_wallet.retry((), {"id": id}, exc=exc)
+        kwargs = {"id": id, "currency": currency, "description": description}
+        raise create_mangopay_wallet.retry((), kwargs, exc=exc)
 
 
 @task
