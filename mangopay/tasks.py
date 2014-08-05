@@ -63,14 +63,15 @@ def next_weekday():
 
 @task
 def update_document_status(id):
-    document = MangoPayDocument.objects.get(id=id, status=VALIDATION_ASKED)
-    try:
-        updated_document = document.get()
-    except ResponseException as exc:
-        raise update_document_status.retry((), {"id": id}, exc=exc)
-    if updated_document.status == VALIDATION_ASKED:
-        eta = next_weekday()
-        update_document_status.apply_async((), {"id": id}, eta=eta)
+    document = MangoPayDocument.objects.get(id=id)
+    if document.status == VALIDATION_ASKED:
+        try:
+            updated_document = document.get()
+        except ResponseException as exc:
+            raise update_document_status.retry((), {"id": id}, exc=exc)
+        if updated_document.status == VALIDATION_ASKED:
+            eta = next_weekday()
+            update_document_status.apply_async((), {"id": id}, eta=eta)
 
 
 @task
