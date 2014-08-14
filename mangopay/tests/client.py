@@ -8,6 +8,7 @@ from mangopaysdk.entities.wallet import Wallet
 from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.entities.payout import PayOut
 from mangopaysdk.entities.payin import PayIn
+from mangopaysdk.entities.transfer import Transfer
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payinexecutiondetailsdirect import (
     PayInExecutionDetailsDirect)
@@ -18,7 +19,7 @@ class MockMangoPayApi():
     def __init__(self, user_id=None, bank_account_id=None,
                  card_registration_id=None, card_id=None,
                  document_id=None, wallet_id=None, refund_id=None,
-                 pay_out_id=None, pay_in_id=None):
+                 pay_out_id=None, pay_in_id=None, transfer_id=None):
         self.users = MockUserApi(user_id, bank_account_id, document_id)
         self.cardRegistrations = MockCardRegistrationApi(
             card_registration_id, card_id)
@@ -26,6 +27,7 @@ class MockMangoPayApi():
         self.wallets = MockWalletApi(wallet_id)
         self.payOuts = MockPayOutApi(pay_out_id)
         self.payIns = MockPayInApi(refund_id, pay_in_id)
+        self.transfers = MockTransferApi(transfer_id)
 
 
 class MockUserApi():
@@ -200,3 +202,21 @@ class MockPayInApi():
             return refund
         else:
             raise TypeError("Refund must be a refund entity")
+
+
+class MockTransferApi():
+
+    def __init__(self, transfer_id):
+        self.transfer_id = transfer_id
+
+    def Create(self, transfer):
+        if isinstance(transfer, Transfer) and not transfer.Id:
+            transfer.Id = self.transfer_id
+            return transfer
+
+    def Get(self, transfer_id):
+        transfer = Transfer()
+        transfer.Id = transfer_id
+        transfer.ExecutionDate = 12312312
+        transfer.Status = "SUCCEEDED"
+        return transfer

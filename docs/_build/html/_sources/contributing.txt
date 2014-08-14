@@ -25,7 +25,7 @@ and commit those changes too.
 ::
 
     cd docs
-    make_html
+    make html
 
 
 If you use custom User model in your django project and you would like to run the tests, you will need
