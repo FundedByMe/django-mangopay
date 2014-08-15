@@ -587,7 +587,7 @@ class MangoPayTransfer(models.Model):
         transfer.DebitedFunds = python_money_to_mangopay_money(
             self.debited_funds)
         if not fees:
-            fees = Money(0, self.debited_funds.currency)
+            fees = PythonMoney(0, self.debited_funds.currency)
         transfer.Fees = python_money_to_mangopay_money(fees)
         client = get_mangopay_api_client()
         created_transfer = client.transfers.Create(transfer)
