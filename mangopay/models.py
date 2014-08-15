@@ -576,7 +576,7 @@ class MangoPayTransfer(models.Model):
                               blank=True, null=True)
     result_code = models.CharField(null=True, blank=True, max_length=6)
 
-    def create(self):
+    def create(self, fees=None):
         transfer = Transfer()
         transfer.DebitedWalletId = self.mangopay_debited_wallet.mangopay_id
         transfer.CreditedWalletId = self.mangopay_credited_wallet.mangopay_id
@@ -586,6 +586,9 @@ class MangoPayTransfer(models.Model):
             self.mangopay_credited_wallet.mangopay_user.mangopay_id
         transfer.DebitedFunds = python_money_to_mangopay_money(
             self.debited_funds)
+        if not fees:
+            fees = Money(0, self.debited_funds.currency)
+        transfer.Fees = python_money_to_mangopay_money(fees)
         client = get_mangopay_api_client()
         created_transfer = client.transfers.Create(transfer)
         self._update(created_transfer)
