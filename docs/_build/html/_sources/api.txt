@@ -421,3 +421,45 @@ Getting a payout will update the status and execution date from MangoPay.
 
     payout = MangoPayPayOut.objects.get(id=1)
     payout.get():
+
+
+Transfers
+---------
+
+.. _post_transfer:
+
+`POST /payouts/bankwire <http://docs.mangopay.com/api-references/transfers/>`_
+***************************************************************************************
+
+Transfer money from one mangopay wallet to another.
+To use it simply instantiate the ``MangoPayTransfer`` object
+add the user, the wallet you want to transfer from, and the wallet you
+want to transfer to, the funds to be debited;
+then save it and run ``create()``. MangoPay's
+generated id, the status, and the execution date will be saved to the object.
+
+::
+
+    from money import Money
+    from mangopay.models import MangoPayTransfer, MangoPayUser, MangoPayWallet
+
+    transfer = MangoPayTransfer()
+    transfer.mangopay_credited_wallet = MangoPayWallet.objects.get(id=1)
+    transfer.mangopay_debited_wallet = MangoPayWallet.objects.get(id=2)
+    transfer.debited_funds = Money(1000, "EUR")
+    transfer.save()
+
+    transfer.create()
+
+.. _get_transfer:
+
+`GET /transfers/{Transfer_Id} <http://docs.mangopay.com/api-references/transfers/>`_
+*****************************************************************************************
+Getting a transfer will update the status and execution date from MangoPay.
+
+::
+
+    from mangopay.models import MangoPayTransfer
+
+    transfer = MangoPayTransfer.objects.get(id=1)
+    transfer.get():

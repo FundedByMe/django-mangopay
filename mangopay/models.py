@@ -17,6 +17,7 @@ from mangopaysdk.entities.kycpage import KycPage
 from mangopaysdk.entities.payout import PayOut
 from mangopaysdk.entities.payin import PayIn
 from mangopaysdk.entities.refund import Refund
+from mangopaysdk.entities.transfer import Transfer
 from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payoutpaymentdetailsbankwire import (
@@ -560,3 +561,46 @@ class MangoPayRefund(models.Model):
         self.execution_date = get_execution_date_as_datetime(refund)
         self.save()
         return self.status == "SUCCEEDED"
+
+
+class MangoPayTransfer(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    mangopay_debited_wallet = models.ForeignKey(
+        MangoPayWallet, related_name="mangopay_debited_wallets")
+    mangopay_credited_wallet = models.ForeignKey(
+        MangoPayWallet, related_name="mangopay_credited_wallets")
+    debited_funds = MoneyField(default=0, default_currency="EUR",
+                               decimal_places=2, max_digits=12)
+    execution_date = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
+                              blank=True, null=True)
+    result_code = models.CharField(null=True, blank=True, max_length=6)
+
+    def create(self, fees=None):
+        transfer = Transfer()
+        transfer.DebitedWalletId = self.mangopay_debited_wallet.mangopay_id
+        transfer.CreditedWalletId = self.mangopay_credited_wallet.mangopay_id
+        transfer.AuthorId =\
+            self.mangopay_debited_wallet.mangopay_user.mangopay_id
+        transfer.CreditedUserId =\
+            self.mangopay_credited_wallet.mangopay_user.mangopay_id
+        transfer.DebitedFunds = python_money_to_mangopay_money(
+            self.debited_funds)
+        if not fees:
+            fees = PythonMoney(0, self.debited_funds.currency)
+        transfer.Fees = python_money_to_mangopay_money(fees)
+        client = get_mangopay_api_client()
+        created_transfer = client.transfers.Create(transfer)
+        self._update(created_transfer)
+
+    def get(self):
+        client = get_mangopay_api_client()
+        transfer = client.transfers.Get(self.mangopay_id)
+        self._update(transfer)
+
+    def _update(self, transfer):
+        self.status = transfer.Status
+        self.result_code = transfer.ResultCode
+        self.mangopay_id = transfer.Id
+        self.execution_date = get_execution_date_as_datetime(transfer)
+        self.save()

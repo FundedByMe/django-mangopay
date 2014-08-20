@@ -408,6 +408,40 @@ payout.get():
 </div>
 </div>
 </div>
+<div class="section" id="transfers">
+<h2>Transfers<a class="headerlink" href="#transfers" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="post-transfer">
+<span id="id31"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/transfers/">POST /payouts/bankwire</a><a class="headerlink" href="#post-transfer" title="Permalink to this headline">¶</a></h3>
+<p>Transfer money from one mangopay wallet to another.
+To use it simply instantiate the <tt class="docutils literal"><span class="pre">MangoPayTransfer</span></tt> object
+add the user, the wallet you want to transfer from, and the wallet you
+want to transfer to, the funds to be debited;
+then save it and run <tt class="docutils literal"><span class="pre">create()</span></tt>. MangoPay&#8217;s
+generated id, the status, and the execution date will be saved to the object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">money</span> <span class="kn">import</span> <span class="n">Money</span>
+<span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayTransfer</span><span class="p">,</span> <span class="n">MangoPayUser</span><span class="p">,</span> <span class="n">MangoPayWallet</span>
+
+<span class="n">transfer</span> <span class="o">=</span> <span class="n">MangoPayTransfer</span><span class="p">()</span>
+<span class="n">transfer</span><span class="o">.</span><span class="n">mangopay_credited_wallet</span> <span class="o">=</span> <span class="n">MangoPayWallet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">transfer</span><span class="o">.</span><span class="n">mangopay_debited_wallet</span> <span class="o">=</span> <span class="n">MangoPayWallet</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">transfer</span><span class="o">.</span><span class="n">debited_funds</span> <span class="o">=</span> <span class="n">Money</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="s">&quot;EUR&quot;</span><span class="p">)</span>
+<span class="n">transfer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="n">transfer</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id32">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/transfers/">GET /transfers/{Transfer_Id}</a><a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
+<p>Getting a transfer will update the status and execution date from MangoPay.</p>
+<div class="highlight-python"><div class="highlight"><pre>from mangopay.models import MangoPayTransfer
+
+transfer = MangoPayTransfer.objects.get(id=1)
+transfer.get():
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -461,6 +495,11 @@ payout.get():
 <li><a class="reference internal" href="#payouts">PayOuts</a><ul>
 <li><a class="reference internal" href="#post-payouts-bankwire">POST /payouts/bankwire</a></li>
 <li><a class="reference internal" href="#get-payouts">GET /payouts/{PayOut_Id}</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#transfers">Transfers</a><ul>
+<li><a class="reference internal" href="#post-transfer">POST /payouts/bankwire</a></li>
+<li><a class="reference internal" href="#id32">GET /transfers/{Transfer_Id}</a></li>
 </ul>
 </li>
 </ul>
