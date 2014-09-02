@@ -5,6 +5,7 @@ from decimal import Decimal, ROUND_FLOOR
 from django.db import models
 from django.conf import settings
 from django.core.files.storage import default_storage
+from django.utils.timezone import utc
 
 from money.contrib.django.models.fields import MoneyField
 from model_utils.managers import InheritanceManager
@@ -53,7 +54,11 @@ def python_money_to_mangopay_money(python_money):
 def get_execution_date_as_datetime(mangopay_entity):
     execution_date = mangopay_entity.ExecutionDate
     if execution_date:
-        return datetime.fromtimestamp(int(execution_date))
+        formated_date = datetime.fromtimestamp(int(execution_date))
+        if settings.USE_TZ:
+            return formated_date.replace(tzinfo=utc)
+        else:
+            return formated_date
 
 
 class MangoPayUser(models.Model):
