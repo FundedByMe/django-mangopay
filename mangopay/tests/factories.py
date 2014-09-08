@@ -140,6 +140,7 @@ class MangoPayWalletFactory(factory.DjangoModelFactory):
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    currency = "EUR"
 
 
 class MangoPayPayOutFactory(factory.DjangoModelFactory):

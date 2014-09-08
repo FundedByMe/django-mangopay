@@ -217,7 +217,7 @@ Wallets
 ********************************************************************
 
 In order to create a wallet just instantiate a ``MangoPayWallet`` object, add user
-to it, save it and call ``create()`` on it with a supported currency.
+to it, save it and call ``create()``.
 
 ::
 
@@ -228,7 +228,7 @@ to it, save it and call ``create()`` on it with a supported currency.
     wallet.mangopay_user = user
     wallet.save()
 
-    wallet.create("SEK", "Sven's Wallet")
+    wallet.create(description="Sven's Wallet")
 
 
 `GET /wallets/{Wallet_Id} <http://docs.mangopay.com/api-references/wallets/>`_
