@@ -228,7 +228,7 @@ this instantiate a  <tt class="docutils literal"><span class="pre">MangoPayBankA
 <div class="section" id="post-wallets">
 <span id="id13"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/wallets/">POST /wallets</a><a class="headerlink" href="#post-wallets" title="Permalink to this headline">¶</a></h3>
 <p>In order to create a wallet just instantiate a <tt class="docutils literal"><span class="pre">MangoPayWallet</span></tt> object, add user
-to it, save it and call <tt class="docutils literal"><span class="pre">create()</span></tt> on it with a supported currency.</p>
+to it, save it and call <tt class="docutils literal"><span class="pre">create()</span></tt>.</p>
 <div class="highlight-python"><div class="highlight"><pre>from mangopay.models MangoPayWallet, MangoPayUser
 
 user = MangoPayUser.objects.get(id=1)
@@ -236,7 +236,7 @@ wallet = MangoPayWallet()
 wallet.mangopay_user = user
 wallet.save()
 
-wallet.create(&quot;SEK&quot;, &quot;Sven&#39;s Wallet&quot;)
+wallet.create(description=&quot;Sven&#39;s Wallet&quot;)
 </pre></div>
 </div>
 </div>
