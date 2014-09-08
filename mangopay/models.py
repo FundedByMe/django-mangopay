@@ -367,7 +367,7 @@ class MangoPayWallet(models.Model):
         MangoPayUser, related_name="mangopay_wallets")
     currency = models.CharField(max_length=3, default="EUR")
 
-    def create(self, description=""):
+    def create(self, description):
         mangopay_wallet = Wallet()
         mangopay_wallet.Owners = [str(self.mangopay_user.mangopay_id)]
         mangopay_wallet.Description = description
