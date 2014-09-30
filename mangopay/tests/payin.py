@@ -19,8 +19,7 @@ class MangoPayPayInTests(TestCase):
         id = 76
         mock_client.return_value = MockMangoPayApi(pay_in_id=id)
         self.assertIsNone(self.pay_in.mangopay_id)
-        self.pay_in.create(debited_funds=Money(100, "EUR"),
-                           fees=Money(5, "EUR"),
+        self.pay_in.create(fees=Money(5, "EUR"),
                            secure_mode_return_url="http://test.com")
         MangoPayPayIn.objects.get(id=self.pay_in.id, mangopay_id=id)
 
