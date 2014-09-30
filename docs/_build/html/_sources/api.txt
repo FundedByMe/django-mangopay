@@ -256,15 +256,16 @@ will be saved to the object.
 
 ::
 
+    from money import Money
     from mangopay.models import (MangoPayPayIn, MangoPayCard, MangoPayWallet,
                                  MangoPayUser)
 
     payin = MangoPayPayIn()
     payin.mangopay_user = MangoPayUser.objects.get(id=1)
-    payin.mangopay_wallet= MangoPayWallet.objects.get(id=1)
+    payin.mangopay_wallet = MangoPayWallet.objects.get(id=1)
     payin.mangopay_card = MangoPayCard.objects.get(id=1)
-    payin.create(secure_mode_return_url="https://my/secure/mode/return/url",
-        debited_funds=Money(1001, "EUR"))
+    payin.debited_funds = Money(1001, "EUR")
+    payin.create(secure_mode_return_url="https://my/secure/mode/return/url")
 
 `POST /payins/preauthorized/direct <http://docs.mangopay.com/api-references/payins/preauthorized-payin/>`_
 **********************************************************************************************************
