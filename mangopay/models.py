@@ -533,9 +533,12 @@ class MangoPayPayIn(models.Model):
         self._update(created_pay_in)
 
     def get(self):
+        pay_in = self._get()
+        return self._update(pay_in)
+
+    def _get(self):
         client = get_mangopay_api_client()
-        pay_in = client.payIns.Get(self.mangopay_id)
-        self._update(pay_in)
+        return client.payIns.Get(self.mangopay_id)
 
     def _update(self, pay_in):
         self.status = pay_in.Status
@@ -544,6 +547,7 @@ class MangoPayPayIn(models.Model):
         self.secure_mode_redirect_url = pay_in.\
             ExecutionDetails.SecureModeRedirectURL
         self.save()
+        return self
 
 
 class MangoPayRefund(models.Model):
