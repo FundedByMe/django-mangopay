@@ -499,22 +499,22 @@ class MangoPayPayIn(models.Model):
                                       related_name="mangopay_payins")
     debited_funds = MoneyField(default=0, default_currency="EUR",
                                decimal_places=2, max_digits=12)
+    fees = MoneyField(default=0, default_currency="EUR", decimal_places=2,
+                      max_digits=12)
     execution_date = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
                               blank=True, null=True)
     result_code = models.CharField(null=True, blank=True, max_length=6)
     secure_mode_redirect_url = models.URLField(null=True, blank=True)
 
-    def create(self, secure_mode_return_url, fees=None):
+    def create(self, secure_mode_return_url):
         pay_in = PayIn()
         pay_in.AuthorId = self.mangopay_user.mangopay_id
         pay_in.CreditedUserId = self.mangopay_wallet.mangopay_user.mangopay_id
         pay_in.CreditedWalletId = self.mangopay_wallet.mangopay_id
         pay_in.DebitedFunds = python_money_to_mangopay_money(
             self.debited_funds)
-        if not fees:
-            fees = PythonMoney(0, self.debited_funds.currency)
-        pay_in.Fees = python_money_to_mangopay_money(fees)
+        pay_in.Fees = python_money_to_mangopay_money(self.fees)
 
         payment_details = PayInPaymentDetailsCard()
         payment_details.CardType = "CB_VISA_MASTERCARD"

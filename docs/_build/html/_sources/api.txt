@@ -265,6 +265,7 @@ will be saved to the object.
     payin.mangopay_wallet = MangoPayWallet.objects.get(id=1)
     payin.mangopay_card = MangoPayCard.objects.get(id=1)
     payin.debited_funds = Money(1001, "EUR")
+    payin.fees = Money(0, "EUR")
     payin.create(secure_mode_return_url="https://my/secure/mode/return/url")
 
 `POST /payins/preauthorized/direct <http://docs.mangopay.com/api-references/payins/preauthorized-payin/>`_
