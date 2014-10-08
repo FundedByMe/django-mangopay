@@ -90,7 +90,8 @@ def create_mangopay_pay_out(id, tag=''):
     try:
         payout.create(tag)
     except ResponseException as exc:
-        raise create_mangopay_pay_out.retry((), {"id": id}, exc=exc)
+        kwargs = {"id": id, "tag": tag}
+        raise create_mangopay_pay_out.retry((), kwargs, exc=exc)
     eta = next_weekday()
     update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
 
