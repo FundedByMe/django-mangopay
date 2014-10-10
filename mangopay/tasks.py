@@ -75,12 +75,12 @@ def update_document_status(id):
 
 
 @task
-def create_mangopay_wallet(id, currency, description):
+def create_mangopay_wallet(id, description):
     wallet = MangoPayWallet.objects.get(id=id, mangopay_id__isnull=True)
     try:
-        wallet.create(currency=currency, description=description)
+        wallet.create(description=description)
     except ResponseException as exc:
-        kwargs = {"id": id, "currency": currency, "description": description}
+        kwargs = {"id": id, "description": description}
         raise create_mangopay_wallet.retry((), kwargs, exc=exc)
 
 
