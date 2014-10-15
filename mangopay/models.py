@@ -314,6 +314,7 @@ def page_storage():
     else:
         from storages.backends.s3boto import S3BotoStorage
         return S3BotoStorage(
+            acl='private',
             headers={'Content-Disposition': 'attachment',
                      'X-Robots-Tag': 'noindex, nofollow, noimageindex'},
             bucket=settings.AWS_MEDIA_BUCKET_NAME,
