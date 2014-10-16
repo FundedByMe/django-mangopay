@@ -345,8 +345,8 @@ class MangoPayPage(models.Model):
             file_url = self.file.storage.connection.generate_url(
                 120, 'GET', self.file.storage.bucket_name, self.file.name,
                 force_http=True)
-            responce = requests.get(file_url)
-            bytes = base64.b64encode(responce.content)
+            response = requests.get(file_url)
+            bytes = base64.b64encode(response.content)
         return bytes
 
 
