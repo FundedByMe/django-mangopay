@@ -29,6 +29,7 @@ from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 from money import Money as PythonMoney
+import requests
 
 from .constants import (INCOME_RANGE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES,
@@ -314,6 +315,7 @@ def page_storage():
     else:
         from storages.backends.s3boto import S3BotoStorage
         return S3BotoStorage(
+            acl='private',
             headers={'Content-Disposition': 'attachment',
                      'X-Robots-Tag': 'noindex, nofollow, noimageindex'},
             bucket=settings.AWS_MEDIA_BUCKET_NAME,
@@ -328,14 +330,24 @@ class MangoPayPage(models.Model):
 
     def create(self):
         page = KycPage()
-        self.file.open(mode='rb')
-        bytes = base64.b64encode(self.file.read())
-        self.file.close()
-        page.File = bytes.decode("utf-8")
+        page.File = self._file_bytes().decode("utf-8")
         client = get_mangopay_api_client()
         client.users.CreateUserKycPage(page,
                                        self.document.mangopay_user.mangopay_id,
                                        self.document.mangopay_id)
+
+    def _file_bytes(self):
+        if settings.MANGOPAY_PAGE_DEFAULT_STORAGE:
+            self.file.open(mode='rb')
+            bytes = base64.b64encode(self.file.read())
+            self.file.close()
+        else:
+            file_url = self.file.storage.connection.generate_url(
+                120, 'GET', self.file.storage.bucket_name, self.file.name,
+                force_http=True)
+            response = requests.get(file_url)
+            bytes = base64.b64encode(response.content)
+        return bytes
 
 
 class MangoPayBankAccount(models.Model):
