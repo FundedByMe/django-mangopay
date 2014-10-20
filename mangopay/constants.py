@@ -13,13 +13,14 @@ USER_TYPE_CHOICES = (
 USER_TYPE_CHOICES_DICT = dict(USER_TYPE_CHOICES)
 
 INCOME_RANGE_CHOICES = (
-    (1, _("Less than 18K Euros")),
-    (2, _("Between 18K and 30K Euros")),
-    (3, _("Between 30K and 50K Euros")),
-    (4, _("Between 50K and 80K Euros")),
-    (5, _("Between 80K and 120K Euros")),
-    (6, _("Greater than 120K Euros")),
+    (1, "0 - 1,500"),
+    (2, "1,500 - 2,499"),
+    (3, "2,500 - 3,999"),
+    (4, "4,000 - 7,499"),
+    (5, "7,500 - 9,999"),
+    (6, "10,000 +"),
 )
+# Income range choices are given per month in euro
 
 IDENTITY_PROOF = "IP"
 REGISTRATION_PROOF = "RP"
