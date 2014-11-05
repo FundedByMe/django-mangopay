@@ -522,7 +522,7 @@ class MangoPayPayIn(models.Model):
     def create(self, secure_mode_return_url):
         pay_in = PayIn()
         pay_in.AuthorId = self.mangopay_user.mangopay_id
-        pay_in.CreditedUserId = self.mangopay_wallet.mangopay_user.mangopay_id
+        pay_in.CreditedUserId = self.mangopay_user.mangopay_id
         pay_in.CreditedWalletId = self.mangopay_wallet.mangopay_id
         pay_in.DebitedFunds = python_money_to_mangopay_money(
             self.debited_funds)
