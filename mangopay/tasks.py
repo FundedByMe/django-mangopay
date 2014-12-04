@@ -112,8 +112,8 @@ def update_mangopay_pay_out(id):
         eta = next_weekday()
         update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
     elif payout.status == "SUCCEEDED":
-        task = getattr(settings, 'MANGOPAY_PAYOUT_SUCCEDED_TASK', None)
+        task = getattr(settings, 'MANGOPAY_PAYOUT_SUCCEEDED_TASK', None)
         if task:
-            task.run(payout_id=payout.id)
+            task().run(payout_id=payout.id)
     else:
         logger.error("Payout %i could not be process successfully" % payout.id)
