@@ -1,11 +1,16 @@
 from datetime import datetime, timedelta
 
+from django.conf import settings
+
 from celery.task import task
+from celery.utils.log import get_task_logger
 from mangopaysdk.types.exceptions.responseexception import ResponseException
 
 from .constants import VALIDATION_ASKED
 from .models import (MangoPayUser, MangoPayBankAccount,
                      MangoPayDocument, MangoPayWallet, MangoPayPayOut)
+
+logger = get_task_logger(__name__)
 
 
 @task
@@ -106,3 +111,9 @@ def update_mangopay_pay_out(id):
     if not payout.status or payout.status == "CREATED":
         eta = next_weekday()
         update_mangopay_pay_out.apply_async((), {"id": id}, eta=eta)
+    elif payout.status == "SUCCEEDED":
+        task = getattr(settings, 'MANGOPAY_PAYOUT_SUCCEEDED_TASK', None)
+        if task:
+            task().run(payout_id=payout.id)
+    else:
+        logger.error("Payout %i could not be process successfully" % payout.id)
