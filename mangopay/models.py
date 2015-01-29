@@ -252,7 +252,7 @@ class MangoPayLegalUser(MangoPayUser):
                 and super(MangoPayLegalUser, self).has_regular_authenication())
 
     def _required_documents_types(self):
-        types = [REGISTRATION_PROOF]
+        types = [IDENTITY_PROOF, REGISTRATION_PROOF]
         if self.type == BUSINESS:
             types.append(SHAREHOLDER_DECLARATION)
         elif self.type == ORGANIZATION:
