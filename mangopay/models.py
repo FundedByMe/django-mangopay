@@ -489,6 +489,17 @@ class MangoPayCardRegistration(models.Model):
             "cardRegistrationURL": card_registration.CardRegistrationURL}
         return preregistration_data
 
+    def get_mangopay_card_id(self, registration_data):
+        """
+        function for getting mangopay CardId after having RegistrationData
+        and save the ID to database
+        """
+        client = get_mangopay_api_client()
+        cr = client.cardRegistrations.Get(self.mangopay_id)
+        cr.RegistrationData = registration_data
+        cro = client.cardRegistrations.Update(cr)
+        self.save_mangopay_card_id(cro.CardId)
+
     def save_mangopay_card_id(self, mangopay_card_id):
         self.mangopay_card.mangopay_id = mangopay_card_id
         self.mangopay_card.save()
