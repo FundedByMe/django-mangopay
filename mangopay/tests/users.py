@@ -114,6 +114,9 @@ class RegularAuthenticationMangoPayLegalUserTests(
     def setUp(self):
         super(RegularAuthenticationMangoPayLegalUserTests, self).setUp()
         self.user = RegularAuthenticationMangoPayLegalUserFactory()
+        self.identity_proof = MangoPayDocumentFactory(
+            mangopay_user=self.user, type=IDENTITY_PROOF,
+            status=VALIDATED)
         self.registration_proof = MangoPayDocumentFactory(
             mangopay_user=self.user, type=REGISTRATION_PROOF,
             status=VALIDATED)
@@ -132,10 +135,18 @@ class RegularAuthenticationMangoPayLegalUserTests(
         self.assertEqual(
             self.user.required_documents_types_that_need_to_be_reuploaded(),
             [])
+        self.identity_proof.status = REFUSED
+        self.identity_proof.save()
         self.registration_proof.status = REFUSED
         self.registration_proof.save()
         self.shareholder_declaration.status = REFUSED
         self.shareholder_declaration.save()
+        self.assertEqual(
+            self.user.required_documents_types_that_need_to_be_reuploaded(),
+            [IDENTITY_PROOF, REGISTRATION_PROOF, SHAREHOLDER_DECLARATION])
+        MangoPayDocumentFactory(mangopay_user=self.user,
+                                type=IDENTITY_PROOF,
+                                status=VALIDATION_ASKED)
         self.assertEqual(
             self.user.required_documents_types_that_need_to_be_reuploaded(),
             [REGISTRATION_PROOF, SHAREHOLDER_DECLARATION])
