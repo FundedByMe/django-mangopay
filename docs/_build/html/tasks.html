@@ -85,16 +85,26 @@ the MangoPay API.</p>
 <div class="section" id="create-mangopay-document-and-pages-and-ask-for-validation">
 <h2>create_mangopay_document_and_pages_and_ask_for_validation<a class="headerlink" href="#create-mangopay-document-and-pages-and-ask-for-validation" title="Permalink to this headline">¶</a></h2>
 <p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayDocument</span></tt> creates the document and all the related
-pages and then asks for validation of the document. Runs
-<tt class="docutils literal"><span class="pre">update_document_status</span></tt> the following weekday. MangoPay says they will verify
-and update the status of your document the following business day. See
-<a class="reference internal" href="api.html#post-kyc-documents"><em>POST /KYC/Documents</em></a>.</p>
+pages and then asks for validation of the document.:ref:<cite>UpdateDocumentsStatus</cite> or
+<em class="xref std std-ref">update_document_status`can be used to update the status. MangoPay says
+they will verify and update the status of your document the following business day.
+See :ref:`post_kyc_documents</em>.</p>
+</div>
+<div class="section" id="updatedocumentsstatus">
+<h2>UpdateDocumentsStatus<a class="headerlink" href="#updatedocumentsstatus" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>An abstract periodic task which can be subclassed to update documents with status</dt>
+<dd><tt class="docutils literal"><span class="pre">VALIDATION_ASKED</span></tt>. See <a class="reference internal" href="api.html#get-kyc-documents"><em>GET /KYC/Documents/{Document_Id}</em></a>.</dd>
+</dl>
 </div>
 <div class="section" id="update-document-status">
 <h2>update_document_status<a class="headerlink" href="#update-document-status" title="Permalink to this headline">¶</a></h2>
-<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayDocument</span></tt> and updates the status of it. The task will
-call itself again the next weekday if the document still has the status
-<tt class="docutils literal"><span class="pre">VALIDATION_ASKED</span></tt>. See <a class="reference internal" href="api.html#get-kyc-documents"><em>GET /KYC/Documents/{Document_Id}</em></a>.</p>
+<p>Takes the id of a <tt class="docutils literal"><span class="pre">MangoPayDocument</span></tt> and updates it if its current
+status is <tt class="docutils literal"><span class="pre">VALIDATION_ASKED</span></tt>. This task is used in <em class="xref std std-ref">UpdateDocumentsStatus</em>
+but can also be used on its own:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">update_document_status</span><span class="o">.</span><span class="n">apply_async</span><span class="p">((),</span> <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">},</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="create-mangopay-wallet">
 <h2>create_mangopay_wallet<a class="headerlink" href="#create-mangopay-wallet" title="Permalink to this headline">¶</a></h2>
@@ -125,6 +135,7 @@ call itself again the next weekday if the document still has the status
 <li><a class="reference internal" href="#update-mangopay-user">update_mangopay_user</a></li>
 <li><a class="reference internal" href="#create-mangopay-bank-account">create_mangopay_bank_account</a></li>
 <li><a class="reference internal" href="#create-mangopay-document-and-pages-and-ask-for-validation">create_mangopay_document_and_pages_and_ask_for_validation</a></li>
+<li><a class="reference internal" href="#updatedocumentsstatus">UpdateDocumentsStatus</a></li>
 <li><a class="reference internal" href="#update-document-status">update_document_status</a></li>
 <li><a class="reference internal" href="#create-mangopay-wallet">create_mangopay_wallet</a></li>
 <li><a class="reference internal" href="#create-mangopay-pay-out">create_mangopay_pay_out</a></li>

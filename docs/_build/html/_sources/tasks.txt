@@ -42,17 +42,25 @@ create_mangopay_document_and_pages_and_ask_for_validation
 ---------------------------------------------------------
 
 Takes the id of a ``MangoPayDocument`` creates the document and all the related
-pages and then asks for validation of the document. Runs
-``update_document_status`` the following weekday. MangoPay says they will verify
-and update the status of your document the following business day. See
-:ref:`post_kyc_documents`.
+pages and then asks for validation of the document.:ref:`UpdateDocumentsStatus` or
+:ref:`update_document_status`can be used to update the status. MangoPay says
+they will verify and update the status of your document the following business day.
+See :ref:`post_kyc_documents`.
+
+UpdateDocumentsStatus
+---------------------
+
+An abstract periodic task which can be subclassed to update documents with status
+ ``VALIDATION_ASKED``. See :ref:`get_kyc_documents`.
 
 update_document_status
 ----------------------
 
-Takes the id of a ``MangoPayDocument`` and updates the status of it. The task will
-call itself again the next weekday if the document still has the status
-``VALIDATION_ASKED``. See :ref:`get_kyc_documents`.
+Takes the id of a ``MangoPayDocument`` and updates it if its current
+status is ``VALIDATION_ASKED``. This task is used in :ref:`UpdateDocumentsStatus`
+but can also be used on its own::
+
+    update_document_status.apply_async((), {"id": id}, eta=eta)
 
 create_mangopay_wallet
 ----------------------

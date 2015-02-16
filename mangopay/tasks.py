@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from django.conf import settings
 
 from celery.task import task
+from celery.task import PeriodicTask
+from celery.schedules import crontab
 from celery.utils.log import get_task_logger
 from mangopaysdk.types.exceptions.responseexception import ResponseException
 
@@ -11,6 +13,16 @@ from .models import (MangoPayUser, MangoPayBankAccount,
                      MangoPayDocument, MangoPayWallet, MangoPayPayOut)
 
 logger = get_task_logger(__name__)
+
+
+def next_weekday():
+    def maybe_add_day(date):
+        if datetime.weekday(date) >= 5:
+            date += timedelta(days=1)
+            return maybe_add_day(date)
+        else:
+            return date
+    return maybe_add_day(datetime.now() + timedelta(days=1))
 
 
 @task
@@ -52,31 +64,23 @@ def create_mangopay_document_and_pages_and_ask_for_validation(id):
     for page in document.mangopay_pages.all():
         page.create()
     document.ask_for_validation()
-    eta = next_weekday()
-    update_document_status.apply_async((), {"id": id}, eta=eta)
-
-
-def next_weekday():
-    def maybe_add_day(date):
-        if datetime.weekday(date) > 6:
-            date = date + timedelta(days=1)
-            return maybe_add_day(date)
-        else:
-            return date
-    return maybe_add_day(datetime.now() + timedelta(days=1))
 
 
 @task
 def update_document_status(id):
     document = MangoPayDocument.objects.get(id=id)
     if document.status == VALIDATION_ASKED:
-        try:
-            updated_document = document.get()
-        except ResponseException as exc:
-            raise update_document_status.retry((), {"id": id}, exc=exc)
-        if updated_document.status == VALIDATION_ASKED:
-            eta = next_weekday()
-            update_document_status.apply_async((), {"id": id}, eta=eta)
+        document.get()
+
+
+class UpdateDocumentsStatus(PeriodicTask):
+    abstract = True
+    run_every = crontab(minute=0, hour='8-17', day_of_week='mon-fri')
+
+    def run(self, *args, **kwargs):
+        documents = MangoPayDocument.objects.filter(status=VALIDATION_ASKED)
+        for document in documents:
+            update_document_status.delay(document.id)
 
 
 @task
