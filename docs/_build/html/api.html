@@ -313,7 +313,17 @@ access the card&#8217;s preregistration data by calling <tt class="docutils lite
 </div>
 </div>
 <div class="section" id="id21">
-<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/">GET /cards/{Card_Id}</a><a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card-registration/">PUT /CardRegistrations/{CardRegistration_Id}</a><a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<p>Before a card can be used you have to get the CardId from mangopay server and to do this, you need to create a PUT request with RegistrationData obtained from client-side process (Step 5-6 on Mangopay API documentation Card Registration Flow diagram). This step is not required if you use MangoPay&#8217;s <a class="reference external" href="https://github.com/MangoPay/cardregistration-js-kit">Card Registration JS Kit</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">mangopay.models</span> <span class="kn">import</span> <span class="n">MangoPayCardRegistration</span>
+
+<span class="n">card_registration</span> <span class="o">=</span> <span class="n">MangoPayCardRegistration</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">card_registration</span><span class="o">.</span><span class="n">get_mangopay_card_id</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;RegistrationData&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id22">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/">GET /cards/{Card_Id}</a><a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
 <p>After registering a card with MangoPay you should get back the card&#8217;s Id. If you
 save that card&#8217;s Id to the related <tt class="docutils literal"><span class="pre">MangoPayCard</span></tt> object by calling
 <tt class="docutils literal"><span class="pre">save_mangopay_card_id()</span></tt>, then later you can access the card&#8217;s info by calling
@@ -329,26 +339,26 @@ object.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id22">
-<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/pre-authorization/">POST /preauthorization/card/direct</a><a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id23">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/pre-authorization/">POST /preauthorization/card/direct</a><a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
 <p>Preauthorizations are not currently supported by this library. Pull
 requests are welcome. See <a class="reference internal" href="contributing.html#contributing"><em>Contributing</em></a>.</p>
 </div>
-<div class="section" id="id23">
-<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/pre-authorization/">GET /preauthorization/{PreAuthorization_Id}</a><a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id24">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/card/pre-authorization/">GET /preauthorization/{PreAuthorization_Id}</a><a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
 <p>Preauthorizations are not currently supported by this library. Pull
 requests are welcome. See <a class="reference internal" href="contributing.html#contributing"><em>Contributing</em></a>.</p>
 </div>
 </div>
 <div class="section" id="refunds">
 <h2>Refunds<a class="headerlink" href="#refunds" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id24">
-<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-transfer/">POST /transfers/{Transfer_Id}/Refund</a><a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id25">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-transfer/">POST /transfers/{Transfer_Id}/Refund</a><a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
 <p>Transfers and refunds of those transfers are not supported by this library. Pull
 requests are welcome.</p>
 </div>
-<div class="section" id="id25">
-<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-pay-in/">POST /payins/{PayIn_Id}/Refund</a><a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id26">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/%E2%80%A2-refund-a-pay-in/">POST /payins/{PayIn_Id}/Refund</a><a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
 <p>Currently only simple refunds are supported. That means you can only create a
 complete refund on a pay in, not a partial one. To create a simple refund just
 instantiate a <tt class="docutils literal"><span class="pre">MangoPayRefund</span></tt> object and add the payin you want to refund and
@@ -367,8 +377,8 @@ successful then <tt class="docutils literal"><span class="pre">create_simple</sp
 </pre></div>
 </div>
 </div>
-<div class="section" id="id26">
-<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/">GET /refunds/{Refund_Id}</a><a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id27">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/refund/">GET /refunds/{Refund_Id}</a><a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h3>
 <p>Getting a refund via its ID is not supported by this library. Pull requests
 welcome.</p>
 </div>
@@ -376,7 +386,7 @@ welcome.</p>
 <div class="section" id="payouts">
 <h2>PayOuts<a class="headerlink" href="#payouts" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="post-payouts-bankwire">
-<span id="id28"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/pay-out-bank-wire/">POST /payouts/bankwire</a><a class="headerlink" href="#post-payouts-bankwire" title="Permalink to this headline">¶</a></h3>
+<span id="id29"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/pay-out-bank-wire/">POST /payouts/bankwire</a><a class="headerlink" href="#post-payouts-bankwire" title="Permalink to this headline">¶</a></h3>
 <p>Payouts transfer money from a wallet to a user&#8217;s bank account. In order
 for a payout to run successfully, the user&#8217;s KYC requirements must
 be fufilled. To use it simply instantiate the <tt class="docutils literal"><span class="pre">MangoPayPayOut</span></tt> object
@@ -400,7 +410,7 @@ generated id, the status, and the execution date will be saved to the object.</p
 </div>
 </div>
 <div class="section" id="get-payouts">
-<span id="id29"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/pay-out-bank-wire/">GET /payouts/{PayOut_Id}</a><a class="headerlink" href="#get-payouts" title="Permalink to this headline">¶</a></h3>
+<span id="id30"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/pay-out-bank-wire/">GET /payouts/{PayOut_Id}</a><a class="headerlink" href="#get-payouts" title="Permalink to this headline">¶</a></h3>
 <p>Getting a payout will update the status and execution date from MangoPay.</p>
 <div class="highlight-python"><div class="highlight"><pre>from mangopay.models import MangoPayPayOut
 
@@ -413,7 +423,7 @@ payout.get():
 <div class="section" id="transfers">
 <h2>Transfers<a class="headerlink" href="#transfers" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="post-transfer">
-<span id="id31"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/transfers/">POST /payouts/bankwire</a><a class="headerlink" href="#post-transfer" title="Permalink to this headline">¶</a></h3>
+<span id="id32"></span><h3><a class="reference external" href="http://docs.mangopay.com/api-references/transfers/">POST /payouts/bankwire</a><a class="headerlink" href="#post-transfer" title="Permalink to this headline">¶</a></h3>
 <p>Transfer money from one mangopay wallet to another.
 To use it simply instantiate the <tt class="docutils literal"><span class="pre">MangoPayTransfer</span></tt> object
 add the user, the wallet you want to transfer from, and the wallet you
@@ -433,8 +443,8 @@ generated id, the status, and the execution date will be saved to the object.</p
 </pre></div>
 </div>
 </div>
-<div class="section" id="id32">
-<h3><a class="reference external" href="http://docs.mangopay.com/api-references/transfers/">GET /transfers/{Transfer_Id}</a><a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id33">
+<h3><a class="reference external" href="http://docs.mangopay.com/api-references/transfers/">GET /transfers/{Transfer_Id}</a><a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h3>
 <p>Getting a transfer will update the status and execution date from MangoPay.</p>
 <div class="highlight-python"><div class="highlight"><pre>from mangopay.models import MangoPayTransfer
 
@@ -483,15 +493,16 @@ transfer.get():
 <li><a class="reference internal" href="#id18">GET /payins/{PayIn_Id}</a></li>
 <li><a class="reference internal" href="#id19">POST /cardregistration</a></li>
 <li><a class="reference internal" href="#id20">GET /cardregistration/{CardRegistration_Id}</a></li>
-<li><a class="reference internal" href="#id21">GET /cards/{Card_Id}</a></li>
-<li><a class="reference internal" href="#id22">POST /preauthorization/card/direct</a></li>
-<li><a class="reference internal" href="#id23">GET /preauthorization/{PreAuthorization_Id}</a></li>
+<li><a class="reference internal" href="#id21">PUT /CardRegistrations/{CardRegistration_Id}</a></li>
+<li><a class="reference internal" href="#id22">GET /cards/{Card_Id}</a></li>
+<li><a class="reference internal" href="#id23">POST /preauthorization/card/direct</a></li>
+<li><a class="reference internal" href="#id24">GET /preauthorization/{PreAuthorization_Id}</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#refunds">Refunds</a><ul>
-<li><a class="reference internal" href="#id24">POST /transfers/{Transfer_Id}/Refund</a></li>
-<li><a class="reference internal" href="#id25">POST /payins/{PayIn_Id}/Refund</a></li>
-<li><a class="reference internal" href="#id26">GET /refunds/{Refund_Id}</a></li>
+<li><a class="reference internal" href="#id25">POST /transfers/{Transfer_Id}/Refund</a></li>
+<li><a class="reference internal" href="#id26">POST /payins/{PayIn_Id}/Refund</a></li>
+<li><a class="reference internal" href="#id27">GET /refunds/{Refund_Id}</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#payouts">PayOuts</a><ul>
@@ -501,7 +512,7 @@ transfer.get():
 </li>
 <li><a class="reference internal" href="#transfers">Transfers</a><ul>
 <li><a class="reference internal" href="#post-transfer">POST /payouts/bankwire</a></li>
-<li><a class="reference internal" href="#id32">GET /transfers/{Transfer_Id}</a></li>
+<li><a class="reference internal" href="#id33">GET /transfers/{Transfer_Id}</a></li>
 </ul>
 </li>
 </ul>
@@ -553,7 +564,7 @@ transfer.get():
     </div>
     <div class="footer">
         &copy; Copyright 2014, Rebecca Meritz.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

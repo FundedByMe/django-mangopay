@@ -94,15 +94,16 @@ are also provided if you want to call these functions asynchronously.</p>
 <li class="toctree-l3"><a class="reference internal" href="api.html#id18">GET /payins/{PayIn_Id}</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#id19">POST /cardregistration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#id20">GET /cardregistration/{CardRegistration_Id}</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id21">GET /cards/{Card_Id}</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id22">POST /preauthorization/card/direct</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id23">GET /preauthorization/{PreAuthorization_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id21">PUT /CardRegistrations/{CardRegistration_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id22">GET /cards/{Card_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id23">POST /preauthorization/card/direct</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id24">GET /preauthorization/{PreAuthorization_Id}</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#refunds">Refunds</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id24">POST /transfers/{Transfer_Id}/Refund</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id25">POST /payins/{PayIn_Id}/Refund</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id26">GET /refunds/{Refund_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id25">POST /transfers/{Transfer_Id}/Refund</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id26">POST /payins/{PayIn_Id}/Refund</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id27">GET /refunds/{Refund_Id}</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#payouts">PayOuts</a><ul>
@@ -112,7 +113,7 @@ are also provided if you want to call these functions asynchronously.</p>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#transfers">Transfers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api.html#post-transfer">POST /payouts/bankwire</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#id32">GET /transfers/{Transfer_Id}</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#id33">GET /transfers/{Transfer_Id}</a></li>
 </ul>
 </li>
 </ul>
@@ -134,6 +135,7 @@ are also provided if you want to call these functions asynchronously.</p>
 <li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-base-url"><tt class="docutils literal"><span class="pre">MANGOPAY_BASE_URL</span></tt></a></li>
 <li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-debug-mode"><tt class="docutils literal"><span class="pre">MANGOPAY_DEBUG_MODE</span></tt></a></li>
 <li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-page-default-storage"><tt class="docutils literal"><span class="pre">MANGOPAY_PAGE_DEFAULT_STORAGE</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html#mangopay-payout-succeded-task"><tt class="docutils literal"><span class="pre">MANGOPAY_PAYOUT_SUCCEDED_TASK</span></tt></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -187,7 +189,7 @@ are also provided if you want to call these functions asynchronously.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Rebecca Meritz.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

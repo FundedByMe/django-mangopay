@@ -313,6 +313,18 @@ access the card's preregistration data by calling ``get_preregistration_data()``
     card_registration.get_preregistration_data()
 
 
+`PUT /CardRegistrations/{CardRegistration_Id} <http://docs.mangopay.com/api-references/card-registration/>`_
+***************************************************************************************
+Before a card can be used you have to get the CardId from mangopay server and to do this, you need to create a PUT request with RegistrationData obtained from client-side process (Step 5-6 on Mangopay API documentation Card Registration Flow diagram). This step is not required if you use MangoPay's `Card Registration JS Kit <https://github.com/MangoPay/cardregistration-js-kit>`_.
+
+::
+
+    from mangopay.models import MangoPayCardRegistration
+
+    card_registration = MangoPayCardRegistration.objects.get(id=1)
+    card_registration.get_mangopay_card_id(request.POST.get('RegistrationData'))
+
+
 `GET /cards/{Card_Id} <http://docs.mangopay.com/api-references/card/>`_
 ***********************************************************************
 After registering a card with MangoPay you should get back the card's Id. If you

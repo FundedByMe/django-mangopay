@@ -315,7 +315,7 @@ access the card's preregistration data by calling ``get_preregistration_data()``
 
 `PUT /CardRegistrations/{CardRegistration_Id} <http://docs.mangopay.com/api-references/card-registration/>`_
 ***************************************************************************************
-Before a card can be used you have to get the CardId from mangopay server and to do this, you need to create a PUT request with RegistrationData obtained from client-side process (Step 5-6 on Mangopay API documentation Card Registration Flow diagram).
+Before a card can be used you have to get the CardId from mangopay server and to do this, you need to create a PUT request with RegistrationData obtained from client-side process (Step 5-6 on Mangopay API documentation Card Registration Flow diagram). This step is not required if you use MangoPay's `Card Registration JS Kit <https://github.com/MangoPay/cardregistration-js-kit>`_.
 
 ::
 

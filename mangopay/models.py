@@ -495,10 +495,12 @@ class MangoPayCardRegistration(models.Model):
         and save the ID to database
         """
         client = get_mangopay_api_client()
-        cr = client.cardRegistrations.Get(self.mangopay_id)
-        cr.RegistrationData = registration_data
-        cro = client.cardRegistrations.Update(cr)
-        self.save_mangopay_card_id(cro.CardId)
+        card_registration = client.cardRegistrations.Get(self.mangopay_id)
+        card_registration.RegistrationData = registration_data
+        card_registration_object = client.cardRegistrations.Update(
+            card_registration
+        )
+        self.save_mangopay_card_id(card_registration_object.CardId)
 
     def save_mangopay_card_id(self, mangopay_card_id):
         self.mangopay_card.mangopay_id = mangopay_card_id
