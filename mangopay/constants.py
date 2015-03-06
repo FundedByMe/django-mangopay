@@ -68,6 +68,7 @@ ERROR_MESSAGES = (
     ("001002", _("Author is not the wallet owner")),
     ("001011", _("Transaction amount is higher than maximum permitted amount")),
     ("001012", _("Transaction amount is lower than minimum permitted amount")),
+    ("001013", _("Invalid transaction amount")),
     ("001401", _("Transaction has already been successfully refunded")),
     ("005403", _("The refund cannot exceed initial transaction amount")),
     ("005404", _("The refunded fees cannot exceed initial fee amount")),
@@ -96,10 +97,17 @@ ERROR_MESSAGES = (
     ("101106", _("The card is inactive.")),
     ("101111", _("Maximum number of attempts reached. "
                  "Too much attempts for the same transaction")),
-    ("101112", _("Maximum amount exceeded.")),
-    ("101115", _("Debit limit exceeded")),
+    ("101112", _("Maximum amount exceeded. This is a card limitation on spent "
+                 "amount")),
+    ("101113", _("Maximum Uses Exceeded. Maximum attempts with this cards "
+                 "reached. You must try again after 24 hours.")),
+    ("101115", _("Debit limit exceeded. This is a card limitation on spent "
+                 "amount")),
+    ("101116", _("Amount limit. TThe contribution transaction has failed")),
     ("101119", _("Debit limit exceeded")),
-    ("101199", _("Transaction refused")),
+    ("101199", _("Transaction refused. The transaction has been refused by the "
+                 "bank. Contact your bank in order to have more information "
+                 "about it.")),
     ("101399", _("Secure mode: 3DSecure authentication is not available")),
     ("001599", _("Token processing error. The token has not been created")),
     ("002999", _("The user is blocked due to KYC limitation.")),
