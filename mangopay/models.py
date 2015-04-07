@@ -32,6 +32,7 @@ from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 from money import Money as PythonMoney
 import requests
+import jsonfield
 
 from .constants import (INCOME_RANGE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES,
@@ -457,16 +458,24 @@ class MangoPayPayInBankWire(MangoPayPayInAbstract):
                                       related_name="mangopay_payin_bankwire")
     mangopay_wallet = models.ForeignKey(MangoPayWallet,
                                         related_name="mangopay_payin_bankwire")
-    mangopay_bank_account = models.ForeignKey(
-        MangoPayBankAccount, related_name="mangopay_payin_bankwire")
+    wire_reference = models.CharField(null=True, blank=True, max_length=50)
+    mangopay_bank_account = jsonfield.JSONField(null=True, blank=True)
 
     def _get_payment_details(self):
         payment_details = PayInPaymentDetailsBankWire()
-        payment_details.BankAccountId = self.mangopay_bank_account.mangopay_id
+        payment_details.DeclaredDebitedFunds = python_money_to_mangopay_money(
+            self.debited_funds)
+        payment_details.DeclaredFees = python_money_to_mangopay_money(
+            self.fees)
         return payment_details
 
     def _get_execution_details(self):
         return PayInExecutionDetailsDirect()
+
+    def _update(self, pay_in):
+        self.wire_reference = pay_in.PaymentDetails.WireReference
+        self.mangopay_bank_account = pay_in.PaymentDetails.BankAccount.__dict__
+        return super(MangoPayPayInBankWire, self)._update(pay_in)
 
 
 class MangoPayPayOut(models.Model):
