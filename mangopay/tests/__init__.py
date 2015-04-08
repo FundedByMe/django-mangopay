@@ -8,7 +8,7 @@ from card import MangoPayCardTests
 from document import MangoPayDocumentTests
 from wallet import MangoPayWalletTests
 from payout import MangoPayPayOutTests
-from payin import MangoPayPayInTests
+from payin import MangoPayPayInTests, MangoPayPayInBankWireTests
 from refund import MangoPayRefundTests
 from page import MangoPayPageTests
 from transfer import MangoPayTransferTests

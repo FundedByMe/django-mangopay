@@ -10,7 +10,8 @@ import factory
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
                       MangoPayLegalUser, MangoPayWallet,
                       MangoPayCardRegistration, MangoPayCard,
-                      MangoPayRefund, MangoPayPayIn, MangoPayPage,
+                      MangoPayRefund, MangoPayPayIn, MangoPayPayInAbstract,
+                      MangoPayPayInBankWire, MangoPayPage,
                       MangoPayPayOut, MangoPayDocument, MangoPayTransfer)
 from ..constants import IDENTITY_PROOF, BUSINESS
 
@@ -156,17 +157,32 @@ class MangoPayPayOutFactory(factory.DjangoModelFactory):
     fees = Money(0, "EUR")
 
 
-class MangoPayPayInFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayPayIn
+class MangoPayPayInAbstractFactory(factory.DjangoModelFactory):
+    FACTORY_FOR = MangoPayPayInAbstract
+    ABSTRACT_FACTORY = True
 
     mangopay_id = None
-    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
-    mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
-    mangopay_card = factory.SubFactory(MangoPayCardFactory)
     execution_date = None
     status = None
     result_code = None
+
+
+class MangoPayPayInFactory(MangoPayPayInAbstractFactory):
+    FACTORY_FOR = MangoPayPayIn
+
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
+    mangopay_card = factory.SubFactory(MangoPayCardFactory)
     secure_mode_redirect_url = None
+
+
+class MangoPayPayInBankWireFactory(MangoPayPayInAbstractFactory):
+    FACTORY_FOR = MangoPayPayInBankWire
+
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
+    wire_reference = None
+    mangopay_bank_account = None
 
 
 class MangoPayRefundFactory(factory.DjangoModelFactory):
