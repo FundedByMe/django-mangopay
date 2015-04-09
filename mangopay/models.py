@@ -23,6 +23,8 @@ from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
+from mangopaysdk.types.payinpaymentdetailsbankwire import (
+    PayInPaymentDetailsBankWire)
 from mangopaysdk.types.payinexecutiondetailsdirect import (
     PayInExecutionDetailsDirect)
 from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
@@ -30,6 +32,7 @@ from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 from money import Money as PythonMoney
 import requests
+import jsonfield
 
 from .constants import (INCOME_RANGE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES,
@@ -399,6 +402,82 @@ class MangoPayWallet(models.Model):
         return client.wallets.Get(self.mangopay_id)
 
 
+class MangoPayPayInAbstract(models.Model):
+    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+    execution_date = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
+                              blank=True, null=True)
+    debited_funds = MoneyField(default=0, default_currency="EUR",
+                               decimal_places=2, max_digits=12)
+    fees = MoneyField(default=0, default_currency="EUR", decimal_places=2,
+                      max_digits=12)
+    result_code = models.CharField(null=True, blank=True, max_length=6)
+
+    class Meta:
+        abstract = True
+
+    def _get_payment_details(self):
+        raise NotImplemented
+
+    def _get_execution_details(self):
+        raise NotImplemented
+
+    def create(self, tag=None):
+        pay_in = PayIn()
+        pay_in.Tag = tag
+        pay_in.AuthorId = self.mangopay_user.mangopay_id
+        pay_in.CreditedUserId = self.mangopay_user.mangopay_id
+        pay_in.CreditedWalletId = self.mangopay_wallet.mangopay_id
+        pay_in.DebitedFunds = python_money_to_mangopay_money(
+            self.debited_funds)
+        pay_in.Fees = python_money_to_mangopay_money(self.fees)
+        pay_in.PaymentDetails = self._get_payment_details()
+        pay_in.ExecutionDetails = self._get_execution_details()
+        client = get_mangopay_api_client()
+        created_pay_in = client.payIns.Create(pay_in)
+        self.mangopay_id = created_pay_in.Id
+        self._update(created_pay_in)
+
+    def get(self):
+        pay_in = self._get()
+        return self._update(pay_in)
+
+    def _get(self):
+        client = get_mangopay_api_client()
+        return client.payIns.Get(self.mangopay_id)
+
+    def _update(self, pay_in):
+        self.execution_date = get_execution_date_as_datetime(pay_in)
+        self.status = pay_in.Status
+        self.save()
+        return self
+
+
+class MangoPayPayInBankWire(MangoPayPayInAbstract):
+    mangopay_user = models.ForeignKey(MangoPayUser,
+                                      related_name="mangopay_payin_bankwire")
+    mangopay_wallet = models.ForeignKey(MangoPayWallet,
+                                        related_name="mangopay_payin_bankwire")
+    wire_reference = models.CharField(null=True, blank=True, max_length=50)
+    mangopay_bank_account = jsonfield.JSONField(null=True, blank=True)
+
+    def _get_payment_details(self):
+        payment_details = PayInPaymentDetailsBankWire()
+        payment_details.DeclaredDebitedFunds = python_money_to_mangopay_money(
+            self.debited_funds)
+        payment_details.DeclaredFees = python_money_to_mangopay_money(
+            self.fees)
+        return payment_details
+
+    def _get_execution_details(self):
+        return PayInExecutionDetailsDirect()
+
+    def _update(self, pay_in):
+        self.wire_reference = pay_in.PaymentDetails.WireReference
+        self.mangopay_bank_account = pay_in.PaymentDetails.BankAccount.__dict__
+        return super(MangoPayPayInBankWire, self)._update(pay_in)
+
+
 class MangoPayPayOut(models.Model):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     mangopay_user = models.ForeignKey(MangoPayUser,
@@ -501,65 +580,35 @@ class MangoPayCardRegistration(models.Model):
         super(MangoPayCardRegistration, self).save(*args, **kwargs)
 
 
-class MangoPayPayIn(models.Model):
-    mangopay_id = models.PositiveIntegerField(null=True, blank=True)
+class MangoPayPayIn(MangoPayPayInAbstract):
     mangopay_user = models.ForeignKey(MangoPayUser,
                                       related_name="mangopay_payins")
     mangopay_wallet = models.ForeignKey(MangoPayWallet,
                                         related_name="mangopay_payins")
     mangopay_card = models.ForeignKey(MangoPayCard,
                                       related_name="mangopay_payins")
-    debited_funds = MoneyField(default=0, default_currency="EUR",
-                               decimal_places=2, max_digits=12)
-    fees = MoneyField(default=0, default_currency="EUR", decimal_places=2,
-                      max_digits=12)
-    execution_date = models.DateTimeField(blank=True, null=True)
-    status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
-                              blank=True, null=True)
-    result_code = models.CharField(null=True, blank=True, max_length=6)
     secure_mode_redirect_url = models.URLField(null=True, blank=True)
 
-    def create(self, secure_mode_return_url):
-        pay_in = PayIn()
-        pay_in.AuthorId = self.mangopay_user.mangopay_id
-        pay_in.CreditedUserId = self.mangopay_user.mangopay_id
-        pay_in.CreditedWalletId = self.mangopay_wallet.mangopay_id
-        pay_in.DebitedFunds = python_money_to_mangopay_money(
-            self.debited_funds)
-        pay_in.Fees = python_money_to_mangopay_money(self.fees)
+    def create(self, secure_mode_return_url, tag=None):
+        self.secure_mode_return_url = secure_mode_return_url
+        super(MangoPayPayIn, self).create(tag)
 
+    def _get_payment_details(self):
         payment_details = PayInPaymentDetailsCard()
         payment_details.CardType = "CB_VISA_MASTERCARD"
-        pay_in.PaymentDetails = payment_details
+        return payment_details
 
+    def _get_execution_details(self):
         execution_details = PayInExecutionDetailsDirect()
         execution_details.CardId = self.mangopay_card.mangopay_id
-        execution_details.SecureModeReturnURL = secure_mode_return_url
+        execution_details.SecureModeReturnURL = self.secure_mode_return_url
         execution_details.SecureMode = "DEFAULT"
-        pay_in.ExecutionDetails = execution_details
-
-        client = get_mangopay_api_client()
-        created_pay_in = client.payIns.Create(pay_in)
-
-        self.mangopay_id = created_pay_in.Id
-        self._update(created_pay_in)
-
-    def get(self):
-        pay_in = self._get()
-        return self._update(pay_in)
-
-    def _get(self):
-        client = get_mangopay_api_client()
-        return client.payIns.Get(self.mangopay_id)
+        return execution_details
 
     def _update(self, pay_in):
-        self.status = pay_in.Status
-        self.result_code = pay_in.ResultCode
-        self.execution_date = get_execution_date_as_datetime(pay_in)
         self.secure_mode_redirect_url = pay_in.\
             ExecutionDetails.SecureModeRedirectURL
-        self.save()
-        return self
+        return super(MangoPayPayIn, self)._update(pay_in)
 
 
 class MangoPayRefund(models.Model):

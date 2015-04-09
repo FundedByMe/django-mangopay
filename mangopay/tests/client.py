@@ -12,6 +12,8 @@ from mangopaysdk.entities.transfer import Transfer
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payinexecutiondetailsdirect import (
     PayInExecutionDetailsDirect)
+from mangopaysdk.types.payinpaymentdetailsbankwire import (
+    PayInPaymentDetailsBankWire)
 
 
 class MockMangoPayApi():
@@ -181,6 +183,11 @@ class MockPayInApi():
         if isinstance(pay_in, PayIn) and not pay_in.Id:
             pay_in.Id = self.pay_in_id
             pay_in.ExecutionDate = 12312312
+            pay_in.PaymentDetails = PayInPaymentDetailsBankWire()
+            pay_in.PaymentDetails.WireReference = '4a57980154'
+            pay_in.PaymentDetails.BankAccount = BankAccount()
+            pay_in.PaymentDetails.BankAccount.IBAN = "FR7618829754160173622224251"
+            pay_in.PaymentDetails.BankAccount.BIC = "CMBRFR2BCME"
             return pay_in
         else:
             raise TypeError("PayIn must be a PayIn entity")
