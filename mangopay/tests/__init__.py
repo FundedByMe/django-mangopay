@@ -11,4 +11,4 @@ from payout import MangoPayPayOutTests
 from payin import MangoPayPayInTests, MangoPayPayInBankWireTests
 from refund import MangoPayRefundTests
 from page import MangoPayPageTests
-from transfer import MangoPayTransferTests
+from transfer import MangoPayTransferTests, CreateMangoPayTransferTasksTests
