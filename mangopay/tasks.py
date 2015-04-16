@@ -137,6 +137,7 @@ def create_mangopay_transfer(credited_wallet_id, debited_wallet_id,
 
     _create_mangopay_transfer.delay(transfer_id=transfer.id, fees=fees)
 
+@task
 def _create_mangopay_transfer(transfer_id, fees=None):
     transfer = MangoPayTransfer.objects.get(id=transfer_id)
     try:
