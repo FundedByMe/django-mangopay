@@ -125,8 +125,8 @@ def update_mangopay_pay_out(id):
 
 
 @task
-def create_mangopay_transfer_on_db(credited_wallet_id, debited_wallet_id,
-                                   debited_funds):
+def create_mangopay_transfer(credited_wallet_id, debited_wallet_id,
+                             debited_funds, fees=None):
     credited_wallet = MangoPayWallet.objects.get(id=credited_wallet_id)
     debited_wallet = MangoPayWallet.objects.get(id=debited_wallet_id)
 
@@ -135,11 +135,12 @@ def create_mangopay_transfer_on_db(credited_wallet_id, debited_wallet_id,
                                 debited_funds=debited_funds)
     transfer.save()
 
+    _create_mangopay_transfer.delay(transfer_id=transfer.id, fees=fees)
 
-def create_mangopay_transfer(transfer_id, fees=None):
+def _create_mangopay_transfer(transfer_id, fees=None):
     transfer = MangoPayTransfer.objects.get(id=transfer_id)
     try:
         transfer.create(fees=fees)
     except ResponseException, e:
         kwargs = {"transfer_id": transfer_id, "fees": fees}
-        raise create_mangopay_transfer.retry((), kwargs, exc=e)
+        raise _create_mangopay_transfer.retry((), kwargs, exc=e)
