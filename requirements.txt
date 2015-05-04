@@ -8,3 +8,4 @@ django-model-utils==1.4.0
 django-storages==1.1.8
 requests==2.2.1
 django-jsonfield==0.9.13
+django-filepicker==0.2.2
