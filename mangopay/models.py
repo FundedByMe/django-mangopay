@@ -1,3 +1,4 @@
+import urllib2
 import base64
 from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
@@ -31,8 +32,8 @@ from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
 from money import Money as PythonMoney
-import requests
 import jsonfield
+import django_filepicker
 
 from .constants import (INCOME_RANGE_CHOICES,
                         STATUS_CHOICES, DOCUMENT_TYPE_CHOICES,
@@ -328,8 +329,11 @@ def page_storage():
 class MangoPayPage(models.Model):
     document = models.ForeignKey(MangoPayDocument,
                                  related_name="mangopay_pages")
-    file = models.FileField(upload_to='mangopay_pages',
-                            storage=page_storage())
+    file = django_filepicker.models.FPUrlField(max_length=255,
+                                               additional_params={
+                                                   'data-fp-store-path': 'mangopay_pages/',
+                                                   'data-fp-store-location': 'S3',
+                                               })
 
     def create(self):
         page = KycPage()
@@ -340,16 +344,8 @@ class MangoPayPage(models.Model):
                                        self.document.mangopay_id)
 
     def _file_bytes(self):
-        if settings.MANGOPAY_PAGE_DEFAULT_STORAGE:
-            self.file.open(mode='rb')
-            bytes = base64.b64encode(self.file.read())
-            self.file.close()
-        else:
-            file_url = self.file.storage.connection.generate_url(
-                120, 'GET', self.file.storage.bucket_name, self.file.name,
-                force_http=True)
-            response = requests.get(file_url)
-            bytes = base64.b64encode(response.content)
+        response = urllib2.urlopen(self.file)
+        bytes = base64.b64encode(response.read())
         return bytes
 
 

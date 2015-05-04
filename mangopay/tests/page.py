@@ -16,5 +16,5 @@ class MangoPayPageTests(TestCase):
     @patch("mangopay.models.get_mangopay_api_client")
     def test_create(self, mock_client):
         mock_client.return_value = MockMangoPayApi()
-        self.page.file = os.getcwd() + "/mangopay/tests/test.png"
+        self.page.file = 'file:///{}/{}'.format(os.getcwd(), "mangopay/tests/test.png")
         self.page.create()
