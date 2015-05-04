@@ -329,7 +329,7 @@ class MangoPayPage(models.Model):
     document = models.ForeignKey(MangoPayDocument,
                                  related_name="mangopay_pages")
     file = models.FileField(upload_to='mangopay_pages',
-                            storage=page_storage())
+                            storage=page_storage(), max_length=225)
 
     def create(self):
         page = KycPage()
