@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from money import Money
+from moneyed import Money, EUR
 from mock import patch
 
 from ..models import MangoPayTransfer
@@ -43,7 +43,7 @@ class CreateMangoPayTransferTasksTests(TestCase):
         kwargs = {
             "credited_wallet_id": self.cred_wallet.id,
             "debited_wallet_id": self.deb_wallet.id,
-            "debited_funds": Money(2000, "EUR"),
+            "debited_funds": Money(2000, EUR),
         }
         create_mangopay_transfer.run(**kwargs)
         transfer = MangoPayTransfer.objects.filter(mangopay_credited_wallet_id=self.cred_wallet.id)

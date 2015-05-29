@@ -1,8 +1,7 @@
 from django.test import TestCase
 
 from mock import patch
-from money import Money
-
+from moneyed import Money, SEK
 from ..models import MangoPayPayOut
 
 from .factories import MangoPayPayOutFactory
@@ -12,8 +11,8 @@ from .client import MockMangoPayApi
 class MangoPayPayOutTests(TestCase):
 
     def setUp(self):
-        self.pay_out = MangoPayPayOutFactory(debited_funds=Money(100, "SEK"),
-                                             fees=Money(10, "SEK"))
+        self.pay_out = MangoPayPayOutFactory(debited_funds=Money(100, SEK),
+                                             fees=Money(10, SEK))
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_create_with_defaults(self, mock_client):

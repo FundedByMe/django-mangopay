@@ -2,13 +2,14 @@ import urllib2
 import base64
 from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
+import moneyed
 
 from django.db import models
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.utils.timezone import utc
 
-from money.contrib.django.models.fields import MoneyField
+from djmoney.models.fields import MoneyField
 from model_utils.managers import InheritanceManager
 from mangopaysdk.entities.usernatural import UserNatural
 from mangopaysdk.entities.userlegal import UserLegal
@@ -31,7 +32,7 @@ from mangopaysdk.types.payinexecutiondetailsdirect import (
 from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 from django_countries.fields import CountryField
 from django_iban.fields import IBANField, SWIFTBICField
-from money import Money as PythonMoney
+from moneyed import Money as PythonMoney
 import jsonfield
 import django_filepicker
 

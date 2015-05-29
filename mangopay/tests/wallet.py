@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from money import Money
+from moneyed import Money
 from mock import patch
 
 from ..models import MangoPayWallet
