@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from money import Money
 from mock import patch
@@ -48,6 +49,17 @@ class CreateMangoPayTransferTasksTests(TestCase):
         create_mangopay_transfer.run(**kwargs)
         transfer = MangoPayTransfer.objects.filter(mangopay_credited_wallet_id=self.cred_wallet.id)
         self.assertTrue(transfer.exists())
+
+    @patch("mangopay.tasks._create_mangopay_transfer")
+    def test_create_mangopay_transfer_main_task_should_save_transfer_and_return_its_id(self, _):
+        kwargs = {
+            "credited_wallet_id": self.cred_wallet.id,
+            "debited_wallet_id": self.deb_wallet.id,
+            "debited_funds": Money(2000, "EUR"),
+        }
+        result = create_mangopay_transfer.run(**kwargs)
+        transfer = MangoPayTransfer.objects.filter(mangopay_credited_wallet_id=self.cred_wallet.id)[0]
+        self.assertEqual(transfer.id, result)
 
     @patch("mangopay.models.MangoPayTransfer.create")
     def test_create_mangopay_transfer_inner_task_calls_transfer_create_method(self, create_mock):
