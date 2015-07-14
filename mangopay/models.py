@@ -43,7 +43,7 @@ from .constants import (INCOME_RANGE_CHOICES,
                         REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
                         SHAREHOLDER_DECLARATION, TRANSACTION_STATUS_CHOICES,
                         REFUSED, BUSINESS, ORGANIZATION,
-                        USER_TYPE_CHOICES_DICT)
+                        USER_TYPE_CHOICES_DICT, COUNTRY_CHOICES)
 from .client import get_mangopay_api_client
 
 
@@ -356,6 +356,8 @@ class MangoPayBankAccount(models.Model):
     iban = IBANField()
     bic = SWIFTBICField()
     address = models.CharField(max_length=254)
+    country = models.CharField(max_length=2, choices=COUNTRY_CHOICES, null=True, blank=True)
+    account_number = models.CharField(max_length=15, null=True, blank=True)
 
     def create(self):
         client = get_mangopay_api_client()
