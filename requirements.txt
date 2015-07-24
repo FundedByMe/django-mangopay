@@ -2,7 +2,7 @@ Django==1.4.15
 django-localflavor==1.1
 celery==3.0.12
 -e git+https://github.com/izquierdo/python-money.git@5c14ce00d9472ddce55bb7a799f6051509dbd092#egg=python_money
--e git+https://github.com/FundedByMe/mangopay2-python-sdk.git@secure-mode-redirect-url#egg=mangopaysdk
+-e git+https://github.com/FundedByMe/mangopay2-python-sdk.git@master#egg=mangopaysdk
 Sphinx==1.2.2
 django-model-utils==1.4.0
 django-storages==1.1.8
