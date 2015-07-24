@@ -50,6 +50,14 @@ STATUS_CHOICES = (
     (REFUSED, "REFUSED"),
 )
 
+BA_BIC_IBAN = "BI"
+BA_OTHER = "O"
+
+MANGOPAY_BANKACCOUNT_TYPE = (
+    (BA_BIC_IBAN, _('BIC & IBAN')),
+    (BA_OTHER, _('Other')),
+)
+
 STATUS_CHOICES_DICT = {v: k for k, v in dict(STATUS_CHOICES).iteritems()}
 
 PENDING = "CREATED"
@@ -390,3 +398,84 @@ COUNTRY_CHOICES = (
     ('ZM', _(u'Zambia')),
     ('ZW', _(u'Zimbabwe')),
 )
+
+
+# List of ISO 13616-Compliant IBAN Countries
+# Pulled from:
+# http://www.swift.com/dsp/resources/documents/IBAN_Registry.pdf
+# on July 23, 2015.
+# Document Version 59, for August 2015
+
+IBAN_COMPLIANT_COUNTRIES = (
+    ('AX', _(u'\xc5land Islands')),
+    ('AL', _('Albania')),
+    ('AD', _('Andorra')),
+    ('AT', _('Austria')),
+    ('AZ', _('Republic of Azerbaijan')),
+    ('BH', _('Bahrain')),
+    ('BE', _('Belgium')),
+    ('BA', _('Bosnia and Herzegovina')),
+    ('BR', _('Brazil')),
+    ('BG', _('Bulgaria')),
+    ('CR', _('Costa Rica')),
+    ('HR', _('Croatia')),
+    ('CY', _('Cyprus')),
+    ('CZ', _('Czech Republic')),
+    ('DK', _('Denmark')),
+    ('DO', _('Dominican Republic')),
+    ('EE', _('Estonia')),
+    ('FI', _('Finland')),
+    ('FR', _('France')),
+    ('GE', _('Georgia')),
+    ('DE', _('Germany')),
+    ('GI', _('Gibraltar')),
+    ('GR', _('Greece')),
+    ('GT', _('Guatemala')),
+    ('HU', _('Hungary')),
+    ('IS', _('Iceland')),
+    ('IE', _('Ireland')),
+    ('IL', _('Israel')),
+    ('IT', _('Italy')),
+    ('JO', _('Jordan')),
+    ('KZ', _('Kazakhstan')),
+    ('XK', _('Republic of Kosovo')),
+    ('KW', _('Kuwait')),
+    ('LV', _('Latvia')),
+    ('LB', _('Lebanon')),
+    ('LI', _('Principality of Liechtenstein')),
+    ('LT', _('Lithuania')),
+    ('LU', _('Luxembourg')),
+    ('MK', _('Macedonia, Former Yugoslav Republic of')),
+    ('MT', _('Malta')),
+    ('MR', _('Mauritania')),
+    ('MU', _('Mauritius')),
+    ('MD', _('Moldova')),
+    ('MC', _('Monaco')),
+    ('ME', _('Montenegro')),
+    ('NL', _('The Netherlands')),
+    ('NO', _('Norway')),
+    ('PK', _('Pakistan')),
+    ('PS', _('Palestine, State of')),
+    ('PL', _('Poland')),
+    ('PT', _('Portugal')),
+    ('RO', _('Romania')),
+    ('QA', _('Qatar')),
+    ('LC', _('Saint Lucia')),
+    ('SM', _('San Marino')),
+    ('SA', _('Saudi Arabia')),
+    ('RS', _('Serbia')),
+    ('SK', _('Slovak Republic')),
+    ('SI', _('Slovenia')),
+    ('ES', _('Spain')),
+    ('SE', _('Sweden')),
+    ('CH', _('Switzerland')),
+    ('TL', _('Timor-Leste')),
+    ('TN', _('Tunisia')),
+    ('TR', _('Turkey')),
+    ('AE', _('United Arab Emirates')),
+    ('GB', _('United Kingdom')),
+    ('VG', _('Virgin Islands, British'))
+)
+
+
+IBAN_COMPLIANT_COUNTRY_CODES = [code for (code, name) in IBAN_COMPLIANT_COUNTRIES]

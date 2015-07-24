@@ -1,5 +1,6 @@
 import urllib2
 import base64
+import jsonfield
 from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
 
@@ -22,6 +23,8 @@ from mangopaysdk.entities.refund import Refund
 from mangopaysdk.entities.transfer import Transfer
 from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.types.money import Money
+from mangopaysdk.types.bankaccountdetailsother import BankAccountDetailsOTHER
+from mangopaysdk.types.bankaccountdetailsiban import BankAccountDetailsIBAN
 from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
 from mangopaysdk.types.payinpaymentdetailsbankwire import (
@@ -30,9 +33,10 @@ from mangopaysdk.types.payinexecutiondetailsdirect import (
     PayInExecutionDetailsDirect)
 from mangopaysdk.types.payinpaymentdetailscard import PayInPaymentDetailsCard
 from django_countries.fields import CountryField
-from django_iban.fields import IBANField, SWIFTBICField
+
+from localflavor.generic.models import IBANField, BICField
 from money import Money as PythonMoney
-import jsonfield
+
 import django_filepicker
 
 from .constants import (INCOME_RANGE_CHOICES,
@@ -42,8 +46,10 @@ from .constants import (INCOME_RANGE_CHOICES,
                         VALIDATED, IDENTITY_PROOF, VALIDATION_ASKED,
                         REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
                         SHAREHOLDER_DECLARATION, TRANSACTION_STATUS_CHOICES,
-                        REFUSED, BUSINESS, ORGANIZATION,
-                        USER_TYPE_CHOICES_DICT, COUNTRY_CHOICES)
+                        REFUSED, BUSINESS, ORGANIZATION, COUNTRY_CHOICES,
+                        USER_TYPE_CHOICES_DICT,
+                        MANGOPAY_BANKACCOUNT_TYPE,
+                        BA_BIC_IBAN, BA_OTHER)
 from .client import get_mangopay_api_client
 
 
@@ -329,11 +335,12 @@ def page_storage():
 class MangoPayPage(models.Model):
     document = models.ForeignKey(MangoPayDocument,
                                  related_name="mangopay_pages")
-    file = django_filepicker.models.FPUrlField(max_length=255,
-                                               additional_params={
-                                                   'data-fp-store-path': 'mangopay_pages/',
-                                                   'data-fp-store-location': 'S3',
-                                               })
+    file = django_filepicker.models.FPUrlField(
+        max_length=255,
+        additional_params={
+            'data-fp-store-path': 'mangopay_pages/',
+            'data-fp-store-location': 'S3',
+        })
 
     def create(self):
         page = KycPage()
@@ -353,24 +360,60 @@ class MangoPayBankAccount(models.Model):
     mangopay_user = models.ForeignKey(MangoPayUser,
                                       related_name="mangopay_bank_accounts")
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
-    iban = IBANField()
-    bic = SWIFTBICField()
+
     address = models.CharField(max_length=254)
-    country = models.CharField(max_length=2, choices=COUNTRY_CHOICES, null=True, blank=True)
+    account_type = models.CharField(max_length=2,
+                                    choices=MANGOPAY_BANKACCOUNT_TYPE,
+                                    default="BI")  # Defaults to BIC/IBAN type
+
+    iban = IBANField(blank=True, null=True)
+
+    bic = BICField()
+
+    country = models.CharField(max_length=2,
+                               choices=COUNTRY_CHOICES,
+                               null=True, blank=True)
+
     account_number = models.CharField(max_length=15, null=True, blank=True)
 
     def create(self):
         client = get_mangopay_api_client()
         mangopay_bank_account = BankAccount()
         mangopay_bank_account.UserId = self.mangopay_user.mangopay_id
+
         mangopay_bank_account.OwnerName = \
             self.mangopay_user.user.get_full_name()
         mangopay_bank_account.OwnerAddress = self.address
-        mangopay_bank_account.IBAN = self.iban
-        mangopay_bank_account.BIC = self.bic
+
+        if self.account_type == BA_BIC_IBAN:
+            # BIC / IBAN type requries setting IBAN and BIC codes only
+            mangopay_bank_account.Details = BankAccountDetailsIBAN()
+            mangopay_bank_account.Details.Type = "IBAN"
+            mangopay_bank_account.Details.IBAN = self.iban
+
+        elif self.account_type == BA_OTHER:
+            # OTHER type requires setting Details object with Account number
+            # country and BIC code.
+            mangopay_bank_account.Details = BankAccountDetailsOTHER()
+            mangopay_bank_account.Details.Type = "OTHER"
+            mangopay_bank_account.Details.AccountNumber = self.account_number
+
+        else:
+            raise NotImplementedError(
+                "Bank Account Type ({0}) not implemeneted.".format(
+                    self.account_type
+                ))
+
+        # Shared Details for IBAN and Other
+        mangopay_bank_account.Details.Country = self.country
+        mangopay_bank_account.Details.BIC = self.bic
+
         created_bank_account = client.users.CreateBankAccount(
-            str(self.mangopay_user.mangopay_id), mangopay_bank_account)
+            str(self.mangopay_user.mangopay_id),
+            mangopay_bank_account)
+
         self.mangopay_id = created_bank_account.Id
+
         self.save()
 
 
