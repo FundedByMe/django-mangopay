@@ -370,9 +370,7 @@ class MangoPayBankAccount(models.Model):
 
     bic = BICField()
 
-    country = models.CharField(max_length=2,
-                               choices=COUNTRY_CHOICES,
-                               null=True, blank=True)
+    country = CountryField(null=True, blank=True)
 
     account_number = models.CharField(max_length=15, null=True, blank=True)
 
