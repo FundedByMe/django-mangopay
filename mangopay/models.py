@@ -364,7 +364,7 @@ class MangoPayBankAccount(models.Model):
     address = models.CharField(max_length=254)
     account_type = models.CharField(max_length=2,
                                     choices=MANGOPAY_BANKACCOUNT_TYPE,
-                                    default="BI")  # Defaults to BIC/IBAN type
+                                    default=BA_BIC_IBAN)  # Defaults to BIC/IBAN type
 
     iban = IBANField(blank=True, null=True)
 
