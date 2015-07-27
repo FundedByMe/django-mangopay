@@ -11,7 +11,7 @@ setup(
     url='http://github.com/FundedByMe/django-mangopay',
     install_requires=[
         'Django>=1.4.3',
-        'mangopaysdk==0.311',
+        'mangopaysdk>=0.311',
     ],
     description='Django package that helps in your Mangopay integration',
     packages=find_packages(),
