@@ -29,8 +29,9 @@ class MangoPayBankAccountTests(TestCase):
                                         mangopay_id=id_)
         self.assertEqual(self.bank_account_iban.account_type,
                          BA_BIC_IBAN)
-        self.assertTrue(self.bank_account_iban.iban is not "")
-        self.assertTrue(self.bank_account_iban.account_number is None)
+
+        self.assertIsNone(self.bank_account_iban.account_number)
+        self.assertIsNotNone(self.bank_account_iban.iban)
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_create_other_bank_account(self, mock_client):
@@ -42,8 +43,9 @@ class MangoPayBankAccountTests(TestCase):
                                         mangopay_id=id_)
         self.assertEqual(self.bank_account_other.account_type,
                          BA_OTHER)
-        self.assertTrue(self.bank_account_other.iban is None)
-        self.assertTrue(self.bank_account_other.account_number is not None)
+
+        self.assertIsNone(self.bank_account_other.iban)
+        self.assertIsNotNone(self.bank_account_other.account_number)
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_cannot_create_not_supported_bank_account(self, mock_client):
