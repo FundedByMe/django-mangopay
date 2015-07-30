@@ -7,3 +7,4 @@ Sphinx==1.2.2
 django-model-utils==1.4.0
 django-storages==1.1.8
 requests==2.2.1
+django-extensions==1.4.0

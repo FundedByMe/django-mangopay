@@ -1,4 +1,5 @@
 import base64
+import json
 from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
 
@@ -6,6 +7,7 @@ from django.db import models
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.utils.timezone import utc
+from django_extensions.db.models import TimeStampedModel
 
 from money.contrib.django.models.fields import MoneyField
 from model_utils.managers import InheritanceManager
@@ -399,7 +401,7 @@ class MangoPayWallet(models.Model):
         return client.wallets.Get(self.mangopay_id)
 
 
-class MangoPayPayOut(models.Model):
+class MangoPayPayOut(TimeStampedModel):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     mangopay_user = models.ForeignKey(MangoPayUser,
                                       related_name="mangopay_payouts")
@@ -514,7 +516,7 @@ class MangoPayCardRegistration(models.Model):
         super(MangoPayCardRegistration, self).save(*args, **kwargs)
 
 
-class MangoPayPayIn(models.Model):
+class MangoPayPayIn(TimeStampedModel):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     mangopay_user = models.ForeignKey(MangoPayUser,
                                       related_name="mangopay_payins")
@@ -554,7 +556,7 @@ class MangoPayPayIn(models.Model):
         client = get_mangopay_api_client()
         created_pay_in = client.payIns.Create(pay_in)
 
-        self.mangopay_id = created_pay_in.Id
+        self.mangopay_id = created_pay_in.ID
         self._update(created_pay_in)
 
     def get(self):
@@ -585,6 +587,9 @@ class MangoPayRefund(models.Model):
     status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
                               blank=True, null=True)
     result_code = models.CharField(null=True, blank=True, max_length=6)
+    fees = MoneyField(default=0, default_currency="EUR", decimal_places=2,
+                      max_digits=12)
+    response = models.TextField(blank=True, null=True)
 
     def create_simple(self):
         pay_in_id = self.mangopay_pay_in.mangopay_id
@@ -600,8 +605,24 @@ class MangoPayRefund(models.Model):
         self.save()
         return self.status == "SUCCEEDED"
 
+    def create_advanced(self):
+        pay_in_id = self.mangopay_pay_in.mangopay_id
+        refund = Refund()
+        refund.InitialTransactionId = pay_in_id
+        refund.AuthorId = self.mangopay_user.mangopay_id
+        refund.fees = python_money_to_mangopay_money(self.fees)
+        client = get_mangopay_api_client()
+        created_refund = client.payIns.CreateRefund(pay_in_id, refund)
+        self.status = created_refund.Status
+        self.result_code = created_refund.ResultCode
+        self.mangopay_id = created_refund.Id
+        self.execution_date = get_execution_date_as_datetime(refund)
+        self.response = json.dumps(created_refund.__dict__)
+        self.save()
+        return self.status == "SUCCEEDED"
 
-class MangoPayTransfer(models.Model):
+
+class MangoPayTransfer(TimeStampedModel):
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     mangopay_debited_wallet = models.ForeignKey(
         MangoPayWallet, related_name="mangopay_debited_wallets")
@@ -609,10 +630,13 @@ class MangoPayTransfer(models.Model):
         MangoPayWallet, related_name="mangopay_credited_wallets")
     debited_funds = MoneyField(default=0, default_currency="EUR",
                                decimal_places=2, max_digits=12)
+    fees = MoneyField(default=0, default_currency="EUR",
+                      decimal_places=2, max_digits=12)
     execution_date = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=9, choices=TRANSACTION_STATUS_CHOICES,
                               blank=True, null=True)
     result_code = models.CharField(null=True, blank=True, max_length=6)
+    response = models.TextField(blank=True, null=True)
 
     def create(self, fees=None):
         transfer = Transfer()
@@ -624,9 +648,7 @@ class MangoPayTransfer(models.Model):
             self.mangopay_credited_wallet.mangopay_user.mangopay_id
         transfer.DebitedFunds = python_money_to_mangopay_money(
             self.debited_funds)
-        if not fees:
-            fees = PythonMoney(0, self.debited_funds.currency)
-        transfer.Fees = python_money_to_mangopay_money(fees)
+        transfer.Fees = python_money_to_mangopay_money(self.fees)
         client = get_mangopay_api_client()
         created_transfer = client.transfers.Create(transfer)
         self._update(created_transfer)
@@ -639,6 +661,7 @@ class MangoPayTransfer(models.Model):
     def _update(self, transfer):
         self.status = transfer.Status
         self.result_code = transfer.ResultCode
+        self.response = json.dumps(transfer.__dict__)
         self.mangopay_id = transfer.Id
         self.execution_date = get_execution_date_as_datetime(transfer)
         self.save()
