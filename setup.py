@@ -12,6 +12,7 @@ setup(
     install_requires=[
         'Django>=1.4.3',
         'mangopaysdk==0.311',
+        'django-countries==3.3',
     ],
     description='Django package that helps in your Mangopay integration',
     packages=find_packages(),
