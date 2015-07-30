@@ -46,7 +46,7 @@ from .constants import (INCOME_RANGE_CHOICES,
                         VALIDATED, IDENTITY_PROOF, VALIDATION_ASKED,
                         REGISTRATION_PROOF, ARTICLES_OF_ASSOCIATION,
                         SHAREHOLDER_DECLARATION, TRANSACTION_STATUS_CHOICES,
-                        REFUSED, BUSINESS, ORGANIZATION, COUNTRY_CHOICES,
+                        REFUSED, BUSINESS, ORGANIZATION,
                         USER_TYPE_CHOICES_DICT,
                         MANGOPAY_BANKACCOUNT_TYPE,
                         BA_BIC_IBAN, BA_OTHER)
@@ -407,6 +407,10 @@ class MangoPayBankAccount(models.Model):
 
         if self.country:
             mangopay_bank_account.Details.Country = self.country.code
+        else:
+            if self.account_type != BA_BIC_IBAN:
+                raise Exception("Country is required for Bank Accounts of "
+                                "types other than BIC/IBAN")
 
         created_bank_account = client.users.CreateBankAccount(
             str(self.mangopay_user.mangopay_id),
