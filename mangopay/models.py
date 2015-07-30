@@ -403,8 +403,10 @@ class MangoPayBankAccount(models.Model):
                 ))
 
         # Shared Details for IBAN and Other
-        mangopay_bank_account.Details.Country = self.country
         mangopay_bank_account.Details.BIC = self.bic
+
+        if self.country:
+            mangopay_bank_account.Details.Country = self.country.code
 
         created_bank_account = client.users.CreateBankAccount(
             str(self.mangopay_user.mangopay_id),
