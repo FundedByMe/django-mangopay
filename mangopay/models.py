@@ -75,6 +75,9 @@ def get_execution_date_as_datetime(mangopay_entity):
 class MangoPayUser(models.Model):
     objects = InheritanceManager()
 
+    create_timestamp = models.DateTimeField(auto_now_add=True, null=True)
+    last_edit_timestamp = models.DateTimeField(auto_now=True, null=True)
+
     mangopay_id = models.PositiveIntegerField(null=True, blank=True)
     user = models.ForeignKey(auth_user_model, related_name="mangopay_users")
     type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES,
