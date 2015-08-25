@@ -24,7 +24,9 @@ user_model_factory = getattr(
 
 
 class UserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = User
+
+    class Meta:
+        model = User
 
     username = factory.Sequence(lambda n: 'username{0}'.format(n))
     first_name = "Sven"
@@ -37,7 +39,9 @@ class UserFactory(factory.DjangoModelFactory):
 
 
 class MangoPayNaturalUserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayNaturalUser
+
+    class Meta:
+        model = MangoPayNaturalUser
 
     mangopay_id = None
     user = factory.SubFactory(user_model_factory)
@@ -49,13 +53,11 @@ class MangoPayNaturalUserFactory(factory.DjangoModelFactory):
     income_range = None
 
 
-class LightAuthenticationMangoPayNaturalUserFactory(
-        MangoPayNaturalUserFactory):
+class LightAuthenticationMangoPayNaturalUserFactory(MangoPayNaturalUserFactory):
     pass
 
 
-class RegularAuthenticationMangoPayNaturalUserFactory(
-        MangoPayNaturalUserFactory):
+class RegularAuthenticationMangoPayNaturalUserFactory(MangoPayNaturalUserFactory):
 
     address = "Somewhere over the rainbow"
     occupation = "Cobbler"
@@ -63,7 +65,9 @@ class RegularAuthenticationMangoPayNaturalUserFactory(
 
 
 class MangoPayLegalUserFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayLegalUser
+
+    class Meta:
+        model = MangoPayLegalUser
 
     type = BUSINESS
     mangopay_id = None
@@ -93,7 +97,9 @@ class RegularAuthenticationMangoPayLegalUserFactory(
 
 
 class MangoPayBankAccountFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayBankAccount
+
+    class Meta:
+        model = MangoPayBankAccount
 
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
     mangopay_id = None
@@ -114,7 +120,9 @@ class MangoPayOTHERBankAccountFactory(MangoPayBankAccountFactory):
 
 
 class MangoPayCardFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayCard
+
+    class Meta:
+        model = MangoPayCard
 
     mangopay_id = None
     expiration_date = None
@@ -124,7 +132,9 @@ class MangoPayCardFactory(factory.DjangoModelFactory):
 
 
 class MangoPayCardRegistrationFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayCardRegistration
+
+    class Meta:
+        model = MangoPayCardRegistration
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
@@ -132,7 +142,9 @@ class MangoPayCardRegistrationFactory(factory.DjangoModelFactory):
 
 
 class MangoPayDocumentFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayDocument
+
+    class Meta:
+        model = MangoPayDocument
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
@@ -142,14 +154,18 @@ class MangoPayDocumentFactory(factory.DjangoModelFactory):
 
 
 class MangoPayPageFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayPage
+
+    class Meta:
+        model = MangoPayPage
 
     document = factory.SubFactory(MangoPayDocumentFactory)
     file = "fake_file.jpg"
 
 
 class MangoPayWalletFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayWallet
+
+    class Meta:
+        model = MangoPayWallet
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
@@ -157,7 +173,9 @@ class MangoPayWalletFactory(factory.DjangoModelFactory):
 
 
 class MangoPayPayOutFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayPayOut
+
+    class Meta:
+        model = MangoPayPayOut
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
@@ -170,8 +188,10 @@ class MangoPayPayOutFactory(factory.DjangoModelFactory):
 
 
 class MangoPayPayInAbstractFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayPayInAbstract
-    ABSTRACT_FACTORY = True
+
+    class Meta:
+        model = MangoPayPayInAbstract
+        abstract = True
 
     mangopay_id = None
     execution_date = None
@@ -180,7 +200,9 @@ class MangoPayPayInAbstractFactory(factory.DjangoModelFactory):
 
 
 class MangoPayPayInFactory(MangoPayPayInAbstractFactory):
-    FACTORY_FOR = MangoPayPayIn
+
+    class Meta:
+        model = MangoPayPayIn
 
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
     mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
@@ -189,7 +211,9 @@ class MangoPayPayInFactory(MangoPayPayInAbstractFactory):
 
 
 class MangoPayPayInBankWireFactory(MangoPayPayInAbstractFactory):
-    FACTORY_FOR = MangoPayPayInBankWire
+
+    class Meta:
+        model = MangoPayPayInBankWire
 
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
     mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
@@ -198,7 +222,9 @@ class MangoPayPayInBankWireFactory(MangoPayPayInAbstractFactory):
 
 
 class MangoPayRefundFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayRefund
+
+    class Meta:
+        model = MangoPayRefund
 
     mangopay_id = None
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
@@ -209,7 +235,9 @@ class MangoPayRefundFactory(factory.DjangoModelFactory):
 
 
 class MangoPayTransferFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = MangoPayTransfer
+
+    class Meta:
+        model = MangoPayTransfer
 
     mangopay_id = None
     mangopay_debited_wallet = factory.SubFactory(MangoPayWalletFactory)
