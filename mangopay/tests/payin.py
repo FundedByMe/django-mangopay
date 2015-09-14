@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 
 from mock import patch
 
@@ -35,6 +36,11 @@ class MangoPayPayByCardInTests(TestCase):
         payin = MangoPayPayInByCard(mangopay_user=self.pay_in.mangopay_user, mangopay_wallet=self.pay_in.mangopay_wallet, mangopay_card=self.pay_in.mangopay_card)
         payin.save()
         self.assertEqual(CARD_WEB, payin.type)
+
+    def test_save_validates_mangopay_card_is_present(self):
+        payin = MangoPayPayInByCard(mangopay_user=self.pay_in.mangopay_user, mangopay_wallet=self.pay_in.mangopay_wallet, mangopay_card=self.pay_in.mangopay_card)
+        with self.assertRaises(ValidationError):
+            payin.save()
 
 
 class MangoPayPayInBankWireTests(TestCase):

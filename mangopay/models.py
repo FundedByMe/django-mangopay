@@ -4,9 +4,10 @@ import jsonfield
 from datetime import datetime
 from decimal import Decimal, ROUND_FLOOR
 
-from django.db import models
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
+from django.db import models
 from django.utils.timezone import utc
 
 from money.contrib.django.models.fields import MoneyField
@@ -538,6 +539,8 @@ class MangoPayPayInByCard(MangoPayPayIn):
 
     def save(self, *args, **kwargs):
         self.type = CARD_WEB
+        if self.mangopay_card is None:
+            raise ValidationError("mangopay_card field is required for MangoPayPayInByCard.")
         return super(MangoPayPayInByCard, self).save(*args, **kwargs)
 
 
