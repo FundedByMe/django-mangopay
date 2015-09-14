@@ -14,6 +14,7 @@ class MangoPayPayByCardInTests(TestCase):
 
     def setUp(self):
         self.pay_in = MangoPayPayInFactory()
+        self.pay_in.__class__ = MangoPayPayInByCard
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_create(self, mock_client):
@@ -47,6 +48,7 @@ class MangoPayPayInBankWireTests(TestCase):
 
     def setUp(self):
         self.pay_in = MangoPayPayInBankWireFactory()
+        self.pay_in.__class__ = MangoPayPayInBankWire
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_create(self, mock_client):
