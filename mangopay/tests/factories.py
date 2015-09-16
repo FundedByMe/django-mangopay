@@ -10,10 +10,9 @@ import factory
 from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
                       MangoPayLegalUser, MangoPayWallet,
                       MangoPayCardRegistration, MangoPayCard,
-                      MangoPayRefund, MangoPayPayIn, MangoPayPayInAbstract,
-                      MangoPayPayInBankWire, MangoPayPage,
+                      MangoPayRefund, MangoPayPayIn, MangoPayPage,
                       MangoPayPayOut, MangoPayDocument, MangoPayTransfer)
-from ..constants import (IDENTITY_PROOF, BUSINESS,
+from ..constants import (IDENTITY_PROOF, BUSINESS, BANK_WIRE, CARD_WEB,
                          BA_BIC_IBAN, BA_OTHER)
 
 
@@ -190,13 +189,15 @@ class MangoPayPayOutFactory(factory.DjangoModelFactory):
 class MangoPayPayInAbstractFactory(factory.DjangoModelFactory):
 
     class Meta:
-        model = MangoPayPayInAbstract
+        model = MangoPayPayIn
         abstract = True
 
     mangopay_id = None
     execution_date = None
     status = None
     result_code = None
+    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
+    mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
 
 
 class MangoPayPayInFactory(MangoPayPayInAbstractFactory):
@@ -204,21 +205,19 @@ class MangoPayPayInFactory(MangoPayPayInAbstractFactory):
     class Meta:
         model = MangoPayPayIn
 
-    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
-    mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
     mangopay_card = factory.SubFactory(MangoPayCardFactory)
     secure_mode_redirect_url = None
+    type = CARD_WEB
 
 
 class MangoPayPayInBankWireFactory(MangoPayPayInAbstractFactory):
 
     class Meta:
-        model = MangoPayPayInBankWire
+        model = MangoPayPayIn
 
-    mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
-    mangopay_wallet = factory.SubFactory(MangoPayWalletFactory)
     wire_reference = None
     mangopay_bank_account = None
+    type = BANK_WIRE
 
 
 class MangoPayRefundFactory(factory.DjangoModelFactory):

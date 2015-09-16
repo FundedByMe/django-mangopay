@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
+# Users
 NATURAL_USER = "N"
 BUSINESS = "B"
 ORGANIZATION = "O"
@@ -12,6 +13,7 @@ USER_TYPE_CHOICES = (
 
 USER_TYPE_CHOICES_DICT = dict(USER_TYPE_CHOICES)
 
+# Income range choices are given per month in euro
 INCOME_RANGE_CHOICES = (
     (1, "0 - 1,500"),
     (2, "1,500 - 2,499"),
@@ -20,8 +22,8 @@ INCOME_RANGE_CHOICES = (
     (5, "7,500 - 9,999"),
     (6, "10,000 +"),
 )
-# Income range choices are given per month in euro
 
+# Document types
 IDENTITY_PROOF = "IP"
 REGISTRATION_PROOF = "RP"
 ARTICLES_OF_ASSOCIATION = "AA"
@@ -38,6 +40,7 @@ DOCUMENT_TYPE_CHOICES = (
 
 DOCUMENT_TYPE_CHOICES_DICT = dict(DOCUMENT_TYPE_CHOICES)
 
+# Document statuses
 CREATED = "C"
 VALIDATION_ASKED = "A"
 VALIDATED = "V"
@@ -50,6 +53,7 @@ STATUS_CHOICES = (
     (REFUSED, "REFUSED"),
 )
 
+# Bank account types
 BA_BIC_IBAN = "BI"
 BA_OTHER = "O"
 
@@ -60,6 +64,7 @@ MANGOPAY_BANKACCOUNT_TYPE = (
 
 STATUS_CHOICES_DICT = {v: k for k, v in dict(STATUS_CHOICES).iteritems()}
 
+# Transaction statuses
 PENDING = "CREATED"
 SUCCEEDED = "SUCCEEDED"
 FAILED = "FAILED"
@@ -68,6 +73,15 @@ TRANSACTION_STATUS_CHOICES = (
     (PENDING, _("The request is created but not processed.")),
     (SUCCEEDED, _("The request has been successfully processed.")),
     (FAILED, _("The request has failed.")),
+)
+
+# Pay in types
+CARD_WEB = "card-web"
+BANK_WIRE = "bank-wire"
+
+MANGOPAY_PAYIN_CHOICES = (
+    (BANK_WIRE, _("Pay in by BankWire")),
+    (CARD_WEB, _("Pay in by card via web"))
 )
 
 ERROR_MESSAGES = (
