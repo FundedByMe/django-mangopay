@@ -209,6 +209,17 @@ class MangoPayPayInFactory(MangoPayPayInAbstractFactory):
     secure_mode_redirect_url = None
     type = CARD_WEB
 
+    @factory.post_generation
+    def mangopay_refunds(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
+
+        if extracted:
+            # A list of refunds were passed in, use them
+            for mangopay_refund in extracted:
+                self.mangopay_refunds.add(mangopay_refund)
+
 
 class MangoPayPayInBankWireFactory(MangoPayPayInAbstractFactory):
 
