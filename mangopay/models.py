@@ -603,6 +603,8 @@ class MangoPayPayOut(models.Model):
         return self._update(created_pay_out)
 
     def get(self):
+        if not self.mangopay_id:
+            raise ValueError("PayOut need a mangopay id to be retrieved from MangoPay's API.")
         client = get_mangopay_api_client()
         pay_out = client.payOuts.Get(self.mangopay_id)
         return self._update(pay_out)
