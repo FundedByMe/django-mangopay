@@ -24,8 +24,10 @@ from mangopaysdk.entities.refund import Refund
 from mangopaysdk.entities.transfer import Transfer
 from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.types.money import Money
-from mangopaysdk.types.bankaccountdetailsother import BankAccountDetailsOTHER
 from mangopaysdk.types.bankaccountdetailsiban import BankAccountDetailsIBAN
+from mangopaysdk.types.bankaccountdetailsus import BankAccountDetailsUS
+from mangopaysdk.types.bankaccountdetailsother import BankAccountDetailsOTHER
+
 from mangopaysdk.types.payoutpaymentdetailsbankwire import (
     PayOutPaymentDetailsBankWire)
 from mangopaysdk.types.payinpaymentdetailsbankwire import (
@@ -50,7 +52,11 @@ from .constants import (INCOME_RANGE_CHOICES,
                         REFUSED, BUSINESS, ORGANIZATION,
                         USER_TYPE_CHOICES_DICT,
                         MANGOPAY_BANKACCOUNT_TYPE, BANK_WIRE, CARD_WEB,
-                        BA_BIC_IBAN, BA_OTHER, MANGOPAY_PAYIN_CHOICES)
+                        BA_BIC_IBAN, BA_US, BA_OTHER,
+                        DEPOSIT_CHECKING,
+                        BA_US_DEPOSIT_ACCOUNT_TYPES,
+                        BA_NOT_IMPLEMENTED, MANGOPAY_PAYIN_CHOICES)
+
 from .client import get_mangopay_api_client
 
 
@@ -372,11 +378,16 @@ class MangoPayBankAccount(models.Model):
 
     iban = IBANField(blank=True, null=True)
 
-    bic = BICField()
-
+    bic = BICField(blank=True, null=True)
     country = CountryField(null=True, blank=True)
-
     account_number = models.CharField(max_length=15, null=True, blank=True)
+
+    # BA_US type only fields
+    aba = models.CharField(max_length=9, null=True, blank=True)
+    deposit_account_type = models.CharField(
+        choices=BA_US_DEPOSIT_ACCOUNT_TYPES,
+        max_length=8, null=True, blank=True,
+    )
 
     def create(self):
         client = get_mangopay_api_client()
@@ -385,13 +396,22 @@ class MangoPayBankAccount(models.Model):
 
         mangopay_bank_account.OwnerName = \
             self.mangopay_user.user.get_full_name()
-        mangopay_bank_account.OwnerAddress = self.address
+
+        mangopay_bank_account.OwnerAddress = str(self.address)
 
         if self.account_type == BA_BIC_IBAN:
             # BIC / IBAN type requries setting IBAN and BIC codes only
             mangopay_bank_account.Details = BankAccountDetailsIBAN()
             mangopay_bank_account.Details.Type = "IBAN"
             mangopay_bank_account.Details.IBAN = self.iban
+
+        elif self.account_type == BA_US:
+            mangopay_bank_account.Details = BankAccountDetailsUS()
+            mangopay_bank_account.Details.Type = "US"
+            mangopay_bank_account.Details.ABA = self.aba
+            mangopay_bank_account.Details.DepositAccountType = \
+                self.deposit_account_type
+            mangopay_bank_account.Details.AccountNumber = self.account_number
 
         elif self.account_type == BA_OTHER:
             # OTHER type requires setting Details object with Account number
@@ -401,10 +421,16 @@ class MangoPayBankAccount(models.Model):
             mangopay_bank_account.Details.AccountNumber = self.account_number
 
         else:
-            raise NotImplementedError(
-                "Bank Account Type ({0}) not implemeneted.".format(
-                    self.account_type
-                ))
+            if self.account_type in BA_NOT_IMPLEMENTED:
+                raise NotImplementedError(
+                    "Bank Account Type ({0}) not implemeneted.".format(
+                        self.account_type
+                    ))
+            else:
+                raise Exception(
+                    "Bank Account Type ({0}) is not valid.".format(
+                        self.account_type
+                    ))
 
         # Shared Details for IBAN and Other
         mangopay_bank_account.Details.BIC = self.bic
