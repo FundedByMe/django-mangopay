@@ -40,17 +40,17 @@ class MangoPayBankAccountTests(TestCase):
     def test_create_us_bank_account(self, mock_client):
         id_ = 42333
         mock_client.return_value = MockMangoPayApi(bank_account_id=id_)
-        self.assertIsNone(self.bank_account_other.mangopay_id)
-        self.bank_account_other.create()
-        MangoPayBankAccount.objects.get(id=self.bank_account_other.id,
+        self.assertIsNone(self.bank_account_us.mangopay_id)
+        self.bank_account_us.create()
+        MangoPayBankAccount.objects.get(id=self.bank_account_us.id,
                                         mangopay_id=id_)
-        self.assertEqual(self.bank_account_other.account_type,
+        self.assertEqual(self.bank_account_us.account_type,
                          BA_US)
 
-        self.assertIsNone(self.bank_account_other.iban)
-        self.assertIsNotNone(self.bank_account_other.aba)
-        self.assertIsNotNone(self.bank_account_other.deposit_account_type)
-        self.assertIsNotNone(self.bank_account_other.account_number)
+        self.assertIsNone(self.bank_account_us.iban)
+        self.assertIsNotNone(self.bank_account_us.aba)
+        self.assertIsNotNone(self.bank_account_us.deposit_account_type)
+        self.assertIsNotNone(self.bank_account_us.account_number)
 
     @patch("mangopay.models.get_mangopay_api_client")
     def test_create_other_bank_account(self, mock_client):
