@@ -13,7 +13,7 @@ from ..models import (MangoPayNaturalUser, MangoPayBankAccount,
                       MangoPayRefund, MangoPayPayIn, MangoPayPage,
                       MangoPayPayOut, MangoPayDocument, MangoPayTransfer)
 from ..constants import (IDENTITY_PROOF, BUSINESS, BANK_WIRE, CARD_WEB,
-                         BA_BIC_IBAN, BA_OTHER)
+                         BA_BIC_IBAN, BA_US, BA_OTHER)
 
 
 user_model_factory = getattr(
@@ -102,7 +102,6 @@ class MangoPayBankAccountFactory(factory.DjangoModelFactory):
 
     mangopay_user = factory.SubFactory(MangoPayNaturalUserFactory)
     mangopay_id = None
-    bic = "DABAIE2D"
     address = "Hundred Acre Wood"
 
 
@@ -110,12 +109,22 @@ class MangoPayIBANBankAccountFactory(MangoPayBankAccountFactory):
     account_type = BA_BIC_IBAN
     iban = "SE3550000000054910000003"
     country = "SE"
+    bic = "DABAIE2D"
 
 
 class MangoPayOTHERBankAccountFactory(MangoPayBankAccountFactory):
     account_type = BA_OTHER
     account_number = "66112231"
     country = "SY"
+    bic = "DABAIE2D"
+
+
+class MangoPayUSBankAccountFactory(MangoPayBankAccountFactory):
+    account_type = BA_US
+    account_number = "3327586"
+    country = "SY"
+    aba = "021000089"
+    deposit_account_type = "CHECKING"
 
 
 class MangoPayCardFactory(factory.DjangoModelFactory):
