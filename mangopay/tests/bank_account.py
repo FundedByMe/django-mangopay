@@ -65,16 +65,3 @@ class MangoPayBankAccountTests(TestCase):
 
         self.assertIsNone(self.bank_account_other.iban)
         self.assertIsNotNone(self.bank_account_other.account_number)
-
-    @patch("mangopay.models.get_mangopay_api_client")
-    def test_cannot_create_not_implemented_bank_account(self, mock_client):
-        id_ = 551412
-        mock_client.return_value = MockMangoPayApi(bank_account_id=id_)
-        for country_code in BA_NOT_IMPLEMENTED:
-            self.bank_account = MangoPayOTHERBankAccountFactory(
-                country=country_code
-            )
-            self.assertIsNone(self.bank_account_us.mangopay_id)
-
-            with self.assertRaises(NotImplementedError):
-                self.bank_account.create()
