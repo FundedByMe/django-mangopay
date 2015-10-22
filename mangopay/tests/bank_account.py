@@ -77,4 +77,4 @@ class MangoPayBankAccountTests(TestCase):
             self.assertIsNone(self.bank_account_us.mangopay_id)
 
             with self.assertRaises(NotImplementedError):
-                self.bank_account_us.create()
+                self.bank_account.create()
