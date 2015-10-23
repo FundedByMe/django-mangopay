@@ -55,12 +55,30 @@ STATUS_CHOICES = (
 
 # Bank account types
 BA_BIC_IBAN = "BI"
+BA_US = "US"
+BA_UK = "UK"  # Not Implemented
+BA_CA = "CA"  # Not Implemented
 BA_OTHER = "O"
+BA_NOT_IMPLEMENTED = (
+    BA_UK,
+    BA_CA
+)
 
 MANGOPAY_BANKACCOUNT_TYPE = (
     (BA_BIC_IBAN, _('BIC & IBAN')),
+    (BA_US, _('Local US Format')),
     (BA_OTHER, _('Other')),
 )
+
+DEPOSIT_CHECKING = "CHECKING"
+DEPOSIT_SAVINGS = "SAVINGS"
+
+BA_US_DEPOSIT_ACCOUNT_TYPES = (
+    # Options provided by MangoPay
+    (DEPOSIT_CHECKING, _('Checking')),
+    (DEPOSIT_SAVINGS, _('Savings'))
+)
+
 
 STATUS_CHOICES_DICT = {v: k for k, v in dict(STATUS_CHOICES).iteritems()}
 
