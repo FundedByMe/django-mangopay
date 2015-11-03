@@ -53,7 +53,6 @@ from .constants import (INCOME_RANGE_CHOICES,
                         USER_TYPE_CHOICES_DICT,
                         MANGOPAY_BANKACCOUNT_TYPE, BANK_WIRE, CARD_WEB,
                         BA_BIC_IBAN, BA_US, BA_OTHER,
-                        DEPOSIT_CHECKING,
                         BA_US_DEPOSIT_ACCOUNT_TYPES,
                         BA_NOT_IMPLEMENTED, MANGOPAY_PAYIN_CHOICES)
 
@@ -397,7 +396,7 @@ class MangoPayBankAccount(models.Model):
         mangopay_bank_account.OwnerName = \
             self.mangopay_user.user.get_full_name()
 
-        mangopay_bank_account.OwnerAddress = str(self.address)
+        mangopay_bank_account.OwnerAddress = unicode(self.address)
 
         if self.account_type == BA_BIC_IBAN:
             # BIC / IBAN type requries setting IBAN and BIC codes only
