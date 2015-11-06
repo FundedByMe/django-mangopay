@@ -120,9 +120,9 @@ class MangoPayOTHERBankAccountFactory(MangoPayBankAccountFactory):
 
 
 class MangoPayUSBankAccountFactory(MangoPayBankAccountFactory):
+    country = "US"
     account_type = BA_US
     account_number = "3327586"
-    country = "SY"
     aba = "021000089"
     deposit_account_type = "CHECKING"
 
