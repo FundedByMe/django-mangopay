@@ -109,6 +109,11 @@ ERROR_MESSAGES = (
     ("001011", _("Transaction amount is higher than maximum permitted amount")),
     ("001012", _("Transaction amount is lower than minimum permitted amount")),
     ("001013", _("Invalid transaction amount")),
+    ("001014", _("Credited Funds must be more than 0")),
+
+    ("001030", _("User has not been redirected")),
+    ("001031", _("User canceled the payment")),
+
     ("001401", _("Transaction has already been successfully refunded")),
     ("005403", _("The refund cannot exceed initial transaction amount")),
     ("005404", _("The refunded fees cannot exceed initial fee amount")),
@@ -125,8 +130,12 @@ ERROR_MESSAGES = (
     ("105204", _("CSC: missing or invalid format")),
     ("105205", _("Callback URL: Invalid format")),
     ("105206", _("Registration data : Invalid format")),
-    ("101001", _("The user does not complete transaction")),
+    ("101001", _("The user did not complete the transaction")),
     ("101002", _("The transaction has been cancelled by the user")),
+    ("001032", _("User is filling in the payment card details")),
+    ("001033", _("User has not been redirected then the payment session has expired")),
+    ("001034", _("User has let the payment session expire without paying")),
+
     ("101101", _("Transaction refused by the bank. "
                  "No more funds or limit has been reached")),
     ("101102", _("Transaction refused by the bank. "
@@ -134,7 +143,9 @@ ERROR_MESSAGES = (
     ("101103", _("Transaction refused by the terminal")),
     ("101104", _("Transaction refused by the bank. "
                  "The card spent amount limit has been reached")),
+    ("101105", _("The card has expired")),
     ("101106", _("The card is inactive.")),
+    ("101410", _("The card is not active")),
     ("101111", _("Maximum number of attempts reached. "
                  "Too much attempts for the same transaction")),
     ("101112", _("Maximum amount exceeded. This is a card limitation on spent "
@@ -149,11 +160,17 @@ ERROR_MESSAGES = (
                  "bank. Contact your bank in order to have more information "
                  "about it.")),
     ("101399", _("Secure mode: 3DSecure authentication is not available")),
+    ("101301", _("Secure mode: 3DSecure authentication has failed")),
+
     ("001599", _("Token processing error. The token has not been created")),
+    ("101699", _("CardRegistration should return a valid JSON response")),
     ("002999", _("The user is blocked due to KYC limitation.")),
     ("008999", _("Fraud policy error")),
     ("008001", _("Counterfeit Card")),
     ("008002", _("Lost Card. A 'lost card' error is a rule carried by the bank"
+                 " which deactivates a card due to too many payments or "
+                 "attempts.")),
+    ("008003", _("Stolen Card. A 'lost card' error is a rule carried by the bank"
                  " which deactivates a card due to too many payments or "
                  "attempts.")),
     ("008004", _("Card bin not authorized")),
@@ -163,18 +180,32 @@ ERROR_MESSAGES = (
     ("008500", _("Transaction blocked by Fraud Policy")),
     ("008600", _("Wallet blocked by Fraud policy")),
     ("008700", _("User blocked by Fraud policy")),
+    ("009103", _("PSP configuration error")),
+
     ("009199", _("PSP technical error. You could get this error if your card "
                  " is not supported by the payment service provider, or if the "
                  "amount is higher than the maximum amount per transaction")),
     ("009499", _("Bank technical error")),
     ("009999", _("Technical error")),
+
+    ("02101", _("Internal Error. There is an issue on the tokenization server (PSP side)")),
+    ("02632", _("Method GET is not allowed")),
+
+
     ("09101", _("Username/Password is incorrect")),
     ("09102", _("Account is locked or inactive")),
+    ("01902", _("This card is not active")),
+    ("02624", _("Card expired")),
+
     ("09104", _("Client certificate is disabled")),
     ("09201", _("You do not have permissions to make this API call")),
+
+    ("02631", _("Too much time taken from the creation of the CardRegistration object to the submission of the Card Details on the Tokenizer Server")),
+
     ("02625", _("Invalid card number")),
     ("02626", _("Invalid date format")),
     ("02627", _("Invalid CSC number")),
+    ("02628", _("Transaction refused"))
 )
 
 ERROR_MESSAGES_DICT = dict(ERROR_MESSAGES)
