@@ -1,14 +1,15 @@
-from mangopaysdk.entities.card import Card
-from mangopaysdk.entities.user import User
 from mangopaysdk.entities.bankaccount import BankAccount
-from mangopaysdk.entities.refund import Refund
+from mangopaysdk.entities.card import Card
+from mangopaysdk.entities.cardregistration import CardRegistration
 from mangopaysdk.entities.kycdocument import KycDocument
 from mangopaysdk.entities.kycpage import KycPage
-from mangopaysdk.entities.wallet import Wallet
-from mangopaysdk.entities.cardregistration import CardRegistration
-from mangopaysdk.entities.payout import PayOut
 from mangopaysdk.entities.payin import PayIn
+from mangopaysdk.entities.payout import PayOut
+from mangopaysdk.entities.refund import Refund
 from mangopaysdk.entities.transfer import Transfer
+from mangopaysdk.entities.user import User
+from mangopaysdk.entities.wallet import Wallet
+from mangopaysdk.types.bankaccountdetailsiban import BankAccountDetailsIBAN
 from mangopaysdk.types.money import Money
 from mangopaysdk.types.payinexecutiondetailsdirect import (
     PayInExecutionDetailsDirect)
@@ -188,6 +189,9 @@ class MockPayInApi():
             pay_in.PaymentDetails.BankAccount = BankAccount()
             pay_in.PaymentDetails.BankAccount.IBAN = "FR7618829754160173622224251"
             pay_in.PaymentDetails.BankAccount.BIC = "CMBRFR2BCME"
+            pay_in.PaymentDetails.BankAccount.Details = BankAccountDetailsIBAN()
+            pay_in.PaymentDetails.BankAccount.Details.bic = "123"
+            pay_in.PaymentDetails.BankAccount.Details.iban = "abc"
             return pay_in
         else:
             raise TypeError("PayIn must be a PayIn entity")

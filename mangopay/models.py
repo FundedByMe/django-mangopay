@@ -399,7 +399,7 @@ class MangoPayBankAccount(models.Model):
         mangopay_bank_account.OwnerAddress = unicode(self.address)
 
         if self.account_type == BA_BIC_IBAN:
-            # BIC / IBAN type requries setting IBAN and BIC codes only
+            # BIC / IBAN type requires setting IBAN and BIC codes only
             mangopay_bank_account.Details = BankAccountDetailsIBAN()
             mangopay_bank_account.Details.Type = "IBAN"
             mangopay_bank_account.Details.IBAN = self.iban
@@ -586,7 +586,12 @@ class MangoPayPayInBankWire(MangoPayPayIn):
 
     def _update(self, pay_in):
         self.wire_reference = pay_in.PaymentDetails.WireReference
-        self.mangopay_bank_account = pay_in.PaymentDetails.BankAccount.__dict__
+        bank_account = pay_in.PaymentDetails.BankAccount.__dict__
+        # BankAccount.__dict__ is not recursive so we manually call it for the
+        # Details object - fixes https://opbeat.com/fundedbyme/production/errors/273/
+        if bank_account["Details"]:
+            bank_account["Details"] = bank_account["Details"].__dict__
+            self.mangopay_bank_account = bank_account
 
         return super(MangoPayPayInBankWire, self)._update(pay_in)
 
