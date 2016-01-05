@@ -468,7 +468,7 @@ class MangoPayWallet(models.Model):
 
     def balance(self):
         wallet = self._get()
-        return PythonMoney(wallet.Balance.Amount / 100,
+        return PythonMoney(wallet.Balance.Amount / 100.0,
                            wallet.Balance.Currency)
 
     def _get(self):
