@@ -123,21 +123,6 @@ def update_mangopay_pay_out(id):
     else:
         logger.error("Payout %i could not be processed successfully" % payout.id)
 
-
-#@task
-#def create_mangopay_transfer(credited_wallet_id, debited_wallet_id,
-#                             debited_funds, fees=None):
-#    credited_wallet = MangoPayWallet.objects.get(id=credited_wallet_id)
-#    debited_wallet = MangoPayWallet.objects.get(id=debited_wallet_id)
-#
-#    transfer = MangoPayTransfer(mangopay_credited_wallet=credited_wallet,
-#                                mangopay_debited_wallet=debited_wallet,
-#                                debited_funds=debited_funds)
-#    transfer.save()
-#
-#    _create_mangopay_transfer.delay(transfer_id=transfer.id, fees=fees)
-#    return transfer.id
-
 @task
 def create_mangopay_transfer(transfer_id, fees=None):
     transfer = MangoPayTransfer.objects.get(id=transfer_id)
