@@ -10,7 +10,7 @@ setup(
     author_email='rebecca@fundedbyme.com',
     url='http://github.com/FundedByMe/django-mangopay',
     install_requires=[
-        'Django>=1.4.3',
+        'Django>=1.8.0',
         'django-countries==3.3',
         'mangopaysdk==2.0',
         'django-localflavor==1.1',
