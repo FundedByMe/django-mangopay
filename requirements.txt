@@ -1,7 +1,7 @@
 django-localflavor==1.1
 django-countries
 celery==3.0.12
--e git+https://github.com/izquierdo/python-money.git@5c14ce00d9472ddce55bb7a799f6051509dbd092#egg=python_money
+https://github.com/poswald/python-money/archive/1.1.zip
 docutils==0.12
 jinja2==2.8
 mangopaysdk==2.0
