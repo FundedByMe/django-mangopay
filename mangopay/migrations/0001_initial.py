@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+from django.conf import settings
 import django.db.models.deletion
 import django_countries.fields
 import django_filepicker.models
@@ -14,10 +15,6 @@ import money.contrib.django.models.fields
 class Migration(migrations.Migration):
 
     initial = True
-
-    dependencies = [
-        ('accounts', '0001_initial'),
-    ]
 
     operations = [
         migrations.CreateModel(
@@ -180,7 +177,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='mangopayuser',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='mangopay_users', to='accounts.User'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='mangopay_users', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='mangopaytransfer',
