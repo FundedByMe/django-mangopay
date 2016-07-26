@@ -5,8 +5,10 @@ import sys
 
 from optparse import OptionParser
 
+import django
 from django.conf import settings
 from django.core.management import call_command
+from django.test.utils import get_runner
 
 
 def main():
@@ -77,7 +79,13 @@ def main():
             }
         }
     })
-    call_command("test", app_name)
+
+    django.setup()
+
+    TestRunner = get_runner(settings)
+    test_runner = TestRunner()
+    failures = test_runner.run_tests(["mangopay.tests"])
+    sys.exit(bool(failures))
 
 if __name__ == "__main__":
     main()
