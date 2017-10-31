@@ -1,6 +1,6 @@
 Django==1.11
 django-localflavor==1.1
-django-countries==4.5
+django-countries==5.0
 celery==3.0.12
 -e git+https://github.com/izquierdo/python-money.git@5c14ce00d9472ddce55bb7a799f6051509dbd092#egg=python_money
 -e git+https://github.com/FundedByMe/mangopay2-python-sdk.git@master#egg=mangopaysdk
