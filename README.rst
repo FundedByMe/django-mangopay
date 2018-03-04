@@ -1,4 +1,4 @@
-.. image:: https://pypip.in/v/django-mangopay/badge.png
+.. image:: https://img.shields.io/pypi/v/django-mangopay.svg
     :target: https://crate.io/packages/django-mangopay/
     :alt: Latest PyPI version
 
