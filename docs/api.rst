@@ -12,7 +12,7 @@ Access
 *********************************************************************************
 
 The client handles authentication with a token once you have set up your client
-as described in the installation instructions. Once confrigured it is easy to
+as described in the installation instructions. Once configured it is easy to
 get an instance of the client.
 
 ::
@@ -44,7 +44,7 @@ Users
 *************************************************************************************
 
 To create a natural user object just instantiate an instance of
-``MangoPayNaturalUser``, populate the requried fields, and call ``create()`` on
+``MangoPayNaturalUser``, populate the required fields, and call ``create()`` on
 it as shown below. You can also edit the user, just update the the values you want to change in the model and then call ``update()``.
 
 ::
@@ -101,7 +101,7 @@ required fields, and call ``create()`` or ``update()`` on it as shown below.
 
     mangopay_user.create()
 
-    mangopay_user.headquaters_address = "Regeringsgatan 29, 111 53 Stockholm"
+    mangopay_user.headquarters_address = "Regeringsgatan 29, 111 53 Stockholm"
     mangopay_user.save()
 
     mangopay_user.update()
